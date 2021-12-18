@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/battery-charging.png</file>
+        <file>icons/battery-level-full.png</file>
+        <file>icons/battery-low.png</file>
+        <file>icons/battery-medium.png</file>
+        <file>icons/headphones.png</file>
+        <file>icons/battery-charging-inv.png</file>
+        <file>icons/battery-level-full-inv.png</file>
+        <file>icons/battery-low-inv.png</file>
+        <file>icons/battery-medium-inv.png</file>
+        <file>icons/headphones-inv.png</file>
+    </qresource>
+</RCC>
