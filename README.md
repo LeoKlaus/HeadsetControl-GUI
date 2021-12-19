@@ -1,7 +1,7 @@
 # HeadsetControl-GUI
 This is a GUI for [Sapds great HeadsetControl](https://github.com/Sapd/HeadsetControl/). It's just a frontend to graphically interact with the original HeadsetControl and has no functionality by itself.
 
-###Disclaimer:
+**Disclaimer**:
 This program is in no way affiliated with Sapd or HeadsetControl.
 All issues regarding the functionality of HeadsetControl (like compatiblity with devices) are beyond the scope of this project.
 
