@@ -6,7 +6,7 @@ This program is in no way affiliated with Sapd or HeadsetControl.
 All issues regarding the functionality of HeadsetControl (like compatiblity with devices) are beyond the scope of this project.
 
 ## Installation (Windows only for now)
-Download the latest release of HeadsetControl-GUI from the releases section of this page.
+Download the [latest release](https://github.com/LeoKlaus/HeadsetControl-GUI/releases/latest/) of HeadsetControl-GUI from the [releases section](https://github.com/LeoKlaus/HeadsetControl-GUI/releases) of this page.
 Download the corresponding version of [Sapds HeadsetControl from their GitHub page](https://github.com/Sapd/HeadsetControl/releases/).
 
 Extract HeadsetControl-GUI to any folder of your choice and drop HeadsetControl into the same folder.
