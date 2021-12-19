@@ -12,6 +12,7 @@ Download the corresponding version of [Sapds HeadsetControl from their GitHub pa
 Extract HeadsetControl-GUI to any folder of your choice and drop HeadsetControl into the same folder.
 The finished folder should look something like this:
 ![Screenshot of the folder structure](https://i.imgur.com/bbymxL6.jpg "Screenshot of the folder structure")
+
 You HAVE to download a version of the [original headsetcontrol](https://github.com/Sapd/HeadsetControl/releases/) and put it in the same folder.
 The executable of headsetcontrol has to be called "HeadsetControl".
 Only if both these requirements are met, the GUI can work.
@@ -20,12 +21,14 @@ Only if both these requirements are met, the GUI can work.
 Start HeadsetControl-GUI by double-clicking "HeadsetControl-GUI.exe".
 If your headset is supported and everything was set up correctly, you will be greeted by the only screen HeadsetControl-GUI has.
 ![Screenshot of the GUI with a Corsair Void Pro Wireless](https://i.imgur.com/xALkNjr.jpg)
+
 Here you can adjust all settings supported by your headset.
 In my experience, these changes persist even after rebooting the system or turning the headset off.
 If you have a wired headset and are finished changing settings, you can close the GUI and call it day. Yay!
 
 If you have a wireless headset with support for battery levels, you can also minimize HeadsetControl-GUI to the system tray.
 ![HeadsetControl-GUI in the system tray](https://i.imgur.com/2IWhbfa.jpg)
+
 That way, you will be able to see the battery status at a glance and get a reminder when the batteries of your headset run low (below 30%).
 Hovering over the tray icon will show you the current battery percentage. You can also right-click the tray icon to bring up a context menu with quick access to the light control. You can also open or completely close the GUI through the context menu.
 ![The tray icon context menu](https://i.imgur.com/2IWhbfa.jpg)
