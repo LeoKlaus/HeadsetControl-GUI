@@ -30,7 +30,7 @@ If you have a wired headset and are finished changing settings, you can close th
 
 If you have a wireless headset with support for battery levels, you can also minimize HeadsetControl-GUI to the system tray.
 
-![HeadsetControl-GUI in the system tray](https://i.imgur.com/2IWhbfa.jpg)
+![HeadsetControl-GUI in the system tray](https://i.imgur.com/83Apn66.jpg)
 
 That way, you will be able to see the battery status at a glance and get a reminder when the batteries of your headset run low (below 30%).
 Hovering over the tray icon will show you the current battery percentage. You can also right-click the tray icon to bring up a context menu with quick access to the light control. You can also open or completely close the GUI through the context menu.
