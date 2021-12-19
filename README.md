@@ -38,7 +38,7 @@ Hovering over the tray icon will show you the current battery percentage. You ca
 ![The tray icon context menu](https://i.imgur.com/2IWhbfa.jpg)
 
 ## Performance
-While the concept of interacting with another app has some inherit overhead, HeadsetControl-GUI is very light on ressources.
+While the concept of calling another app for every single interaction has some inherit overhead, HeadsetControl-GUI is very light on ressources.
 Being open in the background, HeadsetControl-GUI consists of a single process that uses virtually no CPU time and less than 8MB of system memory.
 
 ![Screenshot of the background task in task manager](https://i.imgur.com/3PaxKF6.jpg)
