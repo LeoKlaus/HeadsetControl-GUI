@@ -47,7 +47,7 @@ Being open in the background, HeadsetControl-GUI consists of a single process th
 
 
 ## Building from source
-To build HeadsetControl-GUI from source, you have to have a proper QT-ready develeopment environment.
+To build HeadsetControl-GUI from source, you have to have a proper QT-ready development environment.
 I developed, built and tested the program with Qt 6.0.3, though there's no apparent reason why it wouldn't work with older or newer versions of Qt.
 Clone the source code, import the project into Qt creator or your favourite IDE and build it.
 
