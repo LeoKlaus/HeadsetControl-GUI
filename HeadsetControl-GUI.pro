@@ -32,6 +32,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     icons.qrc
 
+RC_FILE = myapp.rc
+
 DISTFILES += \
     headphones-exe.ico \
     myapp.rc
