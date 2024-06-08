@@ -10,6 +10,8 @@
 #include <QDialog>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QVersionNumber>
+#include <QLayout>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -36,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::showAbout);
     connect(ui->actionCredits, &QAction::triggered, this, &MainWindow::showCredits);
 
+    connect(ui->actionCheck_Updates, &QAction::triggered, this, &MainWindow::checkForUpdates);
+
     this->loadDevices();
 }
 
@@ -44,8 +48,45 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::checkForUpdates(){
+    if(!jsonInfo.isEmpty()){
+        QVersionNumber local_hc=QVersionNumber::fromString(jsonInfo["version"].toString());
+        const QVersionNumber& local_gui=GUI_VERSION;
+        QString v1 = getLatestGitHubReleaseVersion("Sapd","HeadsetControl");
+        QString v2 = getLatestGitHubReleaseVersion("nicola02nb","HeadsetControl-GUI");
+        QVersionNumber remote_hc =QVersionNumber::fromString(v1);
+        QVersionNumber remote_gui =QVersionNumber::fromString(v2);
+        QString s1 = "up-to date";
+        QString s2 = "up-to date";
+        if(!(v1=="") && remote_hc>local_hc){
+            s1="Newer version ->"+remote_hc.toString();
+        }
+
+        if(!(v2=="") && remote_gui>local_gui){
+            s2="Newer version ->"+remote_hc.toString();
+        }
+        QVBoxLayout *layout = new QVBoxLayout;
+        QLabel *l1=new QLabel("HeadsetControl:\t\t"+s1);
+        QLabel *l2=new QLabel("HeadsetControl-GUI:\t"+s2);
+        layout->addWidget(l1);
+        layout->addWidget(l2);
+        showDialog("Check for updates",layout);
+    }
+}
+
+QString MainWindow::sendCommand(QStringList args){
+    QProcess *proc = new QProcess();
+    proc->start("headsetcontrol", args);
+    proc->waitForFinished();
+    QString output=proc->readAllStandardOutput();
+    //qDebug() << args;
+    //qDebug() << output;
+    return output;
+}
+
 void MainWindow::disableFrames(){
     ui->notSupportedFrame->setHidden(false);
+    ui->tabWidget->hide();
     ui->deviceinfoFrame->setHidden(true);
     ui->sidetoneFrame->setHidden(true);
     ui->batteryFrame->setHidden(true);
@@ -60,17 +101,12 @@ void MainWindow::disableFrames(){
 }
 
 void MainWindow::loadDevices(){
-    QProcess *proc = new QProcess();
+
     QStringList args=QStringList() << QString("--output") << QString("JSON");
-    //args=QStringList() << QString("--test-device") << QString("0")  << QString("--output") << QString("JSON");    //Uncomment this to enable all "modules"
+    args=QStringList() << QString("--test-device") << QString("0")  << QString("--output") << QString("JSON");    //Uncomment this to enable all "modules"
 
-    proc->start("headsetcontrol.exe", args);
-    proc->waitForFinished();
-    qDebug() << proc->arguments();
-
-    QString strdata = proc->readAllStandardOutput();
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(strdata.toUtf8());
-    QJsonObject jsonInfo=jsonDoc.object();
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(sendCommand(args).toUtf8());
+    jsonInfo=jsonDoc.object();
 
     if(!jsonDoc.isNull()){
         deviceList=jsonInfo["devices"].toArray();
@@ -83,6 +119,7 @@ void MainWindow::loadDevices(){
 void MainWindow::loadFeatures(int deviceIndex){
     if(deviceIndex<0) return;
     Ui::MainWindow *ui=uix;
+    ui->tabWidget->show();
 
     usingDevice=deviceList[deviceIndex].toObject();
     QJsonArray caps=usingDevice["capabilities"].toArray();
@@ -99,6 +136,7 @@ void MainWindow::loadFeatures(int deviceIndex){
     product=usingDevice["product"].toString();
     ui->deviceinfovalueLabel->setText("Device: "+device+"\r\nVendor: "+vendor+"\r\nProduct: "+product);
     ui->deviceinfoFrame->setHidden(false);
+
     if (capabilities.contains("CAP_SIDETONE")){
         ui->sidetoneFrame->setHidden(false);
         qDebug() << "Sidetone supported";
@@ -152,7 +190,6 @@ void MainWindow::loadFeatures(int deviceIndex){
         int max=10;
         int min=-10;
         QHBoxLayout *mainLayout = ui->equalizerLayout;
-
         for (int var = 0; var < n; ++var) {
             QVBoxLayout *lb = new QVBoxLayout();
             QSlider *s = new QSlider(Qt::Vertical);
@@ -189,66 +226,44 @@ void MainWindow::loadFeatures(int deviceIndex){
 
 void MainWindow::on_onButton_clicked()
 {
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--light") << QString("1");
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    qDebug() << proc->readAllStandardError();
+    sendCommand(args);
 }
 
 void MainWindow::on_offButton_clicked()
 {
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--light") << QString("0");
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    qDebug() << proc->readAllStandardError();
+    sendCommand(args);
 }
 
 void MainWindow::on_voiceOnButton_clicked()
 {
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--voice-prompt") << QString("1");
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    qDebug() << proc->readAllStandardError();
+    sendCommand(args);
 }
 
 void MainWindow::on_voiceOffButton_clicked()
 {
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--voice-prompt") << QString("0");
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    qDebug() << proc->readAllStandardError();
+    sendCommand(args);
 }
 
 void MainWindow::on_rotateOn_clicked()
 {
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--rotate-to-mute") << QString("1");
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    qDebug() << proc->readAllStandardError();
+    sendCommand(args);
 }
 
 void MainWindow::on_rotateOff_clicked()
 {
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--rotate-to-mute") << QString("0");
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    qDebug() << proc->readAllStandardError();
+    sendCommand(args);
 }
 
 void MainWindow::setBatteryStatus()
 {
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--battery");
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    QString batteryStatus = proc->readAllStandardOutput();
-    qDebug() << proc->readAllStandardError();
+    QString batteryStatus = sendCommand(args);
 
     QStringList lines = batteryStatus.split("\n");
 
@@ -257,11 +272,14 @@ void MainWindow::setBatteryStatus()
     QStringList statusParts = statusLine.split(": ");
     QString status = statusParts[1].trimmed();
 
-    // Extract the level value
-    QString levelLine = lines[4];
-    QStringList levelParts = levelLine.split(": ");
-    QString level = levelParts[1].trimmed();
-    level.remove("%");
+    QString level="none";
+    if(status != "BATTERY_UNAVAILABLE"){
+        // Extract the level value
+        QString levelLine = lines[4];
+        QStringList levelParts = levelLine.split(": ");
+        level = levelParts[1].trimmed();
+        level.remove("%");
+    }
 
     if (status == "BATTERY_UNAVAILABLE"){
         ui->batteryPercentage->setText("Headset Off");
@@ -295,42 +313,28 @@ void MainWindow::setBatteryStatus()
 }
 
 void MainWindow::on_sidetoneSlider_valueChanged(){
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--sidetone") << QString::number(ui->sidetoneSlider->sliderPosition());
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    qDebug() << proc->readAllStandardError();
+    sendCommand(args);
 }
 
 void MainWindow::on_inactivitySlider_valueChanged(){
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--inactive-time") << QString::number(ui->inactivitySlider->sliderPosition());
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    qDebug() << proc->readAllStandardError();
+    sendCommand(args);
 }
 
 void MainWindow::setChatmixStatus(){
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--chatmix");
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    QString chatmixStatus = proc->readAllStandardOutput();
+    QString chatmixStatus = sendCommand(args);
     int value=chatmixStatus.mid(chatmixStatus.indexOf(':')+1).toInt();
     ui->chatmixvalueLabel->setText(QString::number(value));
-    qDebug() << proc->readAllStandardError();
 }
 
 void MainWindow::on_equalizerPresetcomboBox_currentIndexChanged(){
     int preset=ui->equalizerPresetcomboBox->currentIndex()-1;
     if(preset>=0 && preset<=3){
-        int flat[]={0,0,0,0,0,0,0,0,0,0};
         this->setSliders(flat);
-        QProcess *proc = new QProcess();
         QStringList args=QStringList() << QString("--equalizer-preset") << QString::number(preset);
-        proc->start("headsetcontrol", args);
-        proc->waitForFinished();
-        qDebug() << proc->readAllStandardError();
+        sendCommand(args);
     }
 }
 
@@ -341,50 +345,65 @@ void MainWindow::on_applyEqualizer_clicked(){
         s+= QString::number(slider->value())+",";
     }
     s.removeLast();
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--equalizer") << s;
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    qDebug() << proc->readAllStandardError();
+    sendCommand(args);
 }
 
 void MainWindow::on_muteledbrightnessSlider_valueChanged(){
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--microphone-mute-led-brightness") << QString::number(ui->muteledbrightnessSlider->sliderPosition());
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    qDebug() << proc->readAllStandardError();
+    sendCommand(args);
 }
 
 void MainWindow::on_micvolumeSlider_valueChanged(){
-
-    QProcess *proc = new QProcess();
     QStringList args=QStringList() << QString("--microphone-volume") << QString::number(ui->micvolumeSlider->sliderPosition());
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    qDebug() << proc->readAllStandardError();
+    sendCommand(args);
 }
 
-void MainWindow::setSliders(int values[]){
+void MainWindow::setSliders(QVector<int> values){
     int i=0;
-    for (QSlider* slider : slidersEq) {
-        slider->setValue(values[i++]);
+    if(values.length()<=slidersEq.length()){
+        for (QSlider* slider : slidersEq) {
+            slider->setValue(values[i++]);
+        }
+    }
+    else{
+        qDebug() << "ERROR: Longer Equalizer Preset";
     }
 }
 
-void MainWindow::showAbout(){
+void MainWindow::showDialog(QString title, QLayout* layout){
+    QDialog dialog;
+    dialog.setWindowTitle(title);
+    dialog.setWindowIcon(QIcon(":/icons/headphones.png"));
+    dialog.setLayout(layout);
+    QPushButton *closeButton = new QPushButton("Close");
+    QObject::connect(closeButton, &QPushButton::clicked, &dialog, &QDialog::accept);
+    layout->addWidget(closeButton);
+    dialog.exec();
+}
 
+void MainWindow::showAbout(){
+    QVBoxLayout *layout = new QVBoxLayout;
+    QLabel *l1 = new QLabel("<a href='https://github.com/nicola02nb/HeadsetControl-GUI'>This</a> is a forked version of <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>.");
+    l1->setTextFormat(Qt::RichText);
+    l1->setOpenExternalLinks(true);
+    l1->setTextInteractionFlags(Qt::TextBrowserInteraction);
+
+    QLabel *l2=new QLabel("Made by <a href='https://github.com/nicola02nb/HeadsetControl-GUI'>nicola02nb</a>");
+    l2->setTextFormat(Qt::RichText);
+    l2->setOpenExternalLinks(true);
+    l2->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    QLabel *version=new QLabel("Version: "+GUI_VERSION.toString());
+
+    layout->addWidget(l1);
+    layout->addWidget(l2);
+    layout->addWidget(version);    
+
+    showDialog("About this program",layout);
 }
 
 void MainWindow::showCredits(){
-    QDialog dialog;
-    dialog.setWindowTitle("Program Credits");
-    dialog.setWindowIcon(QIcon(":/icons/headphones-inv.png"));
-
-    // Create a layout for the dialog
     QVBoxLayout *layout = new QVBoxLayout;
-
-    // Add a label to display information
     QLabel *infoLabel = new QLabel("Big shout-out to:");
     QLabel *l1=new QLabel(" - Sapd for <a href='https://github.com/Sapd/HeadsetControl'>HeadsetCoontrol</a>");
     l1->setTextFormat(Qt::RichText);
@@ -399,17 +418,7 @@ void MainWindow::showCredits(){
     layout->addWidget(l1);
     layout->addWidget(l2);
 
-    // Add a button to close the dialog
-    QPushButton *closeButton = new QPushButton("Close");
-    QObject::connect(closeButton, &QPushButton::clicked, &dialog, &QDialog::accept);
-    layout->addWidget(closeButton);
-
-    // Set the layout for the dialog
-    dialog.setLayout(layout);
-
-    // Show the dialog
-    dialog.exec();
-
+    showDialog("Credit to",layout);
 }
 
 void MainWindow::changeEvent(QEvent* e)

@@ -1,11 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "ghTools.h"
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QSlider>
+#include <QVersionNumber>
+
+const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.2.0");
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,7 +22,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
     bool notified = false;
     QSystemTrayIcon *tray = new QSystemTrayIcon(this);
 
@@ -26,16 +29,23 @@ private:
     QMenu *menu;
     Ui::MainWindow *uix;
 
+    QJsonObject jsonInfo;
     QJsonArray deviceList;
-    QVector<QAction*> actionList;
     QJsonObject usingDevice;
+
     QSet<QString> capabilities;
     QVector<QSlider*> slidersEq;
+
+    QVector<int> flat={0,0,0,0,0,0,0,0,0,0};
 
 private slots:
     void changeEvent(QEvent *e);
 
     void RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW);
+
+    void checkForUpdates();
+
+    QString sendCommand(QStringList args);
 
     void loadDevices();
 
@@ -67,11 +77,13 @@ private slots:
 
     void on_applyEqualizer_clicked();
 
-    void setSliders(int values[]);
+    void setSliders(QVector<int> values);
 
     void on_muteledbrightnessSlider_valueChanged();
 
     void on_micvolumeSlider_valueChanged();
+
+    void showDialog(QString title, QLayout* layout);
 
     void showAbout();
 

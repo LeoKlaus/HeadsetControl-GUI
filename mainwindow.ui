@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>0</width>
-    <height>450</height>
+    <height>0</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -318,6 +318,9 @@ max-width: 200px;
     </item>
     <item>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
         <horstretch>0</horstretch>
@@ -1113,8 +1116,6 @@ max-width: 200px;
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionAutoStartup"/>
-    <addaction name="separator"/>
     <addaction name="actionCheck_Updates"/>
    </widget>
    <widget class="QMenu" name="menuInfo">
@@ -1127,14 +1128,6 @@ max-width: 200px;
    <addaction name="menuFile"/>
    <addaction name="menuInfo"/>
   </widget>
-  <action name="actionAutoStartup">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Auto Startup</string>
-   </property>
-  </action>
   <action name="actionCheck_Updates">
    <property name="text">
     <string>Check Updates</string>
@@ -1148,6 +1141,17 @@ max-width: 200px;
   <action name="actionCredits">
    <property name="text">
     <string>Credits</string>
+   </property>
+  </action>
+  <action name="actionAutoStartup">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Auto Startup</string>
    </property>
   </action>
  </widget>
