@@ -103,7 +103,7 @@ void MainWindow::disableFrames(){
 void MainWindow::loadDevices(){
 
     QStringList args=QStringList() << QString("--output") << QString("JSON");
-    args=QStringList() << QString("--test-device") << QString("0")  << QString("--output") << QString("JSON");    //Uncomment this to enable all "modules"
+    //args=QStringList() << QString("--test-device") << QString("0")  << QString("--output") << QString("JSON");    //Uncomment this to enable all "modules"
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(sendCommand(args).toUtf8());
     jsonInfo=jsonDoc.object();
