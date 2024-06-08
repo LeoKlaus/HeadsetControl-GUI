@@ -24,7 +24,7 @@ Only if both these requirements are met, the GUI can work.
 Start HeadsetControl-GUI by double-clicking "HeadsetControl-GUI.exe".
 If your headset is supported and everything was set up correctly, you will be greeted by the only screen HeadsetControl-GUI has.
 
-![Screenshot of the GUI with a Corsair Void Pro Wireless](https://i.imgur.com/xALkNjr.jpg)
+![image](https://github.com/nicola02nb/HeadsetControl-GUI/assets/61830443/f0d3b4d3-ea55-42b7-9bf9-fe039fbcd104)
 
 Here you can adjust all settings supported by your headset.
 In my experience, these changes persist even after rebooting the system or turning the headset off.
