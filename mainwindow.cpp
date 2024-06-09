@@ -40,7 +40,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionCheck_Updates, &QAction::triggered, this, &MainWindow::checkForUpdates);
 
+    this->disableFrames();
     this->loadDevices();
+    this->loadFeatures();
 }
 
 MainWindow::~MainWindow()
@@ -59,15 +61,20 @@ void MainWindow::checkForUpdates(){
         QString s1 = "up-to date";
         QString s2 = "up-to date";
         if(!(v1=="") && remote_hc>local_hc){
-            s1="Newer version ->"+remote_hc.toString();
+            s1="Newer version -><a href=\"https://github.com/Sapd/HeadsetControl/releases/latest\">"+remote_hc.toString()+"</a>";
         }
-
         if(!(v2=="") && remote_gui>local_gui){
-            s2="Newer version ->"+remote_hc.toString();
+            s2="Newer version -><a href=\"https://github.com/nicola02nb/HeadsetControl-GUI/releases/latest\">"+remote_gui.toString()+"</a>";
         }
         QVBoxLayout *layout = new QVBoxLayout;
         QLabel *l1=new QLabel("HeadsetControl:\t\t"+s1);
+        l1->setTextFormat(Qt::RichText);
+        l1->setOpenExternalLinks(true);
+        l1->setTextInteractionFlags(Qt::TextBrowserInteraction);
         QLabel *l2=new QLabel("HeadsetControl-GUI:\t"+s2);
+        l2->setTextFormat(Qt::RichText);
+        l2->setOpenExternalLinks(true);
+        l2->setTextInteractionFlags(Qt::TextBrowserInteraction);
         layout->addWidget(l1);
         layout->addWidget(l2);
         showDialog("Check for updates",layout);
@@ -86,16 +93,24 @@ QString MainWindow::sendCommand(QStringList args){
 
 void MainWindow::disableFrames(){
     ui->notSupportedFrame->setHidden(false);
-    ui->tabWidget->hide();
     ui->deviceinfoFrame->setHidden(true);
-    ui->sidetoneFrame->setHidden(true);
     ui->batteryFrame->setHidden(true);
+
+    ui->tabWidget->hide();
+    ui->tabWidget->setTabEnabled(2, false);
+    ui->tabWidget->setTabEnabled(1, false);
+    ui->tabWidget->setTabEnabled(0, false);
+
     ui->lightFrame->setHidden(true);
-    ui->inactivityFrame->setHidden(true);
     ui->voicepromptFrame->setHidden(true);
-    ui->rotatetomuteFrame->setHidden(true);
+    ui->sidetoneFrame->setHidden(true);
+    ui->inactivityFrame->setHidden(true);
     ui->chatmixFrame->setHidden(true);
+
+    ui->equalizerpresetFrame->setHidden(true);
     ui->equalizerFrame->setHidden(true);
+
+    ui->rotatetomuteFrame->setHidden(true);
     ui->muteledbrightnessFrame->setHidden(true);
     ui->micvolumeFrame->setHidden(true);
 }
@@ -103,16 +118,13 @@ void MainWindow::disableFrames(){
 void MainWindow::loadDevices(){
 
     QStringList args=QStringList() << QString("--output") << QString("JSON");
-    //args=QStringList() << QString("--test-device") << QString("0")  << QString("--output") << QString("JSON");    //Uncomment this to enable all "modules"
+    args=QStringList() << QString("--test-device") << QString("0")  << QString("--output") << QString("JSON");    //Uncomment this to enable all "modules"
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(sendCommand(args).toUtf8());
     jsonInfo=jsonDoc.object();
 
     if(!jsonDoc.isNull()){
         deviceList=jsonInfo["devices"].toArray();
-        this->loadFeatures();
-    }else {
-        this->disableFrames();
     }
 }
 
@@ -125,7 +137,7 @@ void MainWindow::loadFeatures(int deviceIndex){
     QJsonArray caps=usingDevice["capabilities"].toArray();
     for (const QJsonValue &value : caps) {
         capabilities.insert(value.toString());
-        qDebug()<<value.toString();
+        //qDebug()<<value.toString();
     }
 
     ui->notSupportedFrame->setHidden(true);
@@ -136,56 +148,55 @@ void MainWindow::loadFeatures(int deviceIndex){
     product=usingDevice["product"].toString();
     ui->deviceinfovalueLabel->setText("Device: "+device+"\r\nVendor: "+vendor+"\r\nProduct: "+product);
     ui->deviceinfoFrame->setHidden(false);
-
-    if (capabilities.contains("CAP_SIDETONE")){
-        ui->sidetoneFrame->setHidden(false);
-        qDebug() << "Sidetone supported";
-    }
-    else ui->sidetoneFrame->setHidden(true);
     if (capabilities.contains("CAP_BATTERY_STATUS")){
         ui->batteryFrame->setHidden(false);
-
         QTimer *timerBattery = new QTimer(this);
         connect(timerBattery, SIGNAL(timeout()), this, SLOT(setBatteryStatus()));
         timerBattery->start(300000);
         this->setBatteryStatus();
         qDebug() << "Battery percentage supported";
     }
-    else ui->batteryFrame->setHidden(true);
+
     if (capabilities.contains("CAP_LIGHTS")){
         ui->lightFrame->setHidden(false);
+        ui->tabWidget->setTabEnabled(0, true);
         menu->addAction("Turn Lights On", this, SLOT(on_onButton_clicked()));
         menu->addAction("Turn Lights Off", this, SLOT(on_offButton_clicked()));
         qDebug() << "Light control supported";
     }
-    else ui->lightFrame->setHidden(true);
-    if (capabilities.contains("CAP_INACTIVE_TIME")){
-        ui->inactivityFrame->setHidden(false);
-        qDebug() << "Inactivity timer supported";
+    if (capabilities.contains("CAP_SIDETONE")){
+        ui->sidetoneFrame->setHidden(false);
+        ui->tabWidget->setTabEnabled(0, true);
+        qDebug() << "Sidetone supported";
     }
-    else ui->inactivityFrame->setHidden(true);
     if (capabilities.contains("CAP_VOICE_PROMPTS")){
         ui->voicepromptFrame->setHidden(false);
+        ui->tabWidget->setTabEnabled(0, true);
         qDebug() << "Voice prompt control supported";
     }
-    else ui->voicepromptFrame->setHidden(true);
-    if (capabilities.contains("CAP_ROTATE_TO_MUTE")){
-        ui->rotatetomuteFrame->setHidden(false);
-        qDebug() << "Rotate to mute supported";
+    if (capabilities.contains("CAP_INACTIVE_TIME")){
+        ui->inactivityFrame->setHidden(false);
+        ui->tabWidget->setTabEnabled(0, true);
+        qDebug() << "Inactivity timer supported";
     }
-    else ui->rotatetomuteFrame->setHidden(true);
     if (capabilities.contains("CAP_CHATMIX_STATUS")){
         ui->chatmixFrame->setHidden(false);
-
+        ui->tabWidget->setTabEnabled(0, true);
         QTimer *timerChatmix = new QTimer(this);
         connect(timerChatmix, SIGNAL(timeout()), this, SLOT(setChatmixStatus()));
         timerChatmix->start(300000);
         this->setChatmixStatus();
         qDebug() << "Chatmix supported";
     }
-    else ui->chatmixFrame->setHidden(true);
+
+    if (capabilities.contains("CAP_EQUALIZER_PRESET")){
+        ui->equalizerpresetFrame->setHidden(false);
+        ui->tabWidget->setTabEnabled(1, true);
+        qDebug() << "Eqaulizer preset supported";
+    }
     if (capabilities.contains("CAP_EQUALIZER")){
-        ui->equalizerFrame->setHidden(false);
+        ui->equalizerFrame->setHidden(false);        
+        ui->tabWidget->setTabEnabled(1, true);
         int n=10;
         int max=10;
         int min=-10;
@@ -211,26 +222,31 @@ void MainWindow::loadFeatures(int deviceIndex){
         }
         qDebug() << "Equalizer supported";
     }
-    else ui->equalizerFrame->setHidden(true);
+
+    if (capabilities.contains("CAP_ROTATE_TO_MUTE")){
+        ui->rotatetomuteFrame->setHidden(false);
+        ui->tabWidget->setTabEnabled(2, true);
+        qDebug() << "Rotate to mute supported";
+    }
     if (capabilities.contains("CAP_MICROPHONE_MUTE_LED_BRIGHTNESS")){
         ui->muteledbrightnessFrame->setHidden(false);
+        ui->tabWidget->setTabEnabled(2, true);
         qDebug() << "Muted led brightness supported";
     }
-    else ui->muteledbrightnessFrame->setHidden(true);
     if (capabilities.contains("CAP_MICROPHONE_VOLUME")){
         ui->micvolumeFrame->setHidden(false);
+        ui->tabWidget->setTabEnabled(2, true);
         qDebug() << "Microphone volume supported";
     }
-    else ui->micvolumeFrame->setHidden(true);
 }
 
-void MainWindow::on_onButton_clicked()
+void MainWindow::on_onlightButton_clicked()
 {
     QStringList args=QStringList() << QString("--light") << QString("1");
     sendCommand(args);
 }
 
-void MainWindow::on_offButton_clicked()
+void MainWindow::on_offlightButton_clicked()
 {
     QStringList args=QStringList() << QString("--light") << QString("0");
     sendCommand(args);
@@ -312,12 +328,12 @@ void MainWindow::setBatteryStatus()
     }
 }
 
-void MainWindow::on_sidetoneSlider_valueChanged(){
+void MainWindow::on_sidetoneSlider_sliderReleased(){
     QStringList args=QStringList() << QString("--sidetone") << QString::number(ui->sidetoneSlider->sliderPosition());
     sendCommand(args);
 }
 
-void MainWindow::on_inactivitySlider_valueChanged(){
+void MainWindow::on_inactivitySlider_sliderReleased(){
     QStringList args=QStringList() << QString("--inactive-time") << QString::number(ui->inactivitySlider->sliderPosition());
     sendCommand(args);
 }
@@ -349,12 +365,12 @@ void MainWindow::on_applyEqualizer_clicked(){
     sendCommand(args);
 }
 
-void MainWindow::on_muteledbrightnessSlider_valueChanged(){
+void MainWindow::on_muteledbrightnessSlider_sliderReleased(){
     QStringList args=QStringList() << QString("--microphone-mute-led-brightness") << QString::number(ui->muteledbrightnessSlider->sliderPosition());
     sendCommand(args);
 }
 
-void MainWindow::on_micvolumeSlider_valueChanged(){
+void MainWindow::on_micvolumeSlider_sliderReleased(){
     QStringList args=QStringList() << QString("--microphone-volume") << QString::number(ui->micvolumeSlider->sliderPosition());
     sendCommand(args);
 }

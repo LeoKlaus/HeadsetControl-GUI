@@ -53,9 +53,9 @@ private slots:
 
     void loadFeatures(int deviceIndex=0);
 
-    void on_onButton_clicked();
+    void on_onlightButton_clicked();
 
-    void on_offButton_clicked();
+    void on_offlightButton_clicked();
 
     void on_voiceOnButton_clicked();
 
@@ -67,9 +67,9 @@ private slots:
 
     void setBatteryStatus();
 
-    void on_sidetoneSlider_valueChanged();
+    void on_sidetoneSlider_sliderReleased();
 
-    void on_inactivitySlider_valueChanged();
+    void on_inactivitySlider_sliderReleased();
 
     void setChatmixStatus();
 
@@ -79,9 +79,9 @@ private slots:
 
     void setSliders(QVector<int> values);
 
-    void on_muteledbrightnessSlider_valueChanged();
+    void on_muteledbrightnessSlider_sliderReleased();
 
-    void on_micvolumeSlider_valueChanged();
+    void on_micvolumeSlider_sliderReleased();
 
     void showDialog(QString title, QLayout* layout);
 

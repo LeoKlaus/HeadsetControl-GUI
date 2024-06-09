@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>529</width>
-    <height>512</height>
+    <height>522</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,19 +22,20 @@
     <height>0</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>11</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>HeadsetControl - GUI</string>
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
-    <normaloff>:/icons/headphones.png</normaloff>:/icons/headphones.png</iconset>
+    <normaloff>:/icons/headphones-inv.png</normaloff>:/icons/headphones-inv.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(44, 44, 44);
-color: rgb(208, 208, 208);
-font: 87 10pt &quot;Segoe UI Black&quot;;
-
-</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
@@ -56,23 +57,7 @@ font: 87 10pt &quot;Segoe UI Black&quot;;
     </size>
    </property>
    <property name="styleSheet">
-    <string notr="true">QLabel {
-	min-width: 120px;
-	max-width: 120px;
-}
-
-QPushButton {
-	border-width: 1px;
-	border-color: rgb(200, 200, 200);
-	border-style: inset;
-	border-radius: 5px;
-}
-.QFrame {
-	border-radius: 5px;
-	border-width: 1px;
-	border-style: solid;
-	border-color: rgb(200, 200, 200);
-}</string>
+    <string notr="true"/>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_4">
     <item>
@@ -84,10 +69,13 @@ QPushButton {
        </sizepolicy>
       </property>
       <property name="styleSheet">
-       <string notr="true">QLabel {
-min-width: 400px;
-max-width: 400px;
-}</string>
+       <string notr="true"/>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_19">
        <item>
@@ -100,13 +88,13 @@ max-width: 400px;
          </property>
          <property name="minimumSize">
           <size>
-           <width>400</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>400</width>
+           <width>16777215</width>
            <height>16777215</height>
           </size>
          </property>
@@ -176,10 +164,7 @@ max-width: 400px;
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">QLabel {
-min-width: 300px;
-max-width: 300px;
-}</string>
+          <string notr="true"/>
          </property>
          <property name="text">
           <string>No info of the device</string>
@@ -287,10 +272,7 @@ max-width: 300px;
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">QLabel {
-min-width: 200px;
-max-width: 200px;
-}</string>
+          <string notr="true"/>
          </property>
          <property name="text">
           <string>No compatible Device found!</string>
@@ -355,6 +337,12 @@ max-width: 200px;
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
           <layout class="QHBoxLayout" name="horizontalLayout_17">
            <item>
             <widget class="QLabel" name="lightLabel">
@@ -385,7 +373,7 @@ max-width: 200px;
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="offButton">
+            <widget class="QPushButton" name="offlightButton">
              <property name="minimumSize">
               <size>
                <width>120</width>
@@ -411,7 +399,7 @@ max-width: 200px;
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="onButton">
+            <widget class="QPushButton" name="onlightButton">
              <property name="minimumSize">
               <size>
                <width>120</width>
@@ -433,6 +421,12 @@ max-width: 200px;
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_14">
            <item>
@@ -537,6 +531,12 @@ max-width: 200px;
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
           <layout class="QHBoxLayout" name="horizontalLayout_16">
            <item>
             <widget class="QLabel" name="voiceLabel">
@@ -619,6 +619,12 @@ max-width: 200px;
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_15">
            <item>
@@ -768,7 +774,7 @@ max-width: 200px;
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
-         <widget class="QFrame" name="frame">
+         <widget class="QFrame" name="equalizerpresetFrame">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
             <horstretch>0</horstretch>
@@ -783,7 +789,7 @@ max-width: 200px;
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_13">
            <item>
-            <widget class="QLabel" name="label_7">
+            <widget class="QLabel" name="equalizerPresetLabel">
              <property name="text">
               <string>Equalizer preset:</string>
              </property>
@@ -791,6 +797,12 @@ max-width: 200px;
            </item>
            <item>
             <widget class="QComboBox" name="equalizerPresetcomboBox">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <item>
               <property name="text">
                <string>-</string>
@@ -817,6 +829,19 @@ max-width: 200px;
               </property>
              </item>
             </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -876,6 +901,12 @@ max-width: 200px;
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_18">
            <item>
@@ -1109,7 +1140,7 @@ max-width: 200px;
      <x>0</x>
      <y>0</y>
      <width>529</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1143,21 +1174,10 @@ max-width: 200px;
     <string>Credits</string>
    </property>
   </action>
-  <action name="actionAutoStartup">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Auto Startup</string>
-   </property>
-  </action>
  </widget>
  <tabstops>
-  <tabstop>offButton</tabstop>
-  <tabstop>onButton</tabstop>
+  <tabstop>offlightButton</tabstop>
+  <tabstop>onlightButton</tabstop>
   <tabstop>sidetoneSlider</tabstop>
   <tabstop>voiceOffButton</tabstop>
   <tabstop>inactivitySlider</tabstop>
