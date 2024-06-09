@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>529</width>
-    <height>522</height>
+    <height>537</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -138,8 +138,22 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
-          <string>Device info:</string>
+          <string>Device:
+Vendor:
+Model:</string>
          </property>
         </widget>
        </item>
@@ -245,6 +259,12 @@
            <width>120</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <bold>true</bold>
+          </font>
          </property>
          <property name="text">
           <string>Battery:</string>
@@ -364,6 +384,12 @@
                <height>16777215</height>
               </size>
              </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
              <property name="text">
               <string>Lights:</string>
              </property>
@@ -442,6 +468,12 @@
                <width>120</width>
                <height>0</height>
               </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <bold>true</bold>
+              </font>
              </property>
              <property name="text">
               <string>Sidetone Level:</string>
@@ -558,6 +590,12 @@
                <height>16777215</height>
               </size>
              </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
              <property name="text">
               <string>Voice Prompts:</string>
              </property>
@@ -640,6 +678,12 @@
                <width>120</width>
                <height>0</height>
               </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <bold>true</bold>
+              </font>
              </property>
              <property name="text">
               <string>Inactivity Timer:</string>
@@ -732,6 +776,18 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
              <property name="text">
               <string>Chatmix:</string>
              </property>
@@ -790,6 +846,18 @@
           <layout class="QHBoxLayout" name="horizontalLayout_13">
            <item>
             <widget class="QLabel" name="equalizerPresetLabel">
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
              <property name="text">
               <string>Equalizer preset:</string>
              </property>
@@ -863,6 +931,18 @@
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0">
             <widget class="QLabel" name="equalizerLabel">
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
              <property name="text">
               <string>Equalizer:</string>
              </property>
@@ -916,6 +996,18 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <bold>true</bold>
+              </font>
              </property>
              <property name="text">
               <string>Rotate to mute:</string>
@@ -972,8 +1064,26 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>Muted led brightness:</string>
+             </property>
+             <property name="scaledContents">
+              <bool>false</bool>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1059,6 +1169,18 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <bold>true</bold>
+              </font>
              </property>
              <property name="text">
               <string>Microphone volume:</string>
@@ -1147,6 +1269,8 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionLoad_Device"/>
+    <addaction name="separator"/>
     <addaction name="actionCheck_Updates"/>
    </widget>
    <widget class="QMenu" name="menuInfo">
@@ -1172,6 +1296,11 @@
   <action name="actionCredits">
    <property name="text">
     <string>Credits</string>
+   </property>
+  </action>
+  <action name="actionLoad_Device">
+   <property name="text">
+    <string>Load Device</string>
    </property>
   </action>
  </widget>

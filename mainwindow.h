@@ -47,11 +47,11 @@ private slots:
 
     QString sendCommand(QStringList args);
 
-    void loadDevices();
-
     void disableFrames();
 
-    void loadFeatures(int deviceIndex=0);
+    void loadDevices();
+
+    void loadDevice(int deviceIndex=0);
 
     void on_onlightButton_clicked();
 
@@ -88,6 +88,10 @@ private slots:
     void showAbout();
 
     void showCredits();
+
+    void clearLayout(QLayout* layout);
+
+    void selectDevice();
 
 private:
     Ui::MainWindow *ui;

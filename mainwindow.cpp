@@ -12,6 +12,7 @@
 #include <QUrl>
 #include <QVersionNumber>
 #include <QLayout>
+#include <QDialogButtonBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -39,10 +40,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionCredits, &QAction::triggered, this, &MainWindow::showCredits);
 
     connect(ui->actionCheck_Updates, &QAction::triggered, this, &MainWindow::checkForUpdates);
+    connect(ui->actionLoad_Device, &QAction::triggered, this, &MainWindow::selectDevice);
 
     this->disableFrames();
     this->loadDevices();
-    this->loadFeatures();
+    this->loadDevice();
 }
 
 MainWindow::~MainWindow()
@@ -118,7 +120,7 @@ void MainWindow::disableFrames(){
 void MainWindow::loadDevices(){
 
     QStringList args=QStringList() << QString("--output") << QString("JSON");
-    args=QStringList() << QString("--test-device") << QString("0")  << QString("--output") << QString("JSON");    //Uncomment this to enable all "modules"
+    //args=QStringList() << QString("--test-device") << QString("0")  << QString("--output") << QString("JSON");    //Uncomment this to enable all "modules"
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(sendCommand(args).toUtf8());
     jsonInfo=jsonDoc.object();
@@ -128,7 +130,7 @@ void MainWindow::loadDevices(){
     }
 }
 
-void MainWindow::loadFeatures(int deviceIndex){
+void MainWindow::loadDevice(int deviceIndex){
     if(deviceIndex<0) return;
     Ui::MainWindow *ui=uix;
     ui->tabWidget->show();
@@ -146,7 +148,7 @@ void MainWindow::loadFeatures(int deviceIndex){
     device=usingDevice["device"].toString();
     vendor=usingDevice["vendor"].toString();
     product=usingDevice["product"].toString();
-    ui->deviceinfovalueLabel->setText("Device: "+device+"\r\nVendor: "+vendor+"\r\nProduct: "+product);
+    ui->deviceinfovalueLabel->setText(device+"\n"+vendor+"\n"+product);
     ui->deviceinfoFrame->setHidden(false);
     if (capabilities.contains("CAP_BATTERY_STATUS")){
         ui->batteryFrame->setHidden(false);
@@ -200,7 +202,8 @@ void MainWindow::loadFeatures(int deviceIndex){
         int n=10;
         int max=10;
         int min=-10;
-        QHBoxLayout *mainLayout = ui->equalizerLayout;
+        QHBoxLayout *equalizerLayout = ui->equalizerLayout;
+        clearLayout(equalizerLayout);
         for (int var = 0; var < n; ++var) {
             QVBoxLayout *lb = new QVBoxLayout();
             QSlider *s = new QSlider(Qt::Vertical);
@@ -218,7 +221,7 @@ void MainWindow::loadFeatures(int deviceIndex){
             lb->addWidget(s);
 
             slidersEq.append(s);
-            mainLayout->addLayout(lb);
+            equalizerLayout->addLayout(lb);
         }
         qDebug() << "Equalizer supported";
     }
@@ -396,6 +399,58 @@ void MainWindow::showDialog(QString title, QLayout* layout){
     QObject::connect(closeButton, &QPushButton::clicked, &dialog, &QDialog::accept);
     layout->addWidget(closeButton);
     dialog.exec();
+}
+
+void MainWindow::selectDevice()
+{
+    QDialog dialog;
+    dialog.setWindowTitle("Select device to load");
+
+    QVBoxLayout layout(&dialog);
+
+    QLabel labelWidget("Select device:");
+    layout.addWidget(&labelWidget);
+
+    QStringList devices=QStringList();
+    foreach (const QJsonValue &d, deviceList) {
+        devices<<d["device"].toString();
+    }
+
+    QComboBox comboBox;
+    comboBox.addItems(devices);
+    layout.addWidget(&comboBox);
+
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
+    layout.addWidget(&buttonBox);
+
+    QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+
+    int result;
+    if (dialog.exec() == QDialog::Accepted) {
+        result = comboBox.currentIndex();
+        if (result>=0) {
+            this->disableFrames();
+            this->loadDevice(result);
+        }
+    }
+}
+
+void MainWindow::clearLayout(QLayout* layout){
+    if (!layout) {
+        return;
+    }
+
+    QLayoutItem* item;
+    while ((item = layout->takeAt(0))) {
+        if (item->layout()) {
+            clearLayout(item->layout());         // Delete the layout if it exists
+        }
+        if (item->widget()) {
+            delete item->widget(); // Delete the widget
+        }
+        delete item; // Delete the layout item
+    }
 }
 
 void MainWindow::showAbout(){
