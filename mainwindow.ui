@@ -807,6 +807,19 @@ Model:</string>
             </widget>
            </item>
            <item>
+            <widget class="QLabel" name="chatmixstatusLabel">
+             <property name="minimumSize">
+              <size>
+               <width>30</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="horizontalSpacer_2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -1299,6 +1312,9 @@ Model:</string>
    </property>
   </action>
   <action name="actionLoad_Device">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Load Device</string>
    </property>

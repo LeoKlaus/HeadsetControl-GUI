@@ -44,7 +44,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->disableFrames();
     this->loadDevices();
-    this->loadDevice();
+    if(deviceQuantity>0){
+        this->loadDevice();
+    }
 }
 
 MainWindow::~MainWindow()
@@ -60,8 +62,8 @@ void MainWindow::checkForUpdates(){
         QString v2 = getLatestGitHubReleaseVersion("nicola02nb","HeadsetControl-GUI");
         QVersionNumber remote_hc =QVersionNumber::fromString(v1);
         QVersionNumber remote_gui =QVersionNumber::fromString(v2);
-        QString s1 = "up-to date";
-        QString s2 = "up-to date";
+        QString s1 = "up-to date v"+local_hc.toString();
+        QString s2 = "up-to date v"+local_gui.toString();
         if(!(v1=="") && remote_hc>local_hc){
             s1="Newer version -><a href=\"https://github.com/Sapd/HeadsetControl/releases/latest\">"+remote_hc.toString()+"</a>";
         }
@@ -122,24 +124,38 @@ void MainWindow::loadDevices(){
     QStringList args=QStringList() << QString("--output") << QString("JSON");
     //args=QStringList() << QString("--test-device") << QString("0")  << QString("--output") << QString("JSON");    //Uncomment this to enable all "modules"
 
+    //QString test="{\"name\":\"HeadsetControl\",\"version\":\"3.0.0\",\"api_version\":\"1.0\",\"hidapi_version\":\"0.14.0\",\"device_count\":2,\"devices\":[{\"status\":\"success\",\"device\":\"Dev1\",\"vendor\":\"Dev1\",\"product\":\"Dev1\",\"id_vendor\":\"0x1038\",\"id_product\":\"0x2202\",\"capabilities\":[\"CAP_SIDETONE\",\"CAP_BATTERY_STATUS\",\"CAP_INACTIVE_TIME\"],\"capabilities_str\":[\"sidetone\",\"battery\",\"inactive time\",\"chatmix\",\"equalizer preset\",\"equalizer\"],\"battery\":{\"status\":\"BATTERY_AVAILABLE\",\"level\":75},\"chatmix\":65},{\"status\":\"success\",\"device\":\"Dev2\",\"vendor\":\"Dev2\",\"product\":\"Dev2\",\"id_vendor\":\"0x1038\",\"id_product\":\"0x2202\",\"capabilities\":[\"CAP_SIDETONE\",\"CAP_BATTERY_STATUS\",\"CAP_INACTIVE_TIME\",\"CAP_CHATMIX_STATUS\",\"CAP_EQUALIZER_PRESET\",\"CAP_EQUALIZER\"],\"capabilities_str\":[\"sidetone\",\"battery\",\"inactive time\",\"chatmix\",\"equalizer preset\",\"equalizer\"],\"battery\":{\"status\":\"BATTERY_AVAILABLE\",\"level\":75},\"chatmix\":65}]}";
+
     QJsonDocument jsonDoc = QJsonDocument::fromJson(sendCommand(args).toUtf8());
+    //jsonDoc=QJsonDocument::fromJson(test.toUtf8()); //test fort multiple devices
     jsonInfo=jsonDoc.object();
 
     if(!jsonDoc.isNull()){
+        deviceQuantity=jsonInfo["device_count"].toInt();
         deviceList=jsonInfo["devices"].toArray();
     }
 }
 
 void MainWindow::loadDevice(int deviceIndex){
     if(deviceIndex<0) return;
+
     Ui::MainWindow *ui=uix;
-    ui->tabWidget->show();
 
     usingDevice=deviceList[deviceIndex].toObject();
     QJsonArray caps=usingDevice["capabilities"].toArray();
+    QSet<QString> capabilities;
     for (const QJsonValue &value : caps) {
         capabilities.insert(value.toString());
         //qDebug()<<value.toString();
+    }
+
+    if(timerBattery!=nullptr){
+        timerBattery->stop();
+        timerBattery=nullptr;
+    }
+    if(timerChatmix!=nullptr){
+        timerChatmix->stop();
+        timerChatmix=nullptr;
     }
 
     ui->notSupportedFrame->setHidden(true);
@@ -152,12 +168,14 @@ void MainWindow::loadDevice(int deviceIndex){
     ui->deviceinfoFrame->setHidden(false);
     if (capabilities.contains("CAP_BATTERY_STATUS")){
         ui->batteryFrame->setHidden(false);
-        QTimer *timerBattery = new QTimer(this);
+        timerBattery = new QTimer(this);
         connect(timerBattery, SIGNAL(timeout()), this, SLOT(setBatteryStatus()));
-        timerBattery->start(300000);
+        timerBattery->start(UPDATE_TIME);
         this->setBatteryStatus();
         qDebug() << "Battery percentage supported";
     }
+
+    ui->tabWidget->show();
 
     if (capabilities.contains("CAP_LIGHTS")){
         ui->lightFrame->setHidden(false);
@@ -184,9 +202,9 @@ void MainWindow::loadDevice(int deviceIndex){
     if (capabilities.contains("CAP_CHATMIX_STATUS")){
         ui->chatmixFrame->setHidden(false);
         ui->tabWidget->setTabEnabled(0, true);
-        QTimer *timerChatmix = new QTimer(this);
+        timerChatmix = new QTimer(this);
         connect(timerChatmix, SIGNAL(timeout()), this, SLOT(setChatmixStatus()));
-        timerChatmix->start(300000);
+        timerChatmix->start(UPDATE_TIME);
         this->setChatmixStatus();
         qDebug() << "Chatmix supported";
     }
@@ -342,10 +360,15 @@ void MainWindow::on_inactivitySlider_sliderReleased(){
 }
 
 void MainWindow::setChatmixStatus(){
+    Ui::MainWindow *ui=uix;
     QStringList args=QStringList() << QString("--chatmix");
-    QString chatmixStatus = sendCommand(args);
-    int value=chatmixStatus.mid(chatmixStatus.indexOf(':')+1).toInt();
+    QString chatmixValue= sendCommand(args);
+    int value=chatmixValue.mid(chatmixValue.indexOf(':')+1).toInt();
     ui->chatmixvalueLabel->setText(QString::number(value));
+    QString chatmixStatus="";
+    if(value<65)chatmixStatus="Game";
+    else if(value>65)chatmixStatus="Chat";
+    ui->chatmixstatusLabel->setText(chatmixStatus);
 }
 
 void MainWindow::on_equalizerPresetcomboBox_currentIndexChanged(){
@@ -401,8 +424,7 @@ void MainWindow::showDialog(QString title, QLayout* layout){
     dialog.exec();
 }
 
-void MainWindow::selectDevice()
-{
+void MainWindow::selectDevice(){
     QDialog dialog;
     dialog.setWindowTitle("Select device to load");
 
@@ -412,8 +434,8 @@ void MainWindow::selectDevice()
     layout.addWidget(&labelWidget);
 
     QStringList devices=QStringList();
-    foreach (const QJsonValue &d, deviceList) {
-        devices<<d["device"].toString();
+    for (int i = 0; i < deviceQuantity; ++i){
+        devices<<deviceList[i].toObject()["device"].toString();
     }
 
     QComboBox comboBox;
@@ -426,12 +448,11 @@ void MainWindow::selectDevice()
     QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
     QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
 
-    int result;
     if (dialog.exec() == QDialog::Accepted) {
-        result = comboBox.currentIndex();
-        if (result>=0) {
+        selectedDevice = comboBox.currentIndex();
+        if (selectedDevice>=0 && selectedDevice<deviceQuantity) {
             this->disableFrames();
-            this->loadDevice(result);
+            this->loadDevice(selectedDevice);
         }
     }
 }

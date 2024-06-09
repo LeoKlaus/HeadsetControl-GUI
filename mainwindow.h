@@ -26,15 +26,19 @@ public:
     QSystemTrayIcon *tray = new QSystemTrayIcon(this);
 
 private:
+    const int UPDATE_TIME=300000;
     QMenu *menu;
     Ui::MainWindow *uix;
 
+    int deviceQuantity=0;
+    int selectedDevice=-1;
     QJsonObject jsonInfo;
     QJsonArray deviceList;
     QJsonObject usingDevice;
-
-    QSet<QString> capabilities;
     QVector<QSlider*> slidersEq;
+
+    QTimer *timerBattery;
+    QTimer *timerChatmix;
 
     QVector<int> flat={0,0,0,0,0,0,0,0,0,0};
 
