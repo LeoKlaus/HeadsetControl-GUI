@@ -44,8 +44,7 @@ Hovering over the tray icon will show you the current battery percentage. You ca
 While the concept of calling another app for every single interaction has some inherit overhead, HeadsetControl-GUI is very light on ressources.
 Being open in the background, HeadsetControl-GUI consists of a single process that uses virtually no CPU time and less than 8MB of system memory.
 
-![Screenshot of the background task in task manager](https://i.imgur.com/3PaxKF6.jpg)
-
+![image](https://github.com/nicola02nb/HeadsetControl-GUI/assets/61830443/f429ddf9-69be-42f0-a3f0-5ce9bd118d59)
 
 ## Building from source
 To build HeadsetControl-GUI from source, you have to have a proper QT-ready development environment.
