@@ -25,7 +25,7 @@ Only if both these requirements are met, the GUI can work.
 Start HeadsetControl-GUI by double-clicking "HeadsetControl-GUI.exe".
 If your headset is supported and everything was set up correctly, you will be greeted by the only screen HeadsetControl-GUI has.
 
-![image](https://github.com/nicola02nb/HeadsetControl-GUI/assets/61830443/f0d3b4d3-ea55-42b7-9bf9-fe039fbcd104)
+![image](https://github.com/nicola02nb/HeadsetControl-GUI/assets/61830443/ce6a9628-4705-4a79-a262-8c43db2c92b0)
 
 Here you can adjust all settings supported by your headset.
 In my experience, these changes persist even after rebooting the system or turning the headset off.
@@ -33,12 +33,12 @@ If you have a wired headset and are finished changing settings, you can close th
 
 If you have a wireless headset with support for battery levels, you can also minimize HeadsetControl-GUI to the system tray.
 
-![HeadsetControl-GUI in the system tray](https://i.imgur.com/83Apn66.jpg)
+![image](https://github.com/nicola02nb/HeadsetControl-GUI/assets/61830443/ea327c0a-e39a-4035-aa99-bc6325724571)
 
 That way, you will be able to see the battery status at a glance and get a reminder when the batteries of your headset run low (below 30%).
 Hovering over the tray icon will show you the current battery percentage. You can also right-click the tray icon to bring up a context menu with quick access to the light control. You can also open or completely close the GUI through the context menu.
 
-![The tray icon context menu](https://i.imgur.com/2IWhbfa.jpg)
+![image](https://github.com/nicola02nb/HeadsetControl-GUI/assets/61830443/0213a37c-806c-44d5-b8d7-5cc6b5d69407)
 
 ## Performance
 While the concept of calling another app for every single interaction has some inherit overhead, HeadsetControl-GUI is very light on ressources.
@@ -49,7 +49,7 @@ Being open in the background, HeadsetControl-GUI consists of a single process th
 
 ## Building from source
 To build HeadsetControl-GUI from source, you have to have a proper QT-ready development environment.
-I developed, built and tested the program with Qt 6.0.3, though there's no apparent reason why it wouldn't work with older or newer versions of Qt.
+I developed, built and tested the program with Qt 6.7.0, though there's no apparent reason why it wouldn't work with older or newer versions of Qt.
 Clone the source code, import the project into Qt creator or your favourite IDE and build it.
 
 ## Support for other platforms
