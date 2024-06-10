@@ -1,6 +1,7 @@
-QT       += core gui
+QT += core gui
+QT += core network
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
 CONFIG += c++11
 
@@ -9,10 +10,12 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ghTools.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    ghTools.h \
     mainwindow.h
 
 FORMS += \
@@ -28,3 +31,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     icons.qrc
+
+RC_FILE = myapp.rc
+
+DISTFILES += \
+    headphones-exe.ico \
+    myapp.rc

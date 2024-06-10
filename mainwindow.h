@@ -1,8 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "ghTools.h"
 #include <QMainWindow>
 #include <QSystemTrayIcon>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QSlider>
+#include <QVersionNumber>
+
+const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.9.1");
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,36 +22,102 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
     bool notified = false;
     QSystemTrayIcon *tray = new QSystemTrayIcon(this);
+
+private:
+    const int UPDATE_TIME=60000;
+    QMenu *menu;
+    Ui::MainWindow *uix;
+
+    QAction *ledOn;
+    QAction *ledOff;
+
+    int deviceQuantity=0;
+    int selectedDevice=-1;
+    QJsonObject jsonInfo;
+    QJsonArray deviceList;
+    QJsonObject usingDevice;
+    QVector<QSlider*> slidersEq;
+
+    QTimer *timerBattery;
+    QTimer *timerChatmix;
+
+    QVector<int> flat={0,0,0,0,0,0,0,0,0,0};
 
 private slots:
     void changeEvent(QEvent *e);
 
     void RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW);
 
-    void on_onButton_clicked();
+    QString sendCommand(QStringList args);
 
-    void on_offButton_clicked();
+    void disableFrames();
+
+    void loadDevices();
+
+    void loadDevice(int deviceIndex=0);
+
+    void setBatteryStatus();
+
+    //Other Section Events
+    void on_onlightButton_clicked();
+
+    void on_offlightButton_clicked();
+
+    void on_sidetoneSlider_sliderReleased();
 
     void on_voiceOnButton_clicked();
 
     void on_voiceOffButton_clicked();
 
-    void on_sideToneApply_clicked();
-
-    void on_sideToneOff_clicked();
-
-    void on_inactivityOffButton_clicked();
-
-    void on_inactivityApplyButton_clicked();
+    void on_inactivitySlider_sliderReleased();
 
     void on_rotateOn_clicked();
 
     void on_rotateOff_clicked();
 
-    void setBatteryStatus();
+    void setChatmixStatus();
+
+    //Equalizer Section Events
+    void on_equalizerPresetcomboBox_currentIndexChanged();
+
+    void on_applyEqualizer_clicked();
+
+    void setSliders(QVector<int> values);
+
+    void clearLayout(QLayout* layout);
+
+    void on_volumelimiterOffButton_clicked();
+
+    void on_volumelimiterOnButton_clicked();
+
+    //Microphone Section Events
+    void on_muteledbrightnessSlider_sliderReleased();
+
+    void on_micvolumeSlider_sliderReleased();
+
+    //Bluetooth Section Events
+    void on_btwhenonOffButton_clicked();
+
+    void on_btwhenonOnButton_clicked();
+
+    void on_btbothRadioButton_clicked();
+
+    void btpcdbRadioButton();
+
+    void btonlyRadioButton();
+
+    //Tool Bar Events
+    void checkForUpdates();
+
+    void selectDevice();
+
+    void showDialog(QString title, QLayout* layout);
+
+    void showAbout();
+
+    void showCredits();
 
 private:
     Ui::MainWindow *ui;
