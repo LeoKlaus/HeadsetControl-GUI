@@ -13,6 +13,7 @@
 #include <QVersionNumber>
 #include <QLayout>
 #include <QDialogButtonBox>
+#include <QAction>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -27,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     menu = new QMenu(nullptr);
     menu->addAction("Show", this, SLOT(show()));
+    ledOn  = menu->addAction("Turn Lights On", this, SLOT(on_onButton_clicked()));
+    ledOff = menu->addAction("Turn Lights Off", this, SLOT(on_offButton_clicked()));
     menu->addAction("Exit", this, SLOT(close()));
 
     tray->setContextMenu(menu);
@@ -47,42 +50,14 @@ MainWindow::MainWindow(QWidget *parent)
     if(deviceQuantity>0){
         this->loadDevice();
     }
+
+    ui->equalizerFrame->setDisabled(true);
+    ui->equalizerpresetFrame->setDisabled(true);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::checkForUpdates(){
-    if(!jsonInfo.isEmpty()){
-        QVersionNumber local_hc=QVersionNumber::fromString(jsonInfo["version"].toString());
-        const QVersionNumber& local_gui=GUI_VERSION;
-        QString v1 = getLatestGitHubReleaseVersion("Sapd","HeadsetControl");
-        QString v2 = getLatestGitHubReleaseVersion("nicola02nb","HeadsetControl-GUI");
-        QVersionNumber remote_hc =QVersionNumber::fromString(v1);
-        QVersionNumber remote_gui =QVersionNumber::fromString(v2);
-        QString s1 = "up-to date v"+local_hc.toString();
-        QString s2 = "up-to date v"+local_gui.toString();
-        if(!(v1=="") && remote_hc>local_hc){
-            s1="Newer version -><a href=\"https://github.com/Sapd/HeadsetControl/releases/latest\">"+remote_hc.toString()+"</a>";
-        }
-        if(!(v2=="") && remote_gui>local_gui){
-            s2="Newer version -><a href=\"https://github.com/nicola02nb/HeadsetControl-GUI/releases/latest\">"+remote_gui.toString()+"</a>";
-        }
-        QVBoxLayout *layout = new QVBoxLayout;
-        QLabel *l1=new QLabel("HeadsetControl:\t\t"+s1);
-        l1->setTextFormat(Qt::RichText);
-        l1->setOpenExternalLinks(true);
-        l1->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        QLabel *l2=new QLabel("HeadsetControl-GUI:\t"+s2);
-        l2->setTextFormat(Qt::RichText);
-        l2->setOpenExternalLinks(true);
-        l2->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        layout->addWidget(l1);
-        layout->addWidget(l2);
-        showDialog("Check for updates",layout);
-    }
 }
 
 QString MainWindow::sendCommand(QStringList args){
@@ -96,11 +71,15 @@ QString MainWindow::sendCommand(QStringList args){
 }
 
 void MainWindow::disableFrames(){
+    ledOn->setEnabled(false);
+    ledOff->setEnabled(false);
+
     ui->notSupportedFrame->setHidden(false);
     ui->deviceinfoFrame->setHidden(true);
     ui->batteryFrame->setHidden(true);
 
     ui->tabWidget->hide();
+    ui->tabWidget->setTabEnabled(3, false);
     ui->tabWidget->setTabEnabled(2, false);
     ui->tabWidget->setTabEnabled(1, false);
     ui->tabWidget->setTabEnabled(0, false);
@@ -110,6 +89,7 @@ void MainWindow::disableFrames(){
     ui->sidetoneFrame->setHidden(true);
     ui->inactivityFrame->setHidden(true);
     ui->chatmixFrame->setHidden(true);
+    ui->volumelimiterFrame->setHidden(true);
 
     ui->equalizerpresetFrame->setHidden(true);
     ui->equalizerFrame->setHidden(true);
@@ -117,6 +97,9 @@ void MainWindow::disableFrames(){
     ui->rotatetomuteFrame->setHidden(true);
     ui->muteledbrightnessFrame->setHidden(true);
     ui->micvolumeFrame->setHidden(true);
+
+    ui->btwhenonFrame->setHidden(true);
+    ui->btcallvolumeFrame->setHidden(true);
 }
 
 void MainWindow::loadDevices(){
@@ -124,10 +107,7 @@ void MainWindow::loadDevices(){
     QStringList args=QStringList() << QString("--output") << QString("JSON");
     //args=QStringList() << QString("--test-device") << QString("0")  << QString("--output") << QString("JSON");    //Uncomment this to enable all "modules"
 
-    //QString test="{\"name\":\"HeadsetControl\",\"version\":\"3.0.0\",\"api_version\":\"1.0\",\"hidapi_version\":\"0.14.0\",\"device_count\":2,\"devices\":[{\"status\":\"success\",\"device\":\"Dev1\",\"vendor\":\"Dev1\",\"product\":\"Dev1\",\"id_vendor\":\"0x1038\",\"id_product\":\"0x2202\",\"capabilities\":[\"CAP_SIDETONE\",\"CAP_BATTERY_STATUS\",\"CAP_INACTIVE_TIME\"],\"capabilities_str\":[\"sidetone\",\"battery\",\"inactive time\",\"chatmix\",\"equalizer preset\",\"equalizer\"],\"battery\":{\"status\":\"BATTERY_AVAILABLE\",\"level\":75},\"chatmix\":65},{\"status\":\"success\",\"device\":\"Dev2\",\"vendor\":\"Dev2\",\"product\":\"Dev2\",\"id_vendor\":\"0x1038\",\"id_product\":\"0x2202\",\"capabilities\":[\"CAP_SIDETONE\",\"CAP_BATTERY_STATUS\",\"CAP_INACTIVE_TIME\",\"CAP_CHATMIX_STATUS\",\"CAP_EQUALIZER_PRESET\",\"CAP_EQUALIZER\"],\"capabilities_str\":[\"sidetone\",\"battery\",\"inactive time\",\"chatmix\",\"equalizer preset\",\"equalizer\"],\"battery\":{\"status\":\"BATTERY_AVAILABLE\",\"level\":75},\"chatmix\":65}]}";
-
     QJsonDocument jsonDoc = QJsonDocument::fromJson(sendCommand(args).toUtf8());
-    //jsonDoc=QJsonDocument::fromJson(test.toUtf8()); //test fort multiple devices
     jsonInfo=jsonDoc.object();
 
     if(!jsonDoc.isNull()){
@@ -180,8 +160,8 @@ void MainWindow::loadDevice(int deviceIndex){
     if (capabilities.contains("CAP_LIGHTS")){
         ui->lightFrame->setHidden(false);
         ui->tabWidget->setTabEnabled(0, true);
-        menu->addAction("Turn Lights On", this, SLOT(on_onButton_clicked()));
-        menu->addAction("Turn Lights Off", this, SLOT(on_offButton_clicked()));
+        ledOn->setEnabled(true);
+        ledOff->setEnabled(true);
         qDebug() << "Light control supported";
     }
     if (capabilities.contains("CAP_SIDETONE")){
@@ -243,6 +223,11 @@ void MainWindow::loadDevice(int deviceIndex){
         }
         qDebug() << "Equalizer supported";
     }
+    if (capabilities.contains("CAP_VOLUME_LIMITER")){
+        ui->volumelimiterFrame->setHidden(false);
+        ui->tabWidget->setTabEnabled(1, true);
+        qDebug() << "Volume limiter preset supported";
+    }
 
     if (capabilities.contains("CAP_ROTATE_TO_MUTE")){
         ui->rotatetomuteFrame->setHidden(false);
@@ -259,44 +244,20 @@ void MainWindow::loadDevice(int deviceIndex){
         ui->tabWidget->setTabEnabled(2, true);
         qDebug() << "Microphone volume supported";
     }
+
+    if (capabilities.contains("CAP_BT_WHEN_POWERED_ON")){
+        ui->btwhenonFrame->setHidden(false);
+        ui->tabWidget->setTabEnabled(3, true);
+        qDebug() << "Bluetooth when powered on volume supported";
+    }
+    if (capabilities.contains("CAP_BT_CALL_VOLUME")){
+        ui->btcallvolumeFrame->setHidden(false);
+        ui->tabWidget->setTabEnabled(3, true);
+        qDebug() << "Bluetooth call volume volume supported";
+    }
 }
 
-void MainWindow::on_onlightButton_clicked()
-{
-    QStringList args=QStringList() << QString("--light") << QString("1");
-    sendCommand(args);
-}
-
-void MainWindow::on_offlightButton_clicked()
-{
-    QStringList args=QStringList() << QString("--light") << QString("0");
-    sendCommand(args);
-}
-
-void MainWindow::on_voiceOnButton_clicked()
-{
-    QStringList args=QStringList() << QString("--voice-prompt") << QString("1");
-    sendCommand(args);
-}
-
-void MainWindow::on_voiceOffButton_clicked()
-{
-    QStringList args=QStringList() << QString("--voice-prompt") << QString("0");
-    sendCommand(args);
-}
-
-void MainWindow::on_rotateOn_clicked()
-{
-    QStringList args=QStringList() << QString("--rotate-to-mute") << QString("1");
-    sendCommand(args);
-}
-
-void MainWindow::on_rotateOff_clicked()
-{
-    QStringList args=QStringList() << QString("--rotate-to-mute") << QString("0");
-    sendCommand(args);
-}
-
+//Info Section Events
 void MainWindow::setBatteryStatus()
 {
     QStringList args=QStringList() << QString("--battery");
@@ -328,7 +289,7 @@ void MainWindow::setBatteryStatus()
         tray->setToolTip("HeadsetControl \r\nBattery Charging");
         tray->setIcon(QIcon(":/icons/battery-charging-inv.png"));
     }
-    else {
+    else if(status == "BATTERY_AVAILABLE"){
         ui->batteryPercentage->setText(level + "%");
         tray->setToolTip("HeadsetControl \r\nBattery: " + level + "%");
         if (level.toInt() >= 70){
@@ -346,11 +307,52 @@ void MainWindow::setBatteryStatus()
                 notified = true;
             }
         }
+    } else{
+        ui->batteryPercentage->setText(status);
+        tray->setToolTip("HeadsetControl");
+        tray->setIcon(QIcon(":/icons/headphones-inv.png"));
     }
+}
+
+//Other Section Events
+void MainWindow::on_onlightButton_clicked()
+{
+    QStringList args=QStringList() << QString("--light") << QString("1");
+    sendCommand(args);
+}
+
+void MainWindow::on_offlightButton_clicked()
+{
+    QStringList args=QStringList() << QString("--light") << QString("0");
+    sendCommand(args);
 }
 
 void MainWindow::on_sidetoneSlider_sliderReleased(){
     QStringList args=QStringList() << QString("--sidetone") << QString::number(ui->sidetoneSlider->sliderPosition());
+    sendCommand(args);
+}
+
+void MainWindow::on_voiceOnButton_clicked()
+{
+    QStringList args=QStringList() << QString("--voice-prompt") << QString("1");
+    sendCommand(args);
+}
+
+void MainWindow::on_voiceOffButton_clicked()
+{
+    QStringList args=QStringList() << QString("--voice-prompt") << QString("0");
+    sendCommand(args);
+}
+
+void MainWindow::on_rotateOn_clicked()
+{
+    QStringList args=QStringList() << QString("--rotate-to-mute") << QString("1");
+    sendCommand(args);
+}
+
+void MainWindow::on_rotateOff_clicked()
+{
+    QStringList args=QStringList() << QString("--rotate-to-mute") << QString("0");
     sendCommand(args);
 }
 
@@ -371,6 +373,7 @@ void MainWindow::setChatmixStatus(){
     ui->chatmixstatusLabel->setText(chatmixStatus);
 }
 
+//Equalizer Section Events
 void MainWindow::on_equalizerPresetcomboBox_currentIndexChanged(){
     int preset=ui->equalizerPresetcomboBox->currentIndex()-1;
     if(preset>=0 && preset<=3){
@@ -391,16 +394,6 @@ void MainWindow::on_applyEqualizer_clicked(){
     sendCommand(args);
 }
 
-void MainWindow::on_muteledbrightnessSlider_sliderReleased(){
-    QStringList args=QStringList() << QString("--microphone-mute-led-brightness") << QString::number(ui->muteledbrightnessSlider->sliderPosition());
-    sendCommand(args);
-}
-
-void MainWindow::on_micvolumeSlider_sliderReleased(){
-    QStringList args=QStringList() << QString("--microphone-volume") << QString::number(ui->micvolumeSlider->sliderPosition());
-    sendCommand(args);
-}
-
 void MainWindow::setSliders(QVector<int> values){
     int i=0;
     if(values.length()<=slidersEq.length()){
@@ -413,17 +406,71 @@ void MainWindow::setSliders(QVector<int> values){
     }
 }
 
-void MainWindow::showDialog(QString title, QLayout* layout){
-    QDialog dialog;
-    dialog.setWindowTitle(title);
-    dialog.setWindowIcon(QIcon(":/icons/headphones.png"));
-    dialog.setLayout(layout);
-    QPushButton *closeButton = new QPushButton("Close");
-    QObject::connect(closeButton, &QPushButton::clicked, &dialog, &QDialog::accept);
-    layout->addWidget(closeButton);
-    dialog.exec();
+void MainWindow::clearLayout(QLayout* layout){
+    if (!layout) {
+        return;
+    }
+
+    QLayoutItem* item;
+    while ((item = layout->takeAt(0))) {
+        if (item->layout()) {
+            clearLayout(item->layout());         // Delete the layout if it exists
+        }
+        if (item->widget()) {
+            delete item->widget(); // Delete the widget
+        }
+        delete item; // Delete the layout item
+    }
 }
 
+void MainWindow::on_volumelimiterOffButton_clicked(){
+    QStringList args=QStringList() << QString("--volume-limiter") << QString("0");
+    sendCommand(args);
+}
+
+void MainWindow::on_volumelimiterOnButton_clicked(){
+    QStringList args=QStringList() << QString("--volume-limiter") << QString("1");
+    sendCommand(args);
+}
+
+//Microphone Section Events
+void MainWindow::on_muteledbrightnessSlider_sliderReleased(){
+    QStringList args=QStringList() << QString("--microphone-mute-led-brightness") << QString::number(ui->muteledbrightnessSlider->sliderPosition());
+    sendCommand(args);
+}
+
+void MainWindow::on_micvolumeSlider_sliderReleased(){
+    QStringList args=QStringList() << QString("--microphone-volume") << QString::number(ui->micvolumeSlider->sliderPosition());
+    sendCommand(args);
+}
+
+//Bluetooth Section Events
+void MainWindow::on_btwhenonOffButton_clicked(){
+    QStringList args=QStringList() << QString("--bt-when-powered-on") << QString("0");
+    sendCommand(args);
+}
+
+void MainWindow::on_btwhenonOnButton_clicked(){
+    QStringList args=QStringList() << QString("--bt-when-powered-on") << QString("1");
+    sendCommand(args);
+}
+
+void MainWindow::on_btbothRadioButton_clicked(){
+    QStringList args=QStringList() << QString("--bt-call-volume") << QString("0");
+    sendCommand(args);
+}
+
+void MainWindow::btpcdbRadioButton(){
+    QStringList args=QStringList() << QString("--bt-call-volume") << QString("1");
+    sendCommand(args);
+}
+
+void MainWindow::btonlyRadioButton(){
+    QStringList args=QStringList() << QString("--bt-call-volume") << QString("2");
+    sendCommand(args);
+}
+
+//Tool Bar Events
 void MainWindow::selectDevice(){
     QDialog dialog;
     dialog.setWindowTitle("Select device to load");
@@ -457,21 +504,46 @@ void MainWindow::selectDevice(){
     }
 }
 
-void MainWindow::clearLayout(QLayout* layout){
-    if (!layout) {
-        return;
+void MainWindow::checkForUpdates(){
+    if(!jsonInfo.isEmpty()){
+        QVersionNumber local_hc=QVersionNumber::fromString(jsonInfo["version"].toString());
+        const QVersionNumber& local_gui=GUI_VERSION;
+        QString v1 = getLatestGitHubReleaseVersion("Sapd","HeadsetControl");
+        QString v2 = getLatestGitHubReleaseVersion("nicola02nb","HeadsetControl-GUI");
+        QVersionNumber remote_hc =QVersionNumber::fromString(v1);
+        QVersionNumber remote_gui =QVersionNumber::fromString(v2);
+        QString s1 = "up-to date v"+local_hc.toString();
+        QString s2 = "up-to date v"+local_gui.toString();
+        if(!(v1=="") && remote_hc>local_hc){
+            s1="Newer version -><a href=\"https://github.com/Sapd/HeadsetControl/releases/latest\">"+remote_hc.toString()+"</a>";
+        }
+        if(!(v2=="") && remote_gui>local_gui){
+            s2="Newer version -><a href=\"https://github.com/nicola02nb/HeadsetControl-GUI/releases/latest\">"+remote_gui.toString()+"</a>";
+        }
+        QVBoxLayout *layout = new QVBoxLayout;
+        QLabel *l1=new QLabel("HeadsetControl:\t\t"+s1);
+        l1->setTextFormat(Qt::RichText);
+        l1->setOpenExternalLinks(true);
+        l1->setTextInteractionFlags(Qt::TextBrowserInteraction);
+        QLabel *l2=new QLabel("HeadsetControl-GUI:\t"+s2);
+        l2->setTextFormat(Qt::RichText);
+        l2->setOpenExternalLinks(true);
+        l2->setTextInteractionFlags(Qt::TextBrowserInteraction);
+        layout->addWidget(l1);
+        layout->addWidget(l2);
+        showDialog("Check for updates",layout);
     }
+}
 
-    QLayoutItem* item;
-    while ((item = layout->takeAt(0))) {
-        if (item->layout()) {
-            clearLayout(item->layout());         // Delete the layout if it exists
-        }
-        if (item->widget()) {
-            delete item->widget(); // Delete the widget
-        }
-        delete item; // Delete the layout item
-    }
+void MainWindow::showDialog(QString title, QLayout* layout){
+    QDialog dialog;
+    dialog.setWindowTitle(title);
+    dialog.setWindowIcon(QIcon(":/icons/headphones.png"));
+    dialog.setLayout(layout);
+    QPushButton *closeButton = new QPushButton("Close");
+    QObject::connect(closeButton, &QPushButton::clicked, &dialog, &QDialog::accept);
+    layout->addWidget(closeButton);
+    dialog.exec();
 }
 
 void MainWindow::showAbout(){
@@ -512,6 +584,7 @@ void MainWindow::showCredits(){
 
     showDialog("Credit to",layout);
 }
+
 
 void MainWindow::changeEvent(QEvent* e)
 {

@@ -9,7 +9,7 @@
 #include <QSlider>
 #include <QVersionNumber>
 
-const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.2.0");
+const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.9.1");
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,9 +26,12 @@ public:
     QSystemTrayIcon *tray = new QSystemTrayIcon(this);
 
 private:
-    const int UPDATE_TIME=300000;
+    const int UPDATE_TIME=60000;
     QMenu *menu;
     Ui::MainWindow *uix;
+
+    QAction *ledOn;
+    QAction *ledOff;
 
     int deviceQuantity=0;
     int selectedDevice=-1;
@@ -47,8 +50,6 @@ private slots:
 
     void RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW);
 
-    void checkForUpdates();
-
     QString sendCommand(QStringList args);
 
     void disableFrames();
@@ -57,45 +58,66 @@ private slots:
 
     void loadDevice(int deviceIndex=0);
 
+    void setBatteryStatus();
+
+    //Other Section Events
     void on_onlightButton_clicked();
 
     void on_offlightButton_clicked();
+
+    void on_sidetoneSlider_sliderReleased();
 
     void on_voiceOnButton_clicked();
 
     void on_voiceOffButton_clicked();
 
+    void on_inactivitySlider_sliderReleased();
+
     void on_rotateOn_clicked();
 
     void on_rotateOff_clicked();
 
-    void setBatteryStatus();
-
-    void on_sidetoneSlider_sliderReleased();
-
-    void on_inactivitySlider_sliderReleased();
-
     void setChatmixStatus();
 
+    //Equalizer Section Events
     void on_equalizerPresetcomboBox_currentIndexChanged();
 
     void on_applyEqualizer_clicked();
 
     void setSliders(QVector<int> values);
 
+    void clearLayout(QLayout* layout);
+
+    void on_volumelimiterOffButton_clicked();
+
+    void on_volumelimiterOnButton_clicked();
+
+    //Microphone Section Events
     void on_muteledbrightnessSlider_sliderReleased();
 
     void on_micvolumeSlider_sliderReleased();
+
+    //Bluetooth Section Events
+    void on_btwhenonOffButton_clicked();
+
+    void on_btwhenonOnButton_clicked();
+
+    void on_btbothRadioButton_clicked();
+
+    void btpcdbRadioButton();
+
+    void btonlyRadioButton();
+
+    //Tool Bar Events
+    void checkForUpdates();
+
+    void selectDevice();
 
     void showDialog(QString title, QLayout* layout);
 
     void showAbout();
 
     void showCredits();
-
-    void clearLayout(QLayout* layout);
-
-    void selectDevice();
 
 private:
     Ui::MainWindow *ui;
