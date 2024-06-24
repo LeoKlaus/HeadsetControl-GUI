@@ -10,11 +10,13 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Device.cpp \
     ghTools.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    Device.h \
     ghTools.h \
     mainwindow.h
 
@@ -35,5 +37,6 @@ RESOURCES += \
 RC_FILE = myapp.rc
 
 DISTFILES += \
+    .gitignore \
     headphones-exe.ico \
     myapp.rc

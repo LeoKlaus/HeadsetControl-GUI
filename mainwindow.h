@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "ghTools.h"
+#include "Device.h"
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QJsonObject>
@@ -12,7 +13,9 @@
 const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.9.1");
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+    class MainWindow;
+}
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -23,42 +26,44 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     bool notified = false;
-    QSystemTrayIcon *tray = new QSystemTrayIcon(this);
+    QSystemTrayIcon* tray = new QSystemTrayIcon(this);
 
 private:
-    const int UPDATE_TIME=60000;
+    const int UPDATE_TIME=30000;
+
     QMenu *menu;
-    Ui::MainWindow *uix;
 
-    QAction *ledOn;
-    QAction *ledOff;
+    QAction* ledOn;
+    QAction* ledOff;
 
-    int deviceQuantity=0;
-    int selectedDevice=-1;
-    QJsonObject jsonInfo;
-    QJsonArray deviceList;
-    QJsonObject usingDevice;
-    QVector<QSlider*> slidersEq;
+    Device* selectedDevice;
+    QList<Device*> deviceList;
+    QList<QSlider*> slidersEq;
 
-    QTimer *timerBattery;
-    QTimer *timerChatmix;
+    QTimer* timerGUI;
 
-    QVector<int> flat={0,0,0,0,0,0,0,0,0,0};
+    QList<int> flat={0,0,0,0,0,0,0,0,0,0};
 
 private slots:
     void changeEvent(QEvent *e);
 
     void RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW);
 
-    QString sendCommand(QStringList args);
-
     void disableFrames();
 
     void loadDevices();
 
+    void loadGUIValues();
+
+    void updateDevice();
+
+    void updateGUI();
+
     void loadDevice(int deviceIndex=0);
 
     void setBatteryStatus();
+
+    void on_savesettingsButton_clicked();
 
     //Other Section Events
     void on_onlightButton_clicked();
@@ -70,6 +75,10 @@ private slots:
     void on_voiceOnButton_clicked();
 
     void on_voiceOffButton_clicked();
+
+    void on_notification0ButtonButton_clicked();
+
+    void on_notification1ButtonButton_clicked();
 
     void on_inactivitySlider_sliderReleased();
 
@@ -84,7 +93,9 @@ private slots:
 
     void on_applyEqualizer_clicked();
 
-    void setSliders(QVector<int> values);
+    void setSliders(int value);
+
+    void setSliders(QList<double> values);
 
     void clearLayout(QLayout* layout);
 
@@ -104,9 +115,9 @@ private slots:
 
     void on_btbothRadioButton_clicked();
 
-    void btpcdbRadioButton();
+    void on_btpcdbRadioButton_clicked();
 
-    void btonlyRadioButton();
+    void on_btonlyRadioButton_clicked();
 
     //Tool Bar Events
     void checkForUpdates();
@@ -120,6 +131,6 @@ private slots:
     void showCredits();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
 };
 #endif // MAINWINDOW_H
