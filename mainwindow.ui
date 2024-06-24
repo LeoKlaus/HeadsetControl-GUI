@@ -988,6 +988,9 @@ Model:</string>
                <height>0</height>
               </size>
              </property>
+             <property name="currentIndex">
+              <number>-1</number>
+             </property>
             </widget>
            </item>
            <item>

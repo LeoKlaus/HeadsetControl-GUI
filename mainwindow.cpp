@@ -482,7 +482,7 @@ void MainWindow::setSliders(int value){
 
 void MainWindow::setSliders(QList<double> values){
     int i=0;
-    if(values.length()<=slidersEq.length()){
+    if(values.length()<=selectedDevice->equalizer.bands_number){
         for (QSlider* slider : slidersEq) {
             slider->setValue(values[i++]);
         }
