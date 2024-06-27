@@ -470,8 +470,10 @@ void MainWindow::on_applyEqualizer_clicked(){
     eq_string.removeLast();
     QStringList args=QStringList() << QString("--equalizer") << eq_string;
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->equalizer_curve=values;
+        selectedDevice->equalizer_preset=-1;
+    }
 }
 
 void MainWindow::setSliders(int value){
