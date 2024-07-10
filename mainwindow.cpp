@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "Device.h"
+#include "dialoginfo.h"
 #include <QProcess>
 #include <QTimer>
 #include <QSystemTrayIcon>
@@ -22,7 +23,18 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    tray->setIcon(QIcon(":/icons/headphones-inv.png"));
+    darkMode = isOsDarkMode();
+
+    if(darkMode){
+        this->setWindowIcon(QIcon(":/icons/headphones-inv.png"));
+        trayIconPath = ":/icons/headphones-inv.png";
+    }
+    else{
+        this->setWindowIcon(QIcon(":/icons/headphones.png"));
+        trayIconPath = ":/icons/headphones.png";
+    }
+    tray->setIcon(QIcon(trayIconPath));
+
     tray->show();
     tray->setToolTip("HeadsetControl");
 
@@ -57,6 +69,16 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+bool MainWindow::isOsDarkMode(){
+    // Check if the application is using a dark palette
+    QPalette palette = QApplication::palette();
+    QColor textColor = palette.color(QPalette::WindowText);
+    QColor backgroundColor = palette.color(QPalette::Window);
+
+    // If text is brighter than background, it's likely a dark theme
+    return textColor.lightness() > backgroundColor.lightness();
 }
 
 void MainWindow::disableFrames(){
@@ -102,6 +124,20 @@ void MainWindow::updateDevice(){
     //serializeDevices(deviceList, "devices.json");
     QList<Device*> newDl=getConnectedDevices();
     selectedDevice->updateDevice(newDl);
+}
+
+void MainWindow::updateIcons(){
+    QString inv = "";
+    if(darkMode){
+        inv = "-inv";
+        trayIconPath.replace(".png", "-inv.png");
+    }
+    else{
+        trayIconPath.replace("-inv.png", ".png");
+    }
+
+    this->setWindowIcon(QIcon(":/icons/headphones"+inv+".png"));
+    tray->setIcon(QIcon(trayIconPath));
 }
 
 void MainWindow::updateGUI(){
@@ -314,31 +350,36 @@ void MainWindow::loadGUIValues(){
 //Info Section Events
 void MainWindow::setBatteryStatus()
 {
-    QString status=selectedDevice->battery.status;
-    QString level=QString::number(selectedDevice->battery.level);
+    QString status = selectedDevice->battery.status;
+    int batteryLevel = selectedDevice->battery.level;
+    QString level=QString::number(batteryLevel);
+
+    if(batteryLevel>=0){
+        ui->batteryProgressBar->setValue(batteryLevel);
+    }
 
     if (status == "BATTERY_UNAVAILABLE"){
         ui->batteryPercentage->setText("Headset Off");
         tray->setToolTip("HeadsetControl \r\nHeadset Off");
-        tray->setIcon(QIcon(":/icons/headphones-inv.png"));
+        trayIconPath =":/icons/headphones-inv.png";
     }
     else if (status == "BATTERY_CHARGING") {
         ui->batteryPercentage->setText("Headset Charging "+level+"%");
         tray->setToolTip("HeadsetControl \r\nBattery Charging");
-        tray->setIcon(QIcon(":/icons/battery-charging-inv.png"));
+        trayIconPath = ":/icons/battery-charging-inv.png";
     }
     else if(status == "BATTERY_AVAILABLE"){
         ui->batteryPercentage->setText(level + "%");
         tray->setToolTip("HeadsetControl \r\nBattery: " + level + "%");
         if (level.toInt() >= 75){
-            tray->setIcon(QIcon(":/icons/battery-level-full-inv.png"));
+            trayIconPath = ":/icons/battery-level-full-inv.png";
         }
         else if (level.toInt() >= 25) {
-            tray->setIcon(QIcon(":/icons/battery-medium-inv.png"));
+            trayIconPath = ":/icons/battery-medium-inv.png";
             notified = false;
         }
         else {
-            tray->setIcon(QIcon(":/icons/battery-low-inv.png"));
+            trayIconPath = ":/icons/battery-low-inv.png";
             if (!notified){
                 tray->showMessage("Battery Alert!", "The battery of your headset is running low", QIcon(":/icons/battery-low-inv.png"));
                 notified = true;
@@ -347,8 +388,13 @@ void MainWindow::setBatteryStatus()
     } else{
         ui->batteryPercentage->setText(status);
         tray->setToolTip("HeadsetControl");
-        tray->setIcon(QIcon(":/icons/headphones-inv.png"));
+        trayIconPath = ":/icons/headphones-inv.png";
     }
+
+    if(!darkMode){
+        trayIconPath.replace("-inv", "");
+    }
+    tray->setIcon(QIcon(trayIconPath));
 }
 
 void MainWindow::on_savesettingsButton_clicked(){
@@ -611,82 +657,50 @@ void MainWindow::selectDevice(){
 }
 
 void MainWindow::checkForUpdates(){
-        const QVersionNumber& local_hc=getHCVersion();
-        const QVersionNumber& local_gui=GUI_VERSION;
-        QString v1 = getLatestGitHubReleaseVersion("Sapd","HeadsetControl");
-        QString v2 = getLatestGitHubReleaseVersion("nicola02nb","HeadsetControl-GUI");
-        QVersionNumber remote_hc =QVersionNumber::fromString(v1);
-        QVersionNumber remote_gui =QVersionNumber::fromString(v2);
-        QString s1 = "up-to date v"+local_hc.toString();
-        QString s2 = "up-to date v"+local_gui.toString();
-        if(!(v1=="") && remote_hc>local_hc){
-            s1="Newer version -><a href=\"https://github.com/Sapd/HeadsetControl/releases/latest\">"+remote_hc.toString()+"</a>";
-        }
-        if(!(v2=="") && remote_gui>local_gui){
-            s2="Newer version -><a href=\"https://github.com/nicola02nb/HeadsetControl-GUI/releases/latest\">"+remote_gui.toString()+"</a>";
-        }
-        QVBoxLayout *layout = new QVBoxLayout;
-        QLabel *l1=new QLabel("HeadsetControl:\t\t"+s1);
-        l1->setTextFormat(Qt::RichText);
-        l1->setOpenExternalLinks(true);
-        l1->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        QLabel *l2=new QLabel("HeadsetControl-GUI:\t"+s2);
-        l2->setTextFormat(Qt::RichText);
-        l2->setOpenExternalLinks(true);
-        l2->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        layout->addWidget(l1);
-        layout->addWidget(l2);
-        showDialog("Check for updates",layout);
-}
+    dialogInfo* dialog=new dialogInfo(this);
+    dialog->setTitle("Check for updates");
 
-void MainWindow::showDialog(QString title, QLayout* layout){
-    QDialog dialog;
-    dialog.setWindowTitle(title);
-    dialog.setWindowIcon(QIcon(":/icons/headphones.png"));
-    dialog.setLayout(layout);
-    QPushButton *closeButton = new QPushButton("Close");
-    QObject::connect(closeButton, &QPushButton::clicked, &dialog, &QDialog::accept);
-    layout->addWidget(closeButton);
-    dialog.exec();
+    const QVersionNumber& local_hc=getHCVersion();
+    const QVersionNumber& local_gui=GUI_VERSION;
+    QString v1 = getLatestGitHubReleaseVersion("Sapd","HeadsetControl");
+    QString v2 = getLatestGitHubReleaseVersion("nicola02nb","HeadsetControl-GUI");
+    QVersionNumber remote_hc =QVersionNumber::fromString(v1);
+    QVersionNumber remote_gui =QVersionNumber::fromString(v2);
+    QString s1 = "up-to date v"+local_hc.toString();
+    QString s2 = "up-to date v"+local_gui.toString();
+    if(!(v1=="") && remote_hc>local_hc){
+        s1="Newer version -><a href=\"https://github.com/Sapd/HeadsetControl/releases/latest\">"+remote_hc.toString()+"</a>";
+    }
+    if(!(v2=="") && remote_gui>local_gui){
+        s2="Newer version -><a href=\"https://github.com/nicola02nb/HeadsetControl-GUI/releases/latest\">"+remote_gui.toString()+"</a>";
+    }
+
+    QString text = "HeadesetControl: "+s1+"<br>HeadesetControl-GUI: "+s2;
+    dialog->setLabel(text);
+
+    dialog->show();
 }
 
 void MainWindow::showAbout(){
-    QVBoxLayout *layout = new QVBoxLayout;
-    QLabel *l1 = new QLabel("<a href='https://github.com/nicola02nb/HeadsetControl-GUI'>This</a> is a forked version of <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>.");
-    l1->setTextFormat(Qt::RichText);
-    l1->setOpenExternalLinks(true);
-    l1->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    dialogInfo* dialog=new dialogInfo(this);
+    dialog->setTitle("About this program");
+    QString text = "<a href='https://github.com/nicola02nb/HeadsetControl-GUI'>This</a> is a forked version of <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>."
+                   "<br>Made by <a href='https://github.com/nicola02nb/HeadsetControl-GUI'>nicola02nb</a>"
+                   "<br>Version: "+GUI_VERSION.toString();
+    dialog->setLabel(text);
 
-    QLabel *l2=new QLabel("Made by <a href='https://github.com/nicola02nb/HeadsetControl-GUI'>nicola02nb</a>");
-    l2->setTextFormat(Qt::RichText);
-    l2->setOpenExternalLinks(true);
-    l2->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    QLabel *version=new QLabel("Version: "+GUI_VERSION.toString());
-
-    layout->addWidget(l1);
-    layout->addWidget(l2);
-    layout->addWidget(version);    
-
-    showDialog("About this program",layout);
+    dialog->show();
 }
 
 void MainWindow::showCredits(){
-    QVBoxLayout *layout = new QVBoxLayout;
-    QLabel *infoLabel = new QLabel("Big shout-out to:");
-    QLabel *l1=new QLabel(" - Sapd for <a href='https://github.com/Sapd/HeadsetControl'>HeadsetCoontrol</a>");
-    l1->setTextFormat(Qt::RichText);
-    l1->setOpenExternalLinks(true);
-    l1->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    QLabel *l2=new QLabel(" - LeoKlaus for <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>");
-    l2->setTextFormat(Qt::RichText);
-    l2->setOpenExternalLinks(true);
-    l2->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    dialogInfo* dialog=new dialogInfo(this);
+    dialog->setTitle("Credits");
+    QString text = "Big shout-out to:"
+                   "<br> - Sapd for <a href='https://github.com/Sapd/HeadsetControl'>HeadsetCoontrol</a>"
+                   "<br> - LeoKlaus for <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>";
+    dialog->setLabel(text);
 
-    layout->addWidget(infoLabel);
-    layout->addWidget(l1);
-    layout->addWidget(l2);
-
-    showDialog("Credit to",layout);
+    dialog->show();
 }
 
 
@@ -704,6 +718,12 @@ void MainWindow::changeEvent(QEvent* e)
             QTimer::singleShot(0, this, SLOT(hide()));
         }
 
+        break;
+    }
+    case QEvent::PaletteChange:
+    {
+        darkMode = isOsDarkMode();
+        updateIcons();
         break;
     }
     default:

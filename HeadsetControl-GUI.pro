@@ -6,16 +6,19 @@ QMAKE_LFLAGS += -static
 
 SOURCES += \
     Device.cpp \
+    dialoginfo.cpp \
     ghTools.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     Device.h \
+    dialoginfo.h \
     ghTools.h \
     mainwindow.h
 
 FORMS += \
+    dialoginfo.ui \
     mainwindow.ui
 
 TRANSLATIONS += \

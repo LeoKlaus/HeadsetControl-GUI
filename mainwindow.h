@@ -31,6 +31,9 @@ public:
 private:
     const int UPDATE_TIME=30000;
 
+    bool darkMode;
+    QString trayIconPath;
+
     QMenu *menu;
 
     QAction* ledOn;
@@ -49,6 +52,8 @@ private slots:
 
     void RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW);
 
+    bool isOsDarkMode();
+
     void disableFrames();
 
     void loadDevices();
@@ -56,6 +61,8 @@ private slots:
     void loadGUIValues();
 
     void updateDevice();
+
+    void updateIcons();
 
     void updateGUI();
 
@@ -123,8 +130,6 @@ private slots:
     void checkForUpdates();
 
     void selectDevice();
-
-    void showDialog(QString title, QLayout* layout);
 
     void showAbout();
 
