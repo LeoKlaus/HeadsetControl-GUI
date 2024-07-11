@@ -208,12 +208,12 @@ void MainWindow::loadDevice(int deviceIndex){
         qDebug() << "Chatmix supported";
     }
     //Eualizer Section
-    if (capabilities.contains("CAP_EQUALIZER_PRESET")){
+    if (capabilities.contains("CAP_EQUALIZER_PRESET") && !selectedDevice->presets_list.empty()){
         ui->equalizerpresetFrame->setHidden(false);
         ui->tabWidget->setTabEnabled(1, true);
         qDebug() << "Eqaulizer preset supported";
     }
-    if (capabilities.contains("CAP_EQUALIZER")){
+    if (capabilities.contains("CAP_EQUALIZER") && selectedDevice->equalizer.bands_number!=0){
         ui->equalizerFrame->setHidden(false);        
         ui->tabWidget->setTabEnabled(1, true);
         qDebug() << "Equalizer supported";

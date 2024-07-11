@@ -35,11 +35,11 @@ public:
     Equalizer();
     Equalizer(int bands, int baseline, double step, int min, int max);
 
-    int bands_number=10;
-    int band_baseline=0;
-    double band_step=0.5;
-    int band_min=-10;
-    int band_max=10;
+    int bands_number;
+    int band_baseline;
+    double band_step;
+    int band_min;
+    int band_max;
 };
 
 class Device

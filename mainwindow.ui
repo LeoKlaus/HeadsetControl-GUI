@@ -75,10 +75,10 @@
        <string notr="true"/>
       </property>
       <property name="frameShape">
-       <enum>QFrame::Shape::StyledPanel</enum>
+       <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Shadow::Raised</enum>
+       <enum>QFrame::Raised</enum>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_19">
        <item>
@@ -105,7 +105,7 @@
           <string>HeadsetControl couldn't find any compatible or working headsets. :(</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -131,10 +131,10 @@
            </size>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_20">
            <item>
@@ -195,10 +195,10 @@ Model:</string>
            <item>
             <spacer name="horizontalSpacer_7">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeType">
-              <enum>QSizePolicy::Policy::Expanding</enum>
+              <enum>QSizePolicy::Expanding</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -232,10 +232,10 @@ Model:</string>
            <string notr="true"/>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_6">
            <property name="spacing">
@@ -277,7 +277,7 @@ Model:</string>
               <string>Battery:</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -307,7 +307,7 @@ Model:</string>
                 <string>No compatible Device found!</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -317,7 +317,7 @@ Model:</string>
                 <number>0</number>
                </property>
                <property name="textVisible">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -326,7 +326,7 @@ Model:</string>
            <item>
             <spacer name="horizontalSpacer_5">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -368,7 +368,7 @@ Model:</string>
        </sizepolicy>
       </property>
       <property name="tabPosition">
-       <enum>QTabWidget::TabPosition::North</enum>
+       <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
        <number>0</number>
@@ -402,10 +402,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_17">
            <item>
@@ -438,7 +438,7 @@ Model:</string>
               <string>Lights:</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -458,7 +458,7 @@ Model:</string>
            <item>
             <spacer name="horizontalSpacer_9">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -493,10 +493,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_14">
            <item>
@@ -523,14 +523,14 @@ Model:</string>
               <string>Sidetone Level:</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout">
              <property name="sizeConstraint">
-              <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+              <enum>QLayout::SetDefaultConstraint</enum>
              </property>
              <item>
               <widget class="QSlider" name="sidetoneSlider">
@@ -547,10 +547,10 @@ Model:</string>
                 <number>16</number>
                </property>
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="tickPosition">
-                <enum>QSlider::TickPosition::TicksBelow</enum>
+                <enum>QSlider::TicksBelow</enum>
                </property>
                <property name="tickInterval">
                 <number>16</number>
@@ -569,7 +569,7 @@ Model:</string>
                <item>
                 <spacer name="horizontalSpacer">
                  <property name="orientation">
-                  <enum>Qt::Orientation::Horizontal</enum>
+                  <enum>Qt::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -582,13 +582,13 @@ Model:</string>
                <item>
                 <widget class="QLabel" name="labelLoud">
                  <property name="layoutDirection">
-                  <enum>Qt::LayoutDirection::LeftToRight</enum>
+                  <enum>Qt::LeftToRight</enum>
                  </property>
                  <property name="text">
                   <string>Loud</string>
                  </property>
                  <property name="alignment">
-                  <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                  </property>
                 </widget>
                </item>
@@ -608,10 +608,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_16">
            <item>
@@ -644,7 +644,7 @@ Model:</string>
               <string>Voice Prompts:</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -666,7 +666,7 @@ Model:</string>
              <item>
               <spacer name="horizontalSpacer_10">
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -697,10 +697,10 @@ Model:</string>
         <item>
          <widget class="QFrame" name="notificationFrame">
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_24">
            <item>
@@ -743,7 +743,7 @@ Model:</string>
              <item>
               <spacer name="horizontalSpacer_12">
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -774,10 +774,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_15">
            <item>
@@ -804,7 +804,7 @@ Model:</string>
               <string>Inactivity Timer:</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -819,10 +819,10 @@ Model:</string>
                 <number>90</number>
                </property>
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="tickPosition">
-                <enum>QSlider::TickPosition::TicksBelow</enum>
+                <enum>QSlider::TicksBelow</enum>
                </property>
                <property name="tickInterval">
                 <number>10</number>
@@ -841,7 +841,7 @@ Model:</string>
                <item>
                 <spacer name="horizontalSpacer_3">
                  <property name="orientation">
-                  <enum>Qt::Orientation::Horizontal</enum>
+                  <enum>Qt::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -857,7 +857,7 @@ Model:</string>
                   <string>90 Minutes</string>
                  </property>
                  <property name="alignment">
-                  <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                  </property>
                 </widget>
                </item>
@@ -877,10 +877,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <item>
@@ -937,7 +937,7 @@ Model:</string>
            <item>
             <spacer name="horizontalSpacer_2">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -972,10 +972,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_13">
            <item>
@@ -1013,7 +1013,7 @@ Model:</string>
            <item>
             <spacer name="horizontalSpacer_8">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -1035,10 +1035,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0">
@@ -1088,10 +1088,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_22">
            <item>
@@ -1131,7 +1131,7 @@ Model:</string>
              <item>
               <spacer name="horizontalSpacer_14">
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -1175,10 +1175,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_18">
            <item>
@@ -1205,7 +1205,7 @@ Model:</string>
               <string>Rotate to mute:</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -1219,7 +1219,7 @@ Model:</string>
            <item>
             <spacer name="horizontalSpacer_11">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -1248,10 +1248,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_8">
            <item>
@@ -1284,7 +1284,7 @@ Model:</string>
               <bool>false</bool>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -1302,10 +1302,10 @@ Model:</string>
                 <number>1</number>
                </property>
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="tickPosition">
-                <enum>QSlider::TickPosition::TicksBelow</enum>
+                <enum>QSlider::TicksBelow</enum>
                </property>
               </widget>
              </item>
@@ -1321,7 +1321,7 @@ Model:</string>
                <item>
                 <spacer name="horizontalSpacer_6">
                  <property name="orientation">
-                  <enum>Qt::Orientation::Horizontal</enum>
+                  <enum>Qt::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -1337,7 +1337,7 @@ Model:</string>
                   <string>High</string>
                  </property>
                  <property name="alignment">
-                  <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                  </property>
                 </widget>
                </item>
@@ -1357,10 +1357,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9">
            <item>
@@ -1402,10 +1402,10 @@ Model:</string>
                 <number>16</number>
                </property>
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="tickPosition">
-                <enum>QSlider::TickPosition::TicksBelow</enum>
+                <enum>QSlider::TicksBelow</enum>
                </property>
                <property name="tickInterval">
                 <number>16</number>
@@ -1424,7 +1424,7 @@ Model:</string>
                <item>
                 <spacer name="horizontalSpacer_4">
                  <property name="orientation">
-                  <enum>Qt::Orientation::Horizontal</enum>
+                  <enum>Qt::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -1440,7 +1440,7 @@ Model:</string>
                   <string>Loud</string>
                  </property>
                  <property name="alignment">
-                  <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                  </property>
                 </widget>
                </item>
@@ -1473,10 +1473,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
@@ -1519,7 +1519,7 @@ Model:</string>
              <item>
               <spacer name="horizontalSpacer_13">
                <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -1550,10 +1550,10 @@ Model:</string>
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
@@ -1625,7 +1625,7 @@ Model:</string>
         <item>
          <spacer name="verticalSpacer">
           <property name="orientation">
-           <enum>Qt::Orientation::Vertical</enum>
+           <enum>Qt::Vertical</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -1647,7 +1647,7 @@ Model:</string>
      <x>0</x>
      <y>0</y>
      <width>616</width>
-     <height>33</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
