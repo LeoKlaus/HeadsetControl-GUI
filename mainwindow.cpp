@@ -286,10 +286,10 @@ void MainWindow::loadGUIValues(){
     for (i = 0; i < selectedDevice->equalizer.bands_number; ++i) {
         QVBoxLayout *lb = new QVBoxLayout();
         QSlider *s = new QSlider(Qt::Vertical);
-        s->setMaximum(selectedDevice->equalizer.band_max);
-        s->setMinimum(selectedDevice->equalizer.band_min);
-        s->setSingleStep(selectedDevice->equalizer.band_step);
-        s->setTickInterval(selectedDevice->equalizer.band_step);
+        s->setMaximum(selectedDevice->equalizer.band_max/selectedDevice->equalizer.band_step);
+        s->setMinimum(selectedDevice->equalizer.band_min/selectedDevice->equalizer.band_step);
+        s->setSingleStep(1);
+        s->setTickInterval(1/selectedDevice->equalizer.band_step);
         s->setTickPosition(QSlider::TicksBothSides);
         if(selectedDevice->equalizer_curve.size()==selectedDevice->equalizer.bands_number){
             s->setValue(selectedDevice->equalizer_curve.value(i));
@@ -511,7 +511,7 @@ void MainWindow::on_applyEqualizer_clicked(){
     QList<int> values;
     for (QSlider* slider : slidersEq) {
         eq_string+= QString::number(slider->value())+",";
-        values.append(slider->value());
+        values.append(slider->value()/selectedDevice->equalizer.band_step);
     }
     eq_string.removeLast();
     QStringList args=QStringList() << QString("--equalizer") << eq_string;
@@ -524,7 +524,7 @@ void MainWindow::on_applyEqualizer_clicked(){
 
 void MainWindow::setSliders(int value){
     for (QSlider* slider : slidersEq) {
-        slider->setValue(value);
+        slider->setValue(value/selectedDevice->equalizer.band_step);
     }
 }
 
@@ -532,7 +532,7 @@ void MainWindow::setSliders(QList<double> values){
     int i=0;
     if(values.length()<=selectedDevice->equalizer.bands_number){
         for (QSlider* slider : slidersEq) {
-            slider->setValue(values[i++]);
+            slider->setValue(values[i++]/selectedDevice->equalizer.band_step);
         }
     }
     else{
