@@ -22,8 +22,11 @@ The executable of headsetcontrol has to be called "HeadsetControl".
 Only if both these requirements are met, the GUI can work.
 
 ## Usage
-Start HeadsetControl-GUI by double-clicking "HeadsetControl-GUI.exe".
-If your headset is supported and everything was set up correctly, you will be greeted by the only screen HeadsetControl-GUI has.
+Start HeadsetControl-GUI by double-clicking "HeadsetControl-GUI.exe", and if your headset is supported and everything was set up correctly, you will be greeted by the following screen HeadsetControl-GUI has.
+
+It updates ui values every ⁓30s, including the trayIcon.
+
+If you don't find some features in you ui, probably it's not supported by your headset or it has not been implemented by [HeadsetControl](https://github.com/Sapd/HeadsetControl/).
 
 ![image](https://github.com/nicola02nb/HeadsetControl-GUI/assets/61830443/ce6a9628-4705-4a79-a262-8c43db2c92b0)
 
@@ -35,16 +38,16 @@ If you have a wireless headset with support for battery levels, you can also min
 
 ![image](https://github.com/nicola02nb/HeadsetControl-GUI/assets/61830443/ea327c0a-e39a-4035-aa99-bc6325724571)
 
-That way, you will be able to see the battery status at a glance and get a reminder when the batteries of your headset run low (below 30%).
+That way, you will be able to see the battery status at a glance and get a reminder when the batteries of your headset run low (below 15%).
 Hovering over the tray icon will show you the current battery percentage. You can also right-click the tray icon to bring up a context menu with quick access to the light control. You can also open or completely close the GUI through the context menu.
 
 ![image](https://github.com/nicola02nb/HeadsetControl-GUI/assets/61830443/0213a37c-806c-44d5-b8d7-5cc6b5d69407)
 
 ## Performance
 While the concept of calling another app for every single interaction has some inherit overhead, HeadsetControl-GUI is very light on ressources.
-Being open in the background, HeadsetControl-GUI consists of a single process that uses virtually no CPU time and less than 8MB of system memory.
+Being open in the background, HeadsetControl-GUI consists of a single process that uses virtually no CPU time and about 8-10MB of system memory.
 
-![image](https://github.com/nicola02nb/HeadsetControl-GUI/assets/61830443/f429ddf9-69be-42f0-a3f0-5ce9bd118d59)
+![image](https://github.com/user-attachments/assets/3171e62d-8a0c-49b6-88bd-e5b03393c7fe)
 
 ## Building from source
 To build HeadsetControl-GUI from source, you have to have a proper QT-ready development environment.
@@ -57,6 +60,4 @@ I haven't taken the time to build and test on neither Linux nor MacOS (yet), so 
 If you are on Linux or Mac and try to build the app, I'd be happy to hear if it did or didn't work.
 
 ## Additional information
-This was written in a day and I'm aware the code is pretty ugly. I plan to fix this and add some additional functionality like persistent settings later down the road.
-
 This software comes with no warranty whatsoever. It's not properly tested for memory leakage and may or may not work with configurations other than those I've tested.
