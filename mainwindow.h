@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "ghTools.h"
+#include "tools.h"
 #include "Device.h"
 #include <QMainWindow>
 #include <QSystemTrayIcon>
@@ -52,6 +52,8 @@ private slots:
 
     void RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW);
 
+    void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
+
     bool isOsDarkMode();
 
     void disableFrames();
@@ -83,9 +85,9 @@ private slots:
 
     void on_voiceOffButton_clicked();
 
-    void on_notification0ButtonButton_clicked();
+    void on_notification0Button_clicked();
 
-    void on_notification1ButtonButton_clicked();
+    void on_notification1Button_clicked();
 
     void on_inactivitySlider_sliderReleased();
 

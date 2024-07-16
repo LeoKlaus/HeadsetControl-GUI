@@ -7,22 +7,22 @@ QMAKE_LFLAGS += -static
 SOURCES += \
     Device.cpp \
     dialoginfo.cpp \
-    ghTools.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    tools.cpp
 
 HEADERS += \
     Device.h \
     dialoginfo.h \
-    ghTools.h \
-    mainwindow.h
+    mainwindow.h \
+    tools.h
 
 FORMS += \
     dialoginfo.ui \
     mainwindow.ui
 
 TRANSLATIONS += \
-    HeadsetControl-GUI_en_US.ts
+    HeadsetControl_GUI_en_US.ts
 
 RESOURCES += \
     icons.qrc

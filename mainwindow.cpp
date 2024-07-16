@@ -40,16 +40,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     menu = new QMenu(nullptr);
     menu->addAction("Show", this, SLOT(show()));
-    ledOn  = menu->addAction("Turn Lights On", this, SLOT(on_onButton_clicked()));
-    ledOff = menu->addAction("Turn Lights Off", this, SLOT(on_offButton_clicked()));
+    ledOn  = menu->addAction("Turn Lights On", this, &MainWindow::on_onlightButton_clicked);
+    ledOff = menu->addAction("Turn Lights Off", this, &MainWindow::on_offlightButton_clicked);
     menu->addAction("Exit", this, SLOT(close()));
 
     tray->setContextMenu(menu);
-
-    connect(tray, SIGNAL(DoubleClick), this, SLOT(show()));
-
-    tray->connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this,
-                  SLOT(RestoreWindowTrigger(QSystemTrayIcon::ActivationReason)));
+    tray->connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
 
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::showAbout);
     connect(ui->actionCredits, &QAction::triggered, this, &MainWindow::showCredits);
@@ -58,6 +54,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionLoad_Device, &QAction::triggered, this, &MainWindow::selectDevice);
 
     this->disableFrames();
+
+    if(!fileExists("headsetcontrol.exe")){
+        openFileExplorer(".");
+        dialogInfo* dialog=new dialogInfo(this);
+        dialog->setTitle("Missing headsetcontrol.exe");
+        dialog->setLabel("Missing headsetcontrol.exe<br>"
+                         "Download <a href='https://github.com/Sapd/HeadsetControl/releases/latest'>headsetcontrol</a> in the opened folder.");
+        dialog->exec();
+    }
+
     this->loadDevices();
     if(deviceList.length()){
         this->loadDevice();
@@ -69,6 +75,13 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason == QSystemTrayIcon::DoubleClick) {
+        show();
+    }
 }
 
 bool MainWindow::isOsDarkMode(){
@@ -355,7 +368,11 @@ void MainWindow::setBatteryStatus()
     QString level=QString::number(batteryLevel);
 
     if(batteryLevel>=0){
+        ui->batteryProgressBar->show();
         ui->batteryProgressBar->setValue(batteryLevel);
+    }
+    else{
+        ui->batteryProgressBar->hide();
     }
 
     if (status == "BATTERY_UNAVAILABLE"){
@@ -364,17 +381,17 @@ void MainWindow::setBatteryStatus()
         trayIconPath =":/icons/headphones-inv.png";
     }
     else if (status == "BATTERY_CHARGING") {
-        ui->batteryPercentage->setText("Headset Charging "+level+"%");
+        ui->batteryPercentage->setText(level+"% - Charging");
         tray->setToolTip("HeadsetControl \r\nBattery Charging");
         trayIconPath = ":/icons/battery-charging-inv.png";
     }
     else if(status == "BATTERY_AVAILABLE"){
-        ui->batteryPercentage->setText(level + "%");
+        ui->batteryPercentage->setText(level+"% - Descharging");
         tray->setToolTip("HeadsetControl \r\nBattery: " + level + "%");
-        if (level.toInt() >= 75){
+        if (level.toInt() > 75){
             trayIconPath = ":/icons/battery-level-full-inv.png";
         }
-        else if (level.toInt() >= 25) {
+        else if (level.toInt() > 15) {
             trayIconPath = ":/icons/battery-medium-inv.png";
             notified = false;
         }
@@ -386,7 +403,7 @@ void MainWindow::setBatteryStatus()
             }
         }
     } else{
-        ui->batteryPercentage->setText(status);
+        ui->batteryPercentage->setText("No battery info");
         tray->setToolTip("HeadsetControl");
         trayIconPath = ":/icons/headphones-inv.png";
     }
@@ -441,7 +458,7 @@ void MainWindow::on_voiceOffButton_clicked()
         selectedDevice->voice_prompts=0;
 }
 
-void MainWindow::on_notification0ButtonButton_clicked()
+void MainWindow::on_notification0Button_clicked()
 {
     QStringList args=QStringList() << QString("--notificate") << QString("0");
     Action s=sendAction(args);
@@ -450,7 +467,7 @@ void MainWindow::on_notification0ButtonButton_clicked()
     }
 }
 
-void MainWindow::on_notification1ButtonButton_clicked()
+void MainWindow::on_notification1Button_clicked()
 {
     QStringList args=QStringList() << QString("--notificate") << QString("1");
     Action s=sendAction(args);
