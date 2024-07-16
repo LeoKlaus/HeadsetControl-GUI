@@ -50,7 +50,6 @@ Device::Device(const QJsonObject& jsonObj, QString jsonData){
     }
 
     if (capabilities.contains("CAP_EQUALIZER_PRESET")){
-        equalizer_preset=-1;QStringList presets;
         if (jsonObj.contains("equalizer_presets") && jsonObj["equalizer_presets"].isObject()) {
             QJsonObject equalizerPresets = jsonObj["equalizer_presets"].toObject();
 
@@ -223,6 +222,7 @@ QList<Device*> mergeDevices(QList<Device*> savedDevices, const QList<Device*> co
                 // Update the saved device with connected device's information
                 savedDevice->updateDevice(connectedDevice);
                 savedDevice->capabilities=connectedDevice->capabilities;
+                savedDevice->equalizer=connectedDevice->equalizer;
                 savedDevice->presets_list=connectedDevice->presets_list;
                 deviceFound = true;
                 break;

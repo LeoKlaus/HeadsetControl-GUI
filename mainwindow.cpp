@@ -505,7 +505,8 @@ void MainWindow::setChatmixStatus(){
     QString chatmixStatus;
     if(chatmix<65)chatmixStatus="Game";
     else if(chatmix>65)chatmixStatus="Chat";
-    ui->chatmixstatusLabel->setText(chatmixValue+" "+chatmixStatus);
+    ui->chatmixvalueLabel->setText(chatmixValue);
+    ui->chatmixstatusLabel->setText(chatmixStatus);
 }
 
 //Equalizer Section Events
@@ -547,13 +548,13 @@ void MainWindow::setSliders(int value){
 
 void MainWindow::setSliders(QList<double> values){
     int i=0;
-    if(values.length()<=selectedDevice->equalizer.bands_number){
+    if(values.length()==selectedDevice->equalizer.bands_number){
         for (QSlider* slider : slidersEq) {
             slider->setValue(values[i++]/selectedDevice->equalizer.band_step);
         }
     }
     else{
-        qDebug() << "ERROR: Longer Equalizer Preset";
+        qDebug() << "ERROR: Bad Equalizer Preset";
     }
 }
 

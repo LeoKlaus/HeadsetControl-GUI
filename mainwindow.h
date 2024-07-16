@@ -10,7 +10,7 @@
 #include <QSlider>
 #include <QVersionNumber>
 
-const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.11.0");
+const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.11.1");
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
