@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>616</width>
-    <height>699</height>
+    <width>536</width>
+    <height>725</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -295,7 +295,7 @@ Model:</string>
                 <bool>true</bool>
                </property>
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -365,7 +365,7 @@ Model:</string>
       <item>
        <widget class="QPushButton" name="savesettingsButton">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -383,7 +383,7 @@ Model:</string>
        <bool>true</bool>
       </property>
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -1699,7 +1699,7 @@ Model:</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>616</width>
+     <width>536</width>
      <height>25</height>
     </rect>
    </property>

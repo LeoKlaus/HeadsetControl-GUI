@@ -29,7 +29,7 @@ Device::Device(){
 }
 
 Device::Device(const QJsonObject& jsonObj, QString jsonData){
-    connected=jsonObj["status"].toString()=="succes";
+    connected=jsonObj["status"].toString()=="success";
 
     device=jsonObj["device"].toString();
     vendor=jsonObj["vendor"].toString();
@@ -209,21 +209,31 @@ QList<Device*> getDevices(){
     return devices;
 }
 
-QList<Device*> mergeDevices(QList<Device*> savedDevices, const QList<Device*> connectedDevices) {
-    for (Device* connectedDevice : connectedDevices)
+QList<Device*> mergeDevices(QList<Device*> connectedDevices, const QList<Device*>& savedDevices) {
+    for (Device* savedDevice : savedDevices)
     {
         bool deviceFound = false;
-        for (Device* savedDevice : savedDevices)
+        for (Device* connectedDevice : connectedDevices)
         {
-            bool uno=savedDevice->id_vendor==connectedDevice->id_vendor;
-            bool due=savedDevice->id_product==connectedDevice->id_product;
-            if (uno && due)
+            if (connectedDevice->id_vendor==savedDevice->id_vendor && connectedDevice->id_product==savedDevice->id_product)
             {
-                // Update the saved device with connected device's information
-                savedDevice->updateDevice(connectedDevice);
-                savedDevice->capabilities=connectedDevice->capabilities;
-                savedDevice->equalizer=connectedDevice->equalizer;
-                savedDevice->presets_list=connectedDevice->presets_list;
+                // Update the connected device with saved device's information
+                connectedDevice->lights = savedDevice->lights;
+                connectedDevice->sidetone = savedDevice->sidetone;
+                connectedDevice->voice_prompts = savedDevice->voice_prompts;
+                connectedDevice->inactive_time = savedDevice->inactive_time;
+
+                connectedDevice->equalizer_preset = savedDevice->equalizer_preset;
+                connectedDevice->equalizer_curve = savedDevice->equalizer_curve;
+                connectedDevice->volume_limiter = savedDevice->volume_limiter;
+
+                connectedDevice->rotate_to_mute = savedDevice->rotate_to_mute;
+                connectedDevice->mic_mute_led_brightness = savedDevice->mic_mute_led_brightness;
+                connectedDevice->mic_volume = savedDevice->mic_volume;
+
+                connectedDevice->bt_when_powered_on = savedDevice->bt_when_powered_on;
+                connectedDevice->bt_call_volume = savedDevice->bt_call_volume;
+
                 deviceFound = true;
                 break;
             }
@@ -232,27 +242,14 @@ QList<Device*> mergeDevices(QList<Device*> savedDevices, const QList<Device*> co
         if (!deviceFound)
         {
             // If the device wasn't found in saved devices, add it
-            savedDevices.append(new Device(*connectedDevice));
+            connectedDevices.append(new Device(*savedDevice));
         }
     }
-    // Sort the devices, connected devices first
-    std::sort(savedDevices.begin(), savedDevices.end(),
-              [](const Device* a, const Device* b) {
-                  if (a->connected != b->connected) {
-                      return a->connected > b->connected; // Connected devices first
-                  }
-                  // If connection status is the same, sort by vendor and product
-                  if (a->vendor != b->vendor) {
-                      return a->vendor < b->vendor;
-                  }
-                  return a->product < b->product;
-              });
-
-    return savedDevices;
+    return connectedDevices;
 }
 
-QList<Device*> getSavedDevices(){
-    return deserializeDevices("devices.json");
+QList<Device*> getSavedDevices(const QString& file_name){
+    return deserializeDevices(file_name);
 }
 
 QList<Device*> getConnectedDevices(){

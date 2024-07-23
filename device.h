@@ -20,8 +20,8 @@ class Battery{
 public:
     Battery();
     Battery(QString stat, int lev);
-    QString status;
-    int level;
+    QString status = "BATTERY_UNAVAILABLE";
+    int level = 0;
 };
 
 class EqualizerPreset{
@@ -35,11 +35,11 @@ public:
     Equalizer();
     Equalizer(int bands, int baseline, double step, int min, int max);
 
-    int bands_number;
-    int band_baseline;
-    double band_step;
-    int band_min;
-    int band_max;
+    int bands_number = 0;
+    int band_baseline = 0;
+    double band_step = 0;
+    int band_min = 0;
+    int band_max = 0;
 };
 
 class Device
@@ -49,7 +49,7 @@ public:
     Device(const QJsonObject& jsonObj, QString jsonData);
 
     //Status
-    bool connected;
+    bool connected = false;
 
     //Basic info
     QString device;
@@ -61,7 +61,7 @@ public:
 
     //Info to get from json and display
     Battery battery;
-    int chatmix;
+    int chatmix = 65;
     QList<EqualizerPreset> presets_list;
     Equalizer equalizer;
     bool notification_sound=false;
@@ -96,10 +96,9 @@ Action sendAction(const QStringList& args_list);
 
 QVersionNumber getHCVersion();
 
-
 QList<Device*> getDevices();
-QList<Device*> mergeDevices(QList<Device*> savedDevices, const QList<Device*> connectedDevices);
-QList<Device*> getSavedDevices();
+QList<Device*> mergeDevices(QList<Device*> connectedDevices, const QList<Device*>& savedDevices);
+QList<Device*> getSavedDevices(const QString& file_name);
 QList<Device*> getConnectedDevices();
 
 void serializeDevices(const QList<Device*>& devices, const QString& filename);

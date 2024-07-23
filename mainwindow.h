@@ -10,7 +10,7 @@
 #include <QSlider>
 #include <QVersionNumber>
 
-const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.11.1");
+const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.11.2");
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -30,6 +30,9 @@ public:
 
 private:
     const int UPDATE_TIME=30000;
+    const QString FILE_DEVICES_SETTINGS = "devices.json";
+
+    int n_connected = 0, n_saved = 0;
 
     bool darkMode;
     QString trayIconPath;
@@ -43,98 +46,77 @@ private:
     QList<Device*> deviceList;
     QList<QSlider*> slidersEq;
 
-    QTimer* timerGUI;
-
-    QList<int> flat={0,0,0,0,0,0,0,0,0,0};
+    QTimer* timerGUI = nullptr;
 
 private slots:
     void changeEvent(QEvent *e);
 
+    void bindEvents();
     void RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW);
-
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
 
     bool isOsDarkMode();
+    void updateIcons();
 
     void disableFrames();
 
     void loadDevices();
-
+    void loadDevice(int deviceIndex=0);
     void loadGUIValues();
 
     void updateDevice();
-
-    void updateIcons();
-
     void updateGUI();
-
-    void loadDevice(int deviceIndex=0);
 
     void setBatteryStatus();
 
-    void on_savesettingsButton_clicked();
+    void savesettingsButton_clicked();
 
     //Other Section Events
-    void on_onlightButton_clicked();
+    void onlightButton_clicked();
+    void offlightButton_clicked();
 
-    void on_offlightButton_clicked();
+    void sidetoneSlider_sliderReleased();
 
-    void on_sidetoneSlider_sliderReleased();
+    void voiceOnButton_clicked();
+    void voiceOffButton_clicked();
 
-    void on_voiceOnButton_clicked();
+    void notification0Button_clicked();
+    void notification1Button_clicked();
 
-    void on_voiceOffButton_clicked();
+    void inactivitySlider_sliderReleased();
 
-    void on_notification0Button_clicked();
-
-    void on_notification1Button_clicked();
-
-    void on_inactivitySlider_sliderReleased();
-
-    void on_rotateOn_clicked();
-
-    void on_rotateOff_clicked();
+    void rotateOn_clicked();
+    void rotateOff_clicked();
 
     void setChatmixStatus();
 
     //Equalizer Section Events
-    void on_equalizerPresetcomboBox_currentIndexChanged();
+    void equalizerPresetcomboBox_currentIndexChanged();
 
-    void on_applyEqualizer_clicked();
-
+    void applyEqualizer_clicked();
     void setSliders(int value);
-
     void setSliders(QList<double> values);
-
     void clearLayout(QLayout* layout);
 
-    void on_volumelimiterOffButton_clicked();
-
-    void on_volumelimiterOnButton_clicked();
+    void volumelimiterOffButton_clicked();
+    void volumelimiterOnButton_clicked();
 
     //Microphone Section Events
-    void on_muteledbrightnessSlider_sliderReleased();
-
-    void on_micvolumeSlider_sliderReleased();
+    void muteledbrightnessSlider_sliderReleased();
+    void micvolumeSlider_sliderReleased();
 
     //Bluetooth Section Events
-    void on_btwhenonOffButton_clicked();
+    void btwhenonOffButton_clicked();
+    void btwhenonOnButton_clicked();
 
-    void on_btwhenonOnButton_clicked();
-
-    void on_btbothRadioButton_clicked();
-
-    void on_btpcdbRadioButton_clicked();
-
-    void on_btonlyRadioButton_clicked();
+    void btbothRadioButton_clicked();
+    void btpcdbRadioButton_clicked();
+    void btonlyRadioButton_clicked();
 
     //Tool Bar Events
     void checkForUpdates();
-
     void selectDevice();
-
     void showAbout();
-
     void showCredits();
 
 private:
