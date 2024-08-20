@@ -1,4 +1,4 @@
-A simply remake of [HeadsetControl-GUI](https://github.com/LeoKlaus/HeadsetControl-GUI) by LeoKlaus
+A simply remake of [HeadsetControl-GUI](https://github.com/LeoKlaus/HeadsetControl-GUI) by @LeoKlaus
 # HeadsetControl-GUI
 This is a GUI for [Sapds great HeadsetControl](https://github.com/Sapd/HeadsetControl/). It's just a frontend to graphically interact with the original HeadsetControl and has no functionality by itself.
 
@@ -20,6 +20,12 @@ The finished folder should look something like this:
 You HAVE to download a version of the [original headsetcontrol](https://github.com/Sapd/HeadsetControl/releases/) and put it in the same folder.
 The executable of headsetcontrol has to be called "HeadsetControl".
 Only if both these requirements are met, the GUI can work.
+
+### Auto startup
+
+1. Press on your keyboard `win` + `R` and write on prompt `shell:common startup`; after pressing `ok` button your file explorer will open on the startup folder.
+2. There you can create a link to the HeadsetControl-GUI.exe executable.
+3. If you want it to startup as minimized, you can press `right click` on the file `link` and you can set `Run:` as `Minimized`.
 
 ## Usage
 Start HeadsetControl-GUI by double-clicking "HeadsetControl-GUI.exe", and if your headset is supported and everything was set up correctly, you will be greeted by the following screen HeadsetControl-GUI has.
