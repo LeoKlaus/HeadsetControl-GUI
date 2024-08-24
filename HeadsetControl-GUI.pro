@@ -9,17 +9,22 @@ SOURCES += \
     dialoginfo.cpp \
     main.cpp \
     mainwindow.cpp \
-    tools.cpp
+    settings.cpp \
+    settingswindow.cpp \
+    utils.cpp
 
 HEADERS += \
     Device.h \
     dialoginfo.h \
     mainwindow.h \
-    tools.h
+    settings.h \
+    settingswindow.h \
+    utils.h
 
 FORMS += \
     dialoginfo.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    settingswindow.ui
 
 TRANSLATIONS += \
     HeadsetControl_GUI_en_US.ts

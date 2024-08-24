@@ -1,8 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "tools.h"
+#include "utils.h"
 #include "Device.h"
+#include "settings.h"
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QJsonObject>
@@ -10,7 +11,7 @@
 #include <QSlider>
 #include <QVersionNumber>
 
-const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.11.2");
+const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.12.0");
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,11 +30,12 @@ public:
     QSystemTrayIcon* tray = new QSystemTrayIcon(this);
 
 private:
-    const int UPDATE_TIME=30000;
     const QString FILE_DEVICES_SETTINGS = "devices.json";
+    const QString PROGRAM_SETTINGS_FILENAME = "settings.json";
 
     int n_connected = 0, n_saved = 0;
 
+    Settings settings;
     bool darkMode;
     QString trayIconPath;
 
@@ -114,6 +116,7 @@ private slots:
     void btonlyRadioButton_clicked();
 
     //Tool Bar Events
+    void editProgramSetting();
     void checkForUpdates();
     void selectDevice();
     void showAbout();

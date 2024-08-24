@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "Device.h"
+#include "settings.h"
 #include "dialoginfo.h"
+#include "settingswindow.h"
 #include <QProcess>
 #include <QTimer>
 #include <QSystemTrayIcon>
@@ -23,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     this->bindEvents();
+
+    settings=loadSettingsFromFile(PROGRAM_SETTINGS_FILENAME);
 
     darkMode = isOsDarkMode();
 
@@ -74,6 +78,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::bindEvents(){
     // Tool Bar
+    connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::editProgramSetting);
     connect(ui->actionLoad_Device, &QAction::triggered, this, &MainWindow::selectDevice);
     connect(ui->actionCheck_Updates, &QAction::triggered, this, &MainWindow::checkForUpdates);
 
@@ -199,7 +204,7 @@ void MainWindow::loadDevice(int deviceIndex){
     timerGUI = new QTimer(this);
     connect(timerGUI, SIGNAL(timeout()), this, SLOT(updateDevice()));
     connect(timerGUI, SIGNAL(timeout()), this, SLOT(updateGUI()));
-    timerGUI->start(UPDATE_TIME);
+    timerGUI->start(settings.msecUpdateIntervalTime);
 
     ui->notSupportedFrame->setHidden(true);
 
@@ -429,8 +434,9 @@ void MainWindow::setBatteryStatus()
         tray->setToolTip("HeadsetControl \r\nBattery: " + level + "%");
         if (level.toInt() > 75){
             trayIconPath = ":/icons/battery-level-full-inv.png";
+            notified = false;
         }
-        else if (level.toInt() > 15) {
+        else if (level.toInt() >= settings.batteryLowThreshold) {
             trayIconPath = ":/icons/battery-medium-inv.png";
             notified = false;
         }
@@ -680,6 +686,15 @@ void MainWindow::btonlyRadioButton_clicked(){
 }
 
 //Tool Bar Events
+void MainWindow::editProgramSetting(){
+    settingsWindow* settingsW=new settingsWindow(settings, this);
+    if (settingsW->exec() == QDialog::Accepted) {
+        settings=settingsW->temporarySettings;
+        saveSettingstoFile(settings, PROGRAM_SETTINGS_FILENAME);
+        timerGUI->setInterval(settings.msecUpdateIntervalTime);
+    }
+}
+
 void MainWindow::selectDevice(){
     this->loadDevices();
 
@@ -724,8 +739,8 @@ void MainWindow::selectDevice(){
 }
 
 void MainWindow::checkForUpdates(){
-    dialogInfo* dialog=new dialogInfo(this);
-    dialog->setTitle("Check for updates");
+    dialogInfo* dialogWindow=new dialogInfo(this);
+    dialogWindow->setTitle("Check for updates");
 
     const QVersionNumber& local_hc=getHCVersion();
     const QVersionNumber& local_gui=GUI_VERSION;
@@ -743,31 +758,31 @@ void MainWindow::checkForUpdates(){
     }
 
     QString text = "HeadesetControl: "+s1+"<br>HeadesetControl-GUI: "+s2;
-    dialog->setLabel(text);
+    dialogWindow->setLabel(text);
 
-    dialog->show();
+    dialogWindow->show();
 }
 
 void MainWindow::showAbout(){
-    dialogInfo* dialog=new dialogInfo(this);
-    dialog->setTitle("About this program");
+    dialogInfo* dialogWindow=new dialogInfo(this);
+    dialogWindow->setTitle("About this program");
     QString text = "<a href='https://github.com/nicola02nb/HeadsetControl-GUI'>This</a> is a forked version of <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>."
                    "<br>Made by <a href='https://github.com/nicola02nb/HeadsetControl-GUI'>nicola02nb</a>"
                    "<br>Version: "+GUI_VERSION.toString();
-    dialog->setLabel(text);
+    dialogWindow->setLabel(text);
 
-    dialog->show();
+    dialogWindow->show();
 }
 
 void MainWindow::showCredits(){
-    dialogInfo* dialog=new dialogInfo(this);
-    dialog->setTitle("Credits");
+    dialogInfo* dialogWindow=new dialogInfo(this);
+    dialogWindow->setTitle("Credits");
     QString text = "Big shout-out to:"
                    "<br> - Sapd for <a href='https://github.com/Sapd/HeadsetControl'>HeadsetCoontrol</a>"
                    "<br> - LeoKlaus for <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>";
-    dialog->setLabel(text);
+    dialogWindow->setLabel(text);
 
-    dialog->show();
+    dialogWindow->show();
 }
 
 

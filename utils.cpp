@@ -1,4 +1,4 @@
-#include "tools.h"
+#include "utils.h"
 #include <QCoreApplication>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -104,5 +104,9 @@ bool openFileExplorer(const QString& path)
 
     QUrl url = QUrl::fromLocalFile(dir.absolutePath());
     return QDesktopServices::openUrl(url);
+}
+
+void setOSRunOnStartup(bool enable){
+    //TO BE IMPLEMENTED
 }
 

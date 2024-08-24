@@ -1,5 +1,5 @@
-#ifndef TOOLS_H
-#define TOOLS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <QString>
 
@@ -11,4 +11,6 @@ bool fileExists(const QString& filepath);
 
 bool openFileExplorer(const QString& path);
 
-#endif // TOOLS_H
+void setOSRunOnStartup(bool enable);
+
+#endif // UTILS_H
