@@ -35,8 +35,8 @@ TRANSLATIONS += \
     src/Resources/translations/HeadsetControl_GUI_en_US.ts
 
 RESOURCES += \
-    src/Resources/icons.qrc
-    src/Resources/translations.qrc
+    src/Resources/icons.qrc #\
+    #src/Resources/translations.qrc
 
 RC_FILE = src/Resources/appicon.rc
 
