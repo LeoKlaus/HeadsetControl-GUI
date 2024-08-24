@@ -33,3 +33,6 @@
 
 # Folders
 build/*
+
+# User files
+HeadsetControl-GUI.pro.user

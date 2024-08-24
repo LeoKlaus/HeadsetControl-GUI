@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>540</width>
-    <height>741</height>
+    <height>685</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -985,7 +985,7 @@ Model:</string>
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>40</height>
+            <height>0</height>
            </size>
           </property>
          </spacer>
