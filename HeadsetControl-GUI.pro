@@ -1,43 +1,46 @@
 QT += core gui network
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
-CONFIG += static c++11
+CONFIG += static c++17
 QMAKE_LFLAGS += -static
 
+INCLUDEPATH += \
+    src/DataTypes \
+    src/UI \
+    src/Utils
+
 SOURCES += \
-    Device.cpp \
-    dialoginfo.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    settings.cpp \
-    settingswindow.cpp \
-    utils.cpp
+    src/main.cpp \
+    src/DataTypes/Device.cpp \
+    src/DataTypes/settings.cpp \
+    src/UI/dialoginfo.cpp \
+    src/UI/mainwindow.cpp \
+    src/UI/settingswindow.cpp \
+    src/Utils/utils.cpp
 
 HEADERS += \
-    Device.h \
-    dialoginfo.h \
-    mainwindow.h \
-    settings.h \
-    settingswindow.h \
-    utils.h
+    src/DataTypes/Device.h \
+    src/DataTypes/settings.h \
+    src/UI/dialoginfo.h \
+    src/UI/mainwindow.h \
+    src/UI/settingswindow.h \
+    src/Utils/utils.h
 
 FORMS += \
-    dialoginfo.ui \
-    mainwindow.ui \
-    settingswindow.ui
+    src/UI/dialoginfo.ui \
+    src/UI/mainwindow.ui \
+    src/UI/settingswindow.ui
 
 TRANSLATIONS += \
-    HeadsetControl_GUI_en_US.ts
+    src/Resources/Translations/HeadsetControl_GUI_en_US.ts
 
 RESOURCES += \
-    icons.qrc
+    src/Resources/icons.qrc
 
-RC_FILE = myapp.rc
+RC_FILE = src/Resources/myapp.rc
 
 DISTFILES += \
-    .gitignore \
-    headphones-exe.ico \
-    myapp.rc
+    .gitignore
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
