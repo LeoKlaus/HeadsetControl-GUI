@@ -3,9 +3,9 @@ name: Build and Release
 on:
   push:
     branches:
-      - CI-test
+      - main
     paths:
-      - '.github/VERSION.txt'
+      - ".github/VERSION.txt"
 
 jobs:
   check-version:
@@ -21,39 +21,39 @@ jobs:
   build-windows:
     needs: check-version
     runs-on: windows-latest
-    
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.7.2'
-        add-tools-to-path: true
-        
-    - name: Setup MSVC
-      uses: ilammy/msvc-dev-cmd@v1
-        
-    - name: Build
-      run: |
-        mkdir build
-        cd build
-        qmake ../
-        nmake
-        
-    - name: Remove source and object files
-      shell: pwsh
-      run: |
+      - uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.7.2"
+          add-tools-to-path: true
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          qmake ../
+          nmake
+
+      - name: Remove source and object files
+        shell: pwsh
+        run: |
           $buildDir = "build/release"
           if (Test-Path $buildDir) {
               Get-ChildItem -Path $buildDir -Include *.cpp, *.h, *.obj, *.res -Recurse | Remove-Item -Force
           } else {
               Write-Host "Directory not found: $buildDir"
           }
-          
-    - name: Deploy Qt
-      shell: pwsh
-      run: |
+
+      - name: Deploy Qt
+        shell: pwsh
+        run: |
           cd build
           $windeployqtPath = "D:\a\HeadsetControl-GUI\Qt\6.7.2\msvc2019_64\bin\windeployqt6.exe"
           if (Test-Path $windeployqtPath) {
@@ -70,97 +70,97 @@ jobs:
               exit 1
           }
 
-    - name: Zip binaries folder
-      run: |
-        $zipFile = "HeadsetControl-GUI_windows_64.zip"
-        $folder = "build/release/"
-        Compress-Archive -Path $folder -DestinationPath $zipFile
-      shell: pwsh
-        
-    - name: Upload Windows artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: HeadsetControl-GUI_windows_64
-        path: HeadsetControl-GUI_windows_64.zip
+      - name: Zip binaries folder
+        run: |
+          $zipFile = "HeadsetControl-GUI_windows_64.zip"
+          $folder = "build/release/"
+          Compress-Archive -Path $folder -DestinationPath $zipFile
+        shell: pwsh
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HeadsetControl-GUI_windows_64
+          path: HeadsetControl-GUI_windows_64.zip
 
   build-linux:
     needs: check-version
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.7.2'
-        host: 'linux'
-        add-tools-to-path: true
-        
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential libgl1-mesa-dev
-        
-    - name: Build with qmake
-      run: |
+      - uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.7.2"
+          host: "linux"
+          add-tools-to-path: true
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libgl1-mesa-dev
+
+      - name: Build with qmake
+        run: |
           mkdir build
           cd build
           qmake ../HeadsetControl-GUI.pro CONFIG+=release
           make -j$(nproc)
 
-    - name: Zip binaries folder
-      run: |
+      - name: Zip binaries folder
+        run: |
           zip build/HeadsetControl-GUI_linux_64.zip build/HeadsetControl-GUI
-        
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
           name: HeadsetControl-GUI_linux_64
           path: build/HeadsetControl-GUI_linux_64.zip
-          
+
   create-release:
     needs: [check-version, build-linux, build-windows]
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Download Linux artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: HeadsetControl-GUI_linux_64
-        
-    - name: Download Windows artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: HeadsetControl-GUI_windows_64
-        
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ needs.check-version.outputs.version }}
-        release_name: Release v${{ needs.check-version.outputs.version }}
-        draft: false
-        prerelease: false
-        
-    - name: Upload Linux Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./HeadsetControl-GUI_linux_64.zip
-        asset_name: HeadsetControl-GUI_linux_64_${{ needs.check-version.outputs.version }}.zip
-        asset_content_type: application/octet-stream
-        
-    - name: Upload Windows Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./HeadsetControl-GUI_windows_64.zip
-        asset_name: HeadsetControl-GUI_windows_64_${{ needs.check-version.outputs.version }}.zip
-        asset_content_type: application/octet-stream
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: HeadsetControl-GUI_linux_64
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: HeadsetControl-GUI_windows_64
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.check-version.outputs.version }}
+          release_name: Release v${{ needs.check-version.outputs.version }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Linux Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./HeadsetControl-GUI_linux_64.zip
+          asset_name: HeadsetControl-GUI_linux_64_${{ needs.check-version.outputs.version }}.zip
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./HeadsetControl-GUI_windows_64.zip
+          asset_name: HeadsetControl-GUI_windows_64_${{ needs.check-version.outputs.version }}.zip
+          asset_content_type: application/octet-stream
