@@ -15,7 +15,7 @@ Download the corresponding version of [Sapds HeadsetControl from their GitHub pa
 Extract HeadsetControl-GUI to any folder of your choice and drop HeadsetControl into the same folder.
 The finished folder should look something like this:
 
-![Screenshot of the folder structure](https://i.imgur.com/bbymxL6.jpg "Screenshot of the folder structure")
+![image](https://github.com/user-attachments/assets/0145ca37-6e59-4170-ba26-804e8856dbc8)
 
 You HAVE to download a version of the [original headsetcontrol](https://github.com/Sapd/HeadsetControl/releases/) and put it in the same folder.
 The executable of headsetcontrol has to be called "HeadsetControl".
