@@ -3,10 +3,7 @@
 
 #include <QString>
 #include <QSet>
-#include <QJsonArray>
-#include <QJsonObject>
 #include <QVersionNumber>
-#include <QTimer>
 
 class Action{
 public:

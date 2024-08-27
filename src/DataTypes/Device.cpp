@@ -1,6 +1,8 @@
 #include "device.h"
 #include <QProcess>
 #include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 #include <QFile>
 
 Battery::Battery(){

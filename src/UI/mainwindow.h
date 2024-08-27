@@ -10,6 +10,7 @@
 #include <QJsonArray>
 #include <QSlider>
 #include <QVersionNumber>
+#include <QTimer>
 
 const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.12.0");
 
