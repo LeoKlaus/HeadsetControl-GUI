@@ -12,7 +12,7 @@
 #include <QVersionNumber>
 #include <QTimer>
 
-const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.12.2");
+const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.12.3");
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
