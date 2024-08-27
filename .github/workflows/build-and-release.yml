@@ -69,6 +69,11 @@ jobs:
               Write-Error "windeploygui not found at the expected path!"
               exit 1
           }
+      - name: Download ZIP from other repo
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/Sapd/HeadsetControl/releases/latest/download/headsetcontrol-windows.zip" -OutFile headsetcontrol-windows.zip
+          Expand-Archive -Path headsetcontrol-windows.zip -DestinationPath build/release/
 
       - name: Zip binaries folder
         run: |
