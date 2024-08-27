@@ -1,7 +1,7 @@
 QT += core gui network
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
-CONFIG += static c++17
+CONFIG += c++17
 
 INCLUDEPATH += \
     src/DataTypes \

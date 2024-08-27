@@ -12,7 +12,7 @@ loaddeviceWindow::loaddeviceWindow(const QStringList& devices, QWidget *parent)
 }
 
 int loaddeviceWindow::getDeviceIndex(){
-    ui->devicelistComboBox->currentIndex();
+    return ui->devicelistComboBox->currentIndex();
 }
 
 loaddeviceWindow::~loaddeviceWindow()
