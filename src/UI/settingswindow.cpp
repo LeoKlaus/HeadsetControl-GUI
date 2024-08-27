@@ -13,15 +13,15 @@ settingsWindow::settingsWindow(const Settings& programSettings, QWidget *parent)
     ui->runonstartupCheckBox->setChecked(programSettings.runOnstartup);
     ui->batterylowtresholdSpinBox->setValue(programSettings.batteryLowThreshold);
     ui->updateintervaltimeDoubleSpinBox->setValue((double)programSettings.msecUpdateIntervalTime/1000);
-
-    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &settingsWindow::updateSettings);
-    connect(ui->runonstartupCheckBox, &QCheckBox::checkStateChanged, this, &settingsWindow::setRunOnStartup);
 }
 
-void settingsWindow::updateSettings(){
-    temporarySettings.runOnstartup=ui->runonstartupCheckBox->isChecked();
-    temporarySettings.batteryLowThreshold=ui->batterylowtresholdSpinBox->value();
-    temporarySettings.msecUpdateIntervalTime=ui->updateintervaltimeDoubleSpinBox->value()*1000;
+Settings settingsWindow::getSettings(){
+    Settings settings;
+    settings.runOnstartup=ui->runonstartupCheckBox->isChecked();
+    settings.batteryLowThreshold=ui->batterylowtresholdSpinBox->value();
+    settings.msecUpdateIntervalTime=ui->updateintervaltimeDoubleSpinBox->value()*1000;
+
+    return settings;
 }
 
 void settingsWindow::setRunOnStartup(){

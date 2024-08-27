@@ -16,12 +16,11 @@ public:
     explicit settingsWindow(const Settings& programSettings, QWidget *parent = nullptr);
     ~settingsWindow();
 
-    Settings temporarySettings;
+    Settings getSettings();
 
 private:
     Ui::settings *ui;
 
-    void updateSettings();
     void setRunOnStartup();
 };
 

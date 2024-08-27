@@ -10,23 +10,26 @@ INCLUDEPATH += \
 
 SOURCES += \
     src/main.cpp \
-    src/DataTypes/Device.cpp \
+    src/DataTypes/device.cpp \
     src/DataTypes/settings.cpp \
     src/UI/dialoginfo.cpp \
+    src/UI/loaddevicewindow.cpp \
     src/UI/mainwindow.cpp \
     src/UI/settingswindow.cpp \
     src/Utils/utils.cpp
 
 HEADERS += \
-    src/DataTypes/Device.h \
+    src/DataTypes/device.h \
     src/DataTypes/settings.h \
     src/UI/dialoginfo.h \
+    src/UI/loaddevicewindow.h \
     src/UI/mainwindow.h \
     src/UI/settingswindow.h \
     src/Utils/utils.h
 
 FORMS += \
     src/UI/dialoginfo.ui \
+    src/UI/loaddevicewindow.ui \
     src/UI/mainwindow.ui \
     src/UI/settingswindow.ui
 

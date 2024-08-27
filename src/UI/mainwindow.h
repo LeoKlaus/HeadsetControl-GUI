@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include "utils.h"
-#include "Device.h"
+#include "device.h"
 #include "settings.h"
 #include <QMainWindow>
 #include <QSystemTrayIcon>

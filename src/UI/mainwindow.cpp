@@ -1,23 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "Device.h"
+#include "device.h"
 #include "settings.h"
 #include "dialoginfo.h"
 #include "settingswindow.h"
-#include <QProcess>
-#include <QTimer>
-#include <QSystemTrayIcon>
-#include <QMenu>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QDialog>
-#include <QDesktopServices>
-#include <QUrl>
-#include <QVersionNumber>
-#include <QLayout>
-#include <QDialogButtonBox>
-#include <QAction>
+#include "loaddevicewindow.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -689,7 +677,7 @@ void MainWindow::btonlyRadioButton_clicked(){
 void MainWindow::editProgramSetting(){
     settingsWindow* settingsW=new settingsWindow(settings, this);
     if (settingsW->exec() == QDialog::Accepted) {
-        settings=settingsW->temporarySettings;
+        settings=settingsW->getSettings();
         saveSettingstoFile(settings, PROGRAM_SETTINGS_FILENAME);
         timerGUI->setInterval(settings.msecUpdateIntervalTime);
     }
@@ -698,14 +686,6 @@ void MainWindow::editProgramSetting(){
 void MainWindow::selectDevice(){
     this->loadDevices();
 
-    QDialog dialog;
-    dialog.setWindowTitle("Select device to load");
-
-    QVBoxLayout layout(&dialog);
-
-    QLabel labelWidget("Select device:");
-    layout.addWidget(&labelWidget);
-
     QStringList devices=QStringList();
     for (Device* device : deviceList){
         if(device->connected){
@@ -713,18 +693,9 @@ void MainWindow::selectDevice(){
         }
     }
 
-    QComboBox comboBox;
-    comboBox.addItems(devices);
-    layout.addWidget(&comboBox);
-
-    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
-    layout.addWidget(&buttonBox);
-
-    QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
-    QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
-
-    if (dialog.exec() == QDialog::Accepted) {
-        int index = comboBox.currentIndex();
+    loaddeviceWindow* loadDevWindow=new loaddeviceWindow(devices, this);
+    if (loadDevWindow->exec() == QDialog::Accepted) {
+        int index = loadDevWindow->getDeviceIndex();
         this->disableFrames();
         if (index>=0) {
             if(index==0){

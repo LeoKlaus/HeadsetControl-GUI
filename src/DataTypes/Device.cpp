@@ -1,4 +1,4 @@
-#include "Device.h"
+#include "device.h"
 #include <QProcess>
 #include <QJsonDocument>
 #include <QFile>
