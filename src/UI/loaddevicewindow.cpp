@@ -1,7 +1,7 @@
 #include "loaddevicewindow.h"
 #include "ui_loaddevicewindow.h"
 
-loaddeviceWindow::loaddeviceWindow(const QStringList& devices, QWidget *parent)
+LoaddeviceWindow::LoaddeviceWindow(const QStringList& devices, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::loaddevicewindow)
 {
@@ -11,11 +11,11 @@ loaddeviceWindow::loaddeviceWindow(const QStringList& devices, QWidget *parent)
     ui->devicelistComboBox->addItems(devices);
 }
 
-int loaddeviceWindow::getDeviceIndex(){
+int LoaddeviceWindow::getDeviceIndex(){
     return ui->devicelistComboBox->currentIndex();
 }
 
-loaddeviceWindow::~loaddeviceWindow()
+LoaddeviceWindow::~LoaddeviceWindow()
 {
     delete ui;
 }

@@ -9,13 +9,13 @@ INCLUDEPATH += \
     src/Utils
 
 SOURCES += \
+    src/UI/settingswindow.cpp \
     src/main.cpp \
     src/DataTypes/device.cpp \
     src/DataTypes/settings.cpp \
     src/UI/dialoginfo.cpp \
     src/UI/loaddevicewindow.cpp \
     src/UI/mainwindow.cpp \
-    src/UI/settingswindow.cpp \
     src/Utils/utils.cpp
 
 HEADERS += \
@@ -34,11 +34,12 @@ FORMS += \
     src/UI/settingswindow.ui
 
 TRANSLATIONS += \
-    src/Resources/translations/HeadsetControl_GUI_en_US.ts
+    src/Resources/tr/HeadsetControl_GUI_en_US.ts \
+    src/Resources/tr/HeadsetControl_GUI_it_IT.ts
 
 RESOURCES += \
-    src/Resources/icons.qrc #\
-    #src/Resources/translations.qrc
+    src/Resources/icons.qrc \
+    src/Resources/translations.qrc
 
 RC_FILE = src/Resources/appicon.rc
 

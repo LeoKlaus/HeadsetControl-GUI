@@ -5,21 +5,21 @@
 #include <QDialog>
 
 namespace Ui {
-class settings;
+class settingswindow;
 }
 
-class settingsWindow : public QDialog
+class SettingsWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit settingsWindow(const Settings& programSettings, QWidget *parent = nullptr);
-    ~settingsWindow();
+    explicit SettingsWindow(const Settings& programSettings, QWidget *parent = nullptr);
+    ~SettingsWindow();
 
     Settings getSettings();
 
 private:
-    Ui::settings *ui;
+    Ui::settingswindow *ui;
 
     void setRunOnStartup();
 };

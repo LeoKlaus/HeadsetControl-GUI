@@ -1,11 +1,11 @@
 #include "settingswindow.h"
 #include "ui_settingswindow.h"
-#include "settings.h"
 #include "utils.h"
 
-settingsWindow::settingsWindow(const Settings& programSettings, QWidget *parent)
+
+SettingsWindow::SettingsWindow(const Settings& programSettings, QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::settings)
+    , ui(new Ui::settingswindow)
 {
     setModal(true);
     ui->setupUi(this);
@@ -15,7 +15,7 @@ settingsWindow::settingsWindow(const Settings& programSettings, QWidget *parent)
     ui->updateintervaltimeDoubleSpinBox->setValue((double)programSettings.msecUpdateIntervalTime/1000);
 }
 
-Settings settingsWindow::getSettings(){
+Settings SettingsWindow::getSettings(){
     Settings settings;
     settings.runOnstartup=ui->runonstartupCheckBox->isChecked();
     settings.batteryLowThreshold=ui->batterylowtresholdSpinBox->value();
@@ -24,11 +24,11 @@ Settings settingsWindow::getSettings(){
     return settings;
 }
 
-void settingsWindow::setRunOnStartup(){
+void SettingsWindow::setRunOnStartup(){
     setOSRunOnStartup(ui->runonstartupCheckBox->isChecked());
 }
 
-settingsWindow::~settingsWindow()
+SettingsWindow::~SettingsWindow()
 {
     delete ui;
 }

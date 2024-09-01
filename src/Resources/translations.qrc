@@ -1,5 +1,6 @@
 <RCC>
-    <qresource prefix="/">
-        <file>translations/HeadsetControl_GUI_en_US.ts/file>
+    <qresource prefix="/translations">
+        <file>tr/HeadsetControl_GUI_en_US.qm</file>
+        <file>tr/HeadsetControl_GUI_it_IT.qm</file>
     </qresource>
 </RCC>

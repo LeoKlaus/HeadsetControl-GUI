@@ -1,11 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "device.h"
-#include "settings.h"
 #include "dialoginfo.h"
 #include "settingswindow.h"
 #include "loaddevicewindow.h"
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -15,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->bindEvents();
 
     settings=loadSettingsFromFile(PROGRAM_SETTINGS_FILENAME);
-
     darkMode = isOsDarkMode();
 
     if(darkMode){
@@ -26,30 +23,33 @@ MainWindow::MainWindow(QWidget *parent)
         this->setWindowIcon(QIcon(":/icons/headphones.png"));
         trayIconPath = ":/icons/headphones.png";
     }
-    tray->setIcon(QIcon(trayIconPath));
 
+    tray->setIcon(QIcon(trayIconPath));
     tray->show();
     tray->setToolTip("HeadsetControl");
 
     menu = new QMenu(nullptr);
-    menu->addAction("Show", this, SLOT(show()));
-    ledOn  = menu->addAction("Turn Lights On", this, &MainWindow::onlightButton_clicked);
-    ledOff = menu->addAction("Turn Lights Off", this, &MainWindow::offlightButton_clicked);
-    menu->addAction("Exit", this, SLOT(close()));
+    menu->addAction(tr("Show"), this, SLOT(show()));
+    ledOn  = menu->addAction(tr("Turn Lights On"), this, &MainWindow::onlightButton_clicked);
+    ledOff = menu->addAction(tr("Turn Lights Off"), this, &MainWindow::offlightButton_clicked);
+    menu->addAction(tr("Exit"), this, &QApplication::quit);
 
     tray->setContextMenu(menu);
     tray->connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
 
-
-
     this->disableFrames();
 
-    if(!fileExists("headsetcontrol.exe")){
+    QString exe = "headsetcontrol";
+#ifdef _WIN32
+    exe = exe+".exe";
+#endif
+
+    if(!fileExists(exe)){
         openFileExplorer(".");
-        dialogInfo* dialog=new dialogInfo(this);
-        dialog->setTitle("Missing headsetcontrol.exe");
-        dialog->setLabel("Missing headsetcontrol.exe<br>"
-                         "Download <a href='https://github.com/Sapd/HeadsetControl/releases/latest'>headsetcontrol</a> in the opened folder.");
+        DialogInfo* dialog=new DialogInfo(this);
+        dialog->setTitle(tr("Missing headsetcontrol"));
+        dialog->setLabel(tr("Missing headsetcontrol<br>"
+                            "Download <a href='https://github.com/Sapd/HeadsetControl/releases/latest'>headsetcontrol</a> in the opened folder."));
         dialog->exec();
     }
 
@@ -57,6 +57,9 @@ MainWindow::MainWindow(QWidget *parent)
     if(deviceList.length() && n_connected>0){
         this->loadDevice();
     }
+
+    this->setMaximumHeight(this->minimumHeight());
+    this->show();
 }
 
 MainWindow::~MainWindow()
@@ -72,9 +75,6 @@ void MainWindow::bindEvents(){
 
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::showAbout);
     connect(ui->actionCredits, &QAction::triggered, this, &MainWindow::showCredits);
-
-    // Settings
-    connect(ui->savesettingsButton, &QPushButton::clicked, this, &MainWindow::savesettingsButton_clicked);
 
     // Other Section
     connect(ui->onlightButton, &QPushButton::clicked, this, &MainWindow::onlightButton_clicked);
@@ -108,8 +108,13 @@ void MainWindow::bindEvents(){
 
 void MainWindow::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
-    if (reason == QSystemTrayIcon::DoubleClick) {
-        show();
+    if(reason == QSystemTrayIcon::ActivationReason::Trigger)
+    {
+        if (this->isVisible()) {
+            this->hide();
+        } else {
+            this->show();
+        }
     }
 }
 
@@ -145,7 +150,6 @@ void MainWindow::disableFrames(){
 
     ui->deviceinfoFrame->setHidden(true);
     ui->batteryFrame->setHidden(true);
-    ui->savesettingsButton->setHidden(true);
 
     ui->tabWidget->hide();
     ui->tabWidget->setTabEnabled(3, false);
@@ -180,7 +184,12 @@ void MainWindow::loadDevices(){
 }
 
 void MainWindow::loadDevice(int deviceIndex){
-    if(deviceIndex<0) return;
+    disableFrames();
+
+    if(deviceIndex<0){
+        selectedDevice=nullptr;
+        return;
+    }
 
     selectedDevice=deviceList.value(deviceIndex);
     QSet<QString>& capabilities=selectedDevice->capabilities;
@@ -191,15 +200,15 @@ void MainWindow::loadDevice(int deviceIndex){
     }
     timerGUI = new QTimer(this);
     connect(timerGUI, SIGNAL(timeout()), this, SLOT(updateDevice()));
+    connect(timerGUI, SIGNAL(timeout()), this, SLOT(saveDevicesSettings()));
     connect(timerGUI, SIGNAL(timeout()), this, SLOT(updateGUI()));
     timerGUI->start(settings.msecUpdateIntervalTime);
 
     ui->notSupportedFrame->setHidden(true);
 
-    //Inffo section
+    //Info section
     ui->deviceinfovalueLabel->setText(selectedDevice->device+"\n"+selectedDevice->vendor+"\n"+selectedDevice->product);
     ui->deviceinfoFrame->setHidden(false);
-    ui->savesettingsButton->setHidden(false);
     if (capabilities.contains("CAP_BATTERY_STATUS")){
         ui->batteryFrame->setHidden(false);
         this->setBatteryStatus();
@@ -286,6 +295,7 @@ void MainWindow::loadDevice(int deviceIndex){
     }
 
     loadGUIValues();
+    this->setMaximumHeight(this->minimumHeight());
 }
 
 void MainWindow::loadGUIValues(){
@@ -381,10 +391,18 @@ void MainWindow::loadGUIValues(){
     }
 }
 
+void MainWindow::saveDevicesSettings(){
+    if(!savedDevices){
+        serializeDevices(deviceList, FILE_DEVICES_SETTINGS);
+    }
+}
+
 void MainWindow::updateDevice(){
     //serializeDevices(deviceList, "devices.json");
-    QList<Device*> newDl=getConnectedDevices();
-    selectedDevice->updateDevice(newDl);
+    if(selectedDevice!=nullptr){
+        QList<Device*> newDl=getConnectedDevices();
+        selectedDevice->updateDevice(newDl);
+    }
 }
 
 void MainWindow::updateGUI(){
@@ -408,35 +426,35 @@ void MainWindow::setBatteryStatus()
     }
 
     if (status == "BATTERY_UNAVAILABLE"){
-        ui->batteryPercentage->setText("Headset Off");
-        tray->setToolTip("HeadsetControl \r\nHeadset Off");
+        ui->batteryPercentage->setText(tr("Headset Off"));
+        tray->setToolTip(tr("HeadsetControl \r\nHeadset Off"));
         trayIconPath =":/icons/headphones-inv.png";
     }
     else if (status == "BATTERY_CHARGING") {
-        ui->batteryPercentage->setText(level+"% - Charging");
-        tray->setToolTip("HeadsetControl \r\nBattery Charging");
+        ui->batteryPercentage->setText(level+tr("% - Charging"));
+        tray->setToolTip(tr("HeadsetControl \r\nBattery Charging"));
         trayIconPath = ":/icons/battery-charging-inv.png";
     }
     else if(status == "BATTERY_AVAILABLE"){
-        ui->batteryPercentage->setText(level+"% - Descharging");
-        tray->setToolTip("HeadsetControl \r\nBattery: " + level + "%");
+        ui->batteryPercentage->setText(level+tr("% - Descharging"));
+        tray->setToolTip(tr("HeadsetControl \r\nBattery: ") + level + "%");
         if (level.toInt() > 75){
             trayIconPath = ":/icons/battery-level-full-inv.png";
             notified = false;
         }
-        else if (level.toInt() >= settings.batteryLowThreshold) {
+        else if (level.toInt() > settings.batteryLowThreshold) {
             trayIconPath = ":/icons/battery-medium-inv.png";
             notified = false;
         }
         else {
             trayIconPath = ":/icons/battery-low-inv.png";
             if (!notified){
-                tray->showMessage("Battery Alert!", "The battery of your headset is running low", QIcon(":/icons/battery-low-inv.png"));
+                tray->showMessage(tr("Battery Alert!"), tr("The battery of your headset is running low"), QIcon(":/icons/battery-low-inv.png"));
                 notified = true;
             }
         }
     } else{
-        ui->batteryPercentage->setText("No battery info");
+        ui->batteryPercentage->setText(tr("No battery info"));
         tray->setToolTip("HeadsetControl");
         trayIconPath = ":/icons/headphones-inv.png";
     }
@@ -447,48 +465,54 @@ void MainWindow::setBatteryStatus()
     tray->setIcon(QIcon(trayIconPath));
 }
 
-void MainWindow::savesettingsButton_clicked(){
-    serializeDevices(deviceList, FILE_DEVICES_SETTINGS);
-}
-
 //Other Section Events
 void MainWindow::onlightButton_clicked()
 {
     QStringList args=QStringList() << QString("--light") << QString("1");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->lights=1;
+        savedDevices=false;
+    }
 }
 
 void MainWindow::offlightButton_clicked()
 {
     QStringList args=QStringList() << QString("--light") << QString("0");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->lights=0;
+        savedDevices=false;
+    }
 }
 
 void MainWindow::sidetoneSlider_sliderReleased(){
     QStringList args=QStringList() << QString("--sidetone") << QString::number(ui->sidetoneSlider->sliderPosition());
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->sidetone=ui->sidetoneSlider->value();
+        savedDevices=false;
+    }
 }
 
 void MainWindow::voiceOnButton_clicked()
 {
     QStringList args=QStringList() << QString("--voice-prompt") << QString("1");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->voice_prompts=1;
+        savedDevices=false;
+    }
 }
 
 void MainWindow::voiceOffButton_clicked()
 {
     QStringList args=QStringList() << QString("--voice-prompt") << QString("0");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->voice_prompts=0;
+        savedDevices=false;
+    }
 }
 
 void MainWindow::notification0Button_clicked()
@@ -513,31 +537,37 @@ void MainWindow::rotateOn_clicked()
 {
     QStringList args=QStringList() << QString("--rotate-to-mute") << QString("1");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->rotate_to_mute=1;
+        savedDevices=false;
+    }
 }
 
 void MainWindow::rotateOff_clicked()
 {
     QStringList args=QStringList() << QString("--rotate-to-mute") << QString("0");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->rotate_to_mute=0;
+        savedDevices=false;
+    }
 }
 
 void MainWindow::inactivitySlider_sliderReleased(){
     QStringList args=QStringList() << QString("--inactive-time") << QString::number(ui->inactivitySlider->sliderPosition());
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->inactive_time=ui->inactivitySlider->value();
+        savedDevices=false;
+    }
 }
 
 void MainWindow::setChatmixStatus(){
     int chatmix = selectedDevice->chatmix;
     QString chatmixValue = QString::number(chatmix);
     QString chatmixStatus;
-    if(chatmix<65)chatmixStatus="Game";
-    else if(chatmix>65)chatmixStatus="Chat";
+    if(chatmix<65)chatmixStatus=tr("Game");
+    else if(chatmix>65)chatmixStatus=tr("Chat");
     ui->chatmixvalueLabel->setText(chatmixValue);
     ui->chatmixstatusLabel->setText(chatmixStatus);
 }
@@ -551,8 +581,10 @@ void MainWindow::equalizerPresetcomboBox_currentIndexChanged(){
         this->setSliders(selectedDevice->presets_list.value(preset-1).values);
         QStringList args=QStringList() << QString("--equalizer-preset") << QString::number(preset-1);
         Action s=sendAction(args);
-        if(s.status=="success")
+        if(s.status=="success"){
             selectedDevice->equalizer_preset=ui->equalizerPresetcomboBox->currentIndex();
+            savedDevices=false;
+        }
     }
 }
 
@@ -570,6 +602,7 @@ void MainWindow::applyEqualizer_clicked(){
     if(s.status=="success"){
         selectedDevice->equalizer_curve=values;
         selectedDevice->equalizer_preset=-1;
+        savedDevices=false;
     }
 }
 
@@ -611,71 +644,89 @@ void MainWindow::clearLayout(QLayout* layout){
 void MainWindow::volumelimiterOffButton_clicked(){
     QStringList args=QStringList() << QString("--volume-limiter") << QString("0");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->volume_limiter=0;
+        savedDevices=false;
+    }
 }
 
 void MainWindow::volumelimiterOnButton_clicked(){
     QStringList args=QStringList() << QString("--volume-limiter") << QString("1");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->volume_limiter=1;
+        savedDevices=false;
+    }
 }
 
 //Microphone Section Events
 void MainWindow::muteledbrightnessSlider_sliderReleased(){
     QStringList args=QStringList() << QString("--microphone-mute-led-brightness") << QString::number(ui->muteledbrightnessSlider->sliderPosition());
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->mic_mute_led_brightness=ui->muteledbrightnessSlider->value();
+        savedDevices=false;
+    }
 }
 
 void MainWindow::micvolumeSlider_sliderReleased(){
     QStringList args=QStringList() << QString("--microphone-volume") << QString::number(ui->micvolumeSlider->sliderPosition());
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->mic_volume=ui->micvolumeSlider->value();
+        savedDevices=false;
+    }
 }
 
 //Bluetooth Section Events
 void MainWindow::btwhenonOffButton_clicked(){
     QStringList args=QStringList() << QString("--bt-when-powered-on") << QString("0");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->bt_when_powered_on=0;
+        savedDevices=false;
+    }
 }
 
 void MainWindow::btwhenonOnButton_clicked(){
     QStringList args=QStringList() << QString("--bt-when-powered-on") << QString("1");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->bt_when_powered_on=1;
+        savedDevices=false;
+    }
 }
 
 void MainWindow::btbothRadioButton_clicked(){
     QStringList args=QStringList() << QString("--bt-call-volume") << QString("0");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->bt_call_volume=0;
+        savedDevices=false;
+    }
 }
 
 void MainWindow::btpcdbRadioButton_clicked(){
     QStringList args=QStringList() << QString("--bt-call-volume") << QString("1");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->bt_call_volume=1;
+        savedDevices=false;
+    }
 }
 
 void MainWindow::btonlyRadioButton_clicked(){
     QStringList args=QStringList() << QString("--bt-call-volume") << QString("2");
     Action s=sendAction(args);
-    if(s.status=="success")
+    if(s.status=="success"){
         selectedDevice->bt_call_volume=2;
+        savedDevices=false;
+    }
 }
 
 //Tool Bar Events
 void MainWindow::editProgramSetting(){
-    settingsWindow* settingsW=new settingsWindow(settings, this);
+    SettingsWindow* settingsW=new SettingsWindow(settings, this);
     if (settingsW->exec() == QDialog::Accepted) {
         settings=settingsW->getSettings();
         saveSettingstoFile(settings, PROGRAM_SETTINGS_FILENAME);
@@ -693,7 +744,7 @@ void MainWindow::selectDevice(){
         }
     }
 
-    loaddeviceWindow* loadDevWindow=new loaddeviceWindow(devices, this);
+    LoaddeviceWindow* loadDevWindow=new LoaddeviceWindow(devices, this);
     if (loadDevWindow->exec() == QDialog::Accepted) {
         int index = loadDevWindow->getDeviceIndex();
         this->disableFrames();
@@ -710,22 +761,22 @@ void MainWindow::selectDevice(){
 }
 
 void MainWindow::checkForUpdates(){
-    dialogInfo* dialogWindow=new dialogInfo(this);
-    dialogWindow->setTitle("Check for updates");
+    DialogInfo* dialogWindow=new DialogInfo(this);
+    dialogWindow->setTitle(tr("Check for updates"));
 
     const QVersionNumber& local_hc=getHCVersion();
-    const QVersionNumber& local_gui=GUI_VERSION;
+    const QVersionNumber local_gui=QVersionNumber::fromString(qApp->applicationVersion());
     QString v1 = getLatestGitHubReleaseVersion("Sapd","HeadsetControl");
     QString v2 = getLatestGitHubReleaseVersion("nicola02nb","HeadsetControl-GUI");
     QVersionNumber remote_hc =QVersionNumber::fromString(v1);
     QVersionNumber remote_gui =QVersionNumber::fromString(v2);
-    QString s1 = "up-to date v"+local_hc.toString();
-    QString s2 = "up-to date v"+local_gui.toString();
+    QString s1 = tr("up-to date v")+local_hc.toString();
+    QString s2 = tr("up-to date v")+local_gui.toString();
     if(!(v1=="") && remote_hc>local_hc){
-        s1="Newer version -><a href=\"https://github.com/Sapd/HeadsetControl/releases/latest\">"+remote_hc.toString()+"</a>";
+        s1=tr("Newer version")+" -><a href=\"https://github.com/Sapd/HeadsetControl/releases/latest\">"+remote_hc.toString()+"</a>";
     }
     if(!(v2=="") && remote_gui>local_gui){
-        s2="Newer version -><a href=\"https://github.com/nicola02nb/HeadsetControl-GUI/releases/latest\">"+remote_gui.toString()+"</a>";
+        s2=tr("Newer version")+" -><a href=\"https://github.com/nicola02nb/HeadsetControl-GUI/releases/latest\">"+remote_gui.toString()+"</a>";
     }
 
     QString text = "HeadesetControl: "+s1+"<br>HeadesetControl-GUI: "+s2;
@@ -735,22 +786,22 @@ void MainWindow::checkForUpdates(){
 }
 
 void MainWindow::showAbout(){
-    dialogInfo* dialogWindow=new dialogInfo(this);
-    dialogWindow->setTitle("About this program");
-    QString text = "<a href='https://github.com/nicola02nb/HeadsetControl-GUI'>This</a> is a forked version of <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>."
+    DialogInfo* dialogWindow=new DialogInfo(this);
+    dialogWindow->setTitle(tr("About this program"));
+    QString text = tr("<a href='https://github.com/nicola02nb/HeadsetControl-GUI'>This</a> is a forked version of <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>."
                    "<br>Made by <a href='https://github.com/nicola02nb/HeadsetControl-GUI'>nicola02nb</a>"
-                   "<br>Version: "+GUI_VERSION.toString();
+                      "<br>Version: ")+qApp->applicationVersion();
     dialogWindow->setLabel(text);
 
     dialogWindow->show();
 }
 
 void MainWindow::showCredits(){
-    dialogInfo* dialogWindow=new dialogInfo(this);
-    dialogWindow->setTitle("Credits");
-    QString text = "Big shout-out to:"
+    DialogInfo* dialogWindow=new DialogInfo(this);
+    dialogWindow->setTitle(tr("Credits"));
+    QString text = tr("Big shout-out to:"
                    "<br> - Sapd for <a href='https://github.com/Sapd/HeadsetControl'>HeadsetCoontrol</a>"
-                   "<br> - LeoKlaus for <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>";
+                      "<br> - LeoKlaus for <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>");
     dialogWindow->setLabel(text);
 
     dialogWindow->show();
@@ -759,39 +810,17 @@ void MainWindow::showCredits(){
 
 void MainWindow::changeEvent(QEvent* e)
 {
-    switch (e->type())
-    {
+    switch (e->type()){
     case QEvent::LanguageChange:
-        this->ui->retranslateUi(this);
-        break;
-    case QEvent::WindowStateChange:
-    {
-        if (this->windowState() & Qt::WindowMinimized)
-        {
-            QTimer::singleShot(0, this, SLOT(hide()));
-        }
 
         break;
-    }
     case QEvent::PaletteChange:
-    {
         darkMode = isOsDarkMode();
         updateIcons();
         break;
-    }
     default:
         break;
     }
 
     QMainWindow::changeEvent(e);
-}
-
-void MainWindow::RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW)
-{
-    if(RW == QSystemTrayIcon::DoubleClick)
-    {
-        show();
-        activateWindow();
-        raise();
-    }
 }

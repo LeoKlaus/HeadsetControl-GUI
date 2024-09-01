@@ -7,16 +7,15 @@ namespace Ui {
 class dialogInfo;
 }
 
-class dialogInfo : public QDialog
+class DialogInfo : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit dialogInfo(QWidget *parent = nullptr);
-    ~dialogInfo();
+    explicit DialogInfo(QWidget *parent = nullptr);
+    ~DialogInfo();
 
     void setTitle(const QString& title);
-
     void setLabel(const QString& text);
 
 private:

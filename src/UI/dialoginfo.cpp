@@ -1,7 +1,7 @@
 #include "dialoginfo.h"
 #include "ui_dialoginfo.h"
 
-dialogInfo::dialogInfo(QWidget *parent)
+DialogInfo::DialogInfo(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::dialogInfo)
 {
@@ -9,17 +9,17 @@ dialogInfo::dialogInfo(QWidget *parent)
     ui->setupUi(this);
 }
 
-dialogInfo::~dialogInfo()
+DialogInfo::~DialogInfo()
 {
     delete ui;
 }
 
-void dialogInfo::setTitle(const QString& title)
+void DialogInfo::setTitle(const QString& title)
 {
     this->setWindowTitle(title);
 }
 
-void dialogInfo::setLabel(const QString& text)
+void DialogInfo::setLabel(const QString& text)
 {
     ui->label->setText(text);
 }

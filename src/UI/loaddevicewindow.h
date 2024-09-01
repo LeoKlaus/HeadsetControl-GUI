@@ -7,13 +7,13 @@ namespace Ui {
 class loaddevicewindow;
 }
 
-class loaddeviceWindow : public QDialog
+class LoaddeviceWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit loaddeviceWindow(const QStringList& devices, QWidget *parent = nullptr);
-    ~loaddeviceWindow();
+    explicit LoaddeviceWindow(const QStringList& devices, QWidget *parent = nullptr);
+    ~LoaddeviceWindow();
 
     int getDeviceIndex();  
 

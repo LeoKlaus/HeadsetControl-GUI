@@ -12,8 +12,6 @@
 #include <QVersionNumber>
 #include <QTimer>
 
-const QVersionNumber GUI_VERSION = QVersionNumber::fromString("0.12.3");
-
 QT_BEGIN_NAMESPACE
 namespace Ui {
     class MainWindow;
@@ -28,6 +26,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     bool notified = false;
+    bool savedDevices = true;
     QSystemTrayIcon* tray = new QSystemTrayIcon(this);
 
 private:
@@ -55,7 +54,6 @@ private slots:
     void changeEvent(QEvent *e);
 
     void bindEvents();
-    void RestoreWindowTrigger(QSystemTrayIcon::ActivationReason RW);
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
 
     bool isOsDarkMode();
@@ -67,12 +65,12 @@ private slots:
     void loadDevice(int deviceIndex=0);
     void loadGUIValues();
 
+    void saveDevicesSettings();
+
     void updateDevice();
     void updateGUI();
 
     void setBatteryStatus();
-
-    void savesettingsButton_clicked();
 
     //Other Section Events
     void onlightButton_clicked();
