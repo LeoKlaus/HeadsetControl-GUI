@@ -811,13 +811,14 @@ void MainWindow::showCredits(){
 void MainWindow::changeEvent(QEvent* e)
 {
     switch (e->type()){
-    case QEvent::LanguageChange:
-
-        break;
     case QEvent::PaletteChange:
         darkMode = isOsDarkMode();
         updateIcons();
         break;
+    case QEvent::WindowStateChange:
+        if (this->windowState()==Qt::WindowMinimized){
+            this->hide();
+        }
     default:
         break;
     }
