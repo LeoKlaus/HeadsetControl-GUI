@@ -44,8 +44,7 @@ RESOURCES += \
 RC_FILE = src/Resources/appicon.rc
 
 DISTFILES += \
-    .gitignore \
-    .github/VERSION.txt
+    .gitignore
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
