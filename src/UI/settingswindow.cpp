@@ -10,6 +10,8 @@ SettingsWindow::SettingsWindow(const Settings& programSettings, QWidget *parent)
     setModal(true);
     ui->setupUi(this);
 
+    connect(ui->runonstartupCheckBox, &QCheckBox::clicked, this, &SettingsWindow::setRunOnStartup);
+
     ui->runonstartupCheckBox->setChecked(programSettings.runOnstartup);
     ui->batterylowtresholdSpinBox->setValue(programSettings.batteryLowThreshold);
     ui->updateintervaltimeDoubleSpinBox->setValue((double)programSettings.msecUpdateIntervalTime/1000);
@@ -25,7 +27,8 @@ Settings SettingsWindow::getSettings(){
 }
 
 void SettingsWindow::setRunOnStartup(){
-    setOSRunOnStartup(ui->runonstartupCheckBox->isChecked());
+    bool enabled = setOSRunOnStartup(ui->runonstartupCheckBox->isChecked());
+    ui->runonstartupCheckBox->setChecked(enabled);
 }
 
 SettingsWindow::~SettingsWindow()

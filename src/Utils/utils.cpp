@@ -7,6 +7,8 @@
 #include <QDesktopServices>
 #include <QDir>
 
+#include <QStandardPaths>
+
 QString getLatestGitHubReleaseVersion(const QString& owner, const QString& repo)
 {
     QEventLoop loop;
@@ -96,7 +98,43 @@ bool openFileExplorer(const QString& path)
     return QDesktopServices::openUrl(url);
 }
 
-void setOSRunOnStartup(bool enable){
-    //TO BE IMPLEMENTED
+bool setOSRunOnStartup(bool enable){
+    QString appName = QCoreApplication::applicationName();
+    QString appDir = QCoreApplication::applicationDirPath();
+    QString appPath = QCoreApplication::applicationFilePath();
+
+#ifdef Q_OS_WIN
+    QString startupPath = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) + QDir::separator() + "Startup";
+    QString linkPath = startupPath + "\\" + appName + ".lnk";
+    if(enable){
+        QFile::remove(linkPath);
+        return QFile::link(appPath, linkPath);
+    }
+    QFile::remove(linkPath);
+    return false;
+
+#elif defined(Q_OS_LINUX)
+    QString autostartPath = QDir::homePath() + "/.config/autostart/";
+    QString desktopFilePath = autostartPath + appName + ".desktop";
+
+    if(enable){
+        QFile::remove(desktopFilePath);
+        QFile desktopFile(desktopFilePath);
+        if (desktopFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream out(&desktopFile);
+            out << "[Desktop Entry]\n";
+            out << "Path=" + appDir + "\n"
+            out << "Type=Application\n";
+            out << "Exec=" << appPath << "\n";
+            out << "Name=" << appName << "\n";
+            out << "Comment=Auto-starts " << appName << " on boot\n";
+            desktopFile.close();
+            return true;
+        }
+    }
+    QFile::remove(desktopFilePath);
+
+    return false;
+#endif
 }
 

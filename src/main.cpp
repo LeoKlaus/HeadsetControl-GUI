@@ -3,7 +3,7 @@
 #include <QApplication>
 #include <QTranslator>
 
-const QString GUI_VERSION = "0.13.0";
+const QString GUI_VERSION = "0.14.0";
 
 int main(int argc, char *argv[])
 {

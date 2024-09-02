@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->disableFrames();
 
     QString exe = "headsetcontrol";
-#ifdef _WIN32
+#ifdef Q_OS_WIN
     exe = exe+".exe";
 #endif
 

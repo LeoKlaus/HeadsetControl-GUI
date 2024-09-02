@@ -11,6 +11,6 @@ bool fileExists(const QString& filepath);
 
 bool openFileExplorer(const QString& path);
 
-void setOSRunOnStartup(bool enable);
+bool setOSRunOnStartup(bool enable);
 
 #endif // UTILS_H
