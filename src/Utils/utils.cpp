@@ -25,7 +25,7 @@ QString getLatestGitHubReleaseVersion(const QString& owner, const QString& repo)
         QJsonObject jsonObj = doc.object();
         QString latestVersion = jsonObj.value("tag_name").toString();
         reply->deleteLater();
-        return latestVersion;
+        return latestVersion.removeFirst();
     } else {
         qDebug() << "Error:" << reply->errorString();
         reply->deleteLater();

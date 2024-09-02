@@ -25,6 +25,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    bool firstShow = true;
     bool notified = false;
     bool savedDevices = true;
     QSystemTrayIcon* tray = new QSystemTrayIcon(this);
@@ -51,10 +52,11 @@ private:
     QTimer* timerGUI = nullptr;
 
 private slots:
-    void changeEvent(QEvent *e);
-
     void bindEvents();
+    void changeEvent(QEvent *e);
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
+
+    void toggleWindow();
 
     bool isOsDarkMode();
     void updateIcons();
@@ -116,7 +118,7 @@ private slots:
 
     //Tool Bar Events
     void editProgramSetting();
-    void checkForUpdates();
+    void checkForUpdates(bool firstStart = false);
     void selectDevice();
     void showAbout();
     void showCredits();

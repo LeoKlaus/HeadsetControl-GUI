@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     tray->setToolTip("HeadsetControl");
 
     menu = new QMenu(nullptr);
-    menu->addAction(tr("Show"), this, SLOT(show()));
+    menu->addAction(tr("Hide/Show"), this, &MainWindow::toggleWindow);
     ledOn  = menu->addAction(tr("Turn Lights On"), this, &MainWindow::onlightButton_clicked);
     ledOff = menu->addAction(tr("Turn Lights Off"), this, &MainWindow::offlightButton_clicked);
     menu->addAction(tr("Exit"), this, &QApplication::quit);
@@ -105,15 +105,41 @@ void MainWindow::bindEvents(){
     connect(ui->btonlyRadioButton, &QRadioButton::clicked, this, &MainWindow::btonlyRadioButton_clicked);
 }
 
+void MainWindow::changeEvent(QEvent* e)
+{
+    switch (e->type()){
+    case QEvent::PaletteChange:
+        darkMode = isOsDarkMode();
+        updateIcons();
+        break;
+    case QEvent::WindowStateChange:
+        if (this->windowState()==Qt::WindowMinimized){
+            this->hide();
+        }
+    default:
+        break;
+    }
+
+    QMainWindow::changeEvent(e);
+}
+
 void MainWindow::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     if(reason == QSystemTrayIcon::ActivationReason::Trigger)
     {
-        if (this->isVisible()) {
-            this->hide();
-        } else {
-            this->show();
+        toggleWindow();
+    }
+}
+
+void MainWindow::toggleWindow(){
+    if(this->isHidden()){
+        this->show();
+        if(firstShow){
+            checkForUpdates(firstShow);
+            firstShow = false;
         }
+    } else{
+        this->hide();
     }
 }
 
@@ -397,7 +423,6 @@ void MainWindow::saveDevicesSettings(){
 }
 
 void MainWindow::updateDevice(){
-    //serializeDevices(deviceList, "devices.json");
     if(selectedDevice!=nullptr){
         QList<Device*> newDl=getConnectedDevices();
         selectedDevice->updateDevice(newDl);
@@ -759,8 +784,9 @@ void MainWindow::selectDevice(){
     }
 }
 
-void MainWindow::checkForUpdates(){
-    DialogInfo* dialogWindow=new DialogInfo(this);
+void MainWindow::checkForUpdates(bool firstStart){
+    bool needsUpdate = false;
+    DialogInfo* dialogWindow = new DialogInfo(this);
     dialogWindow->setTitle(tr("Check for updates"));
 
     const QVersionNumber& local_hc=getHCVersion();
@@ -772,16 +798,21 @@ void MainWindow::checkForUpdates(){
     QString s1 = tr("up-to date v")+local_hc.toString();
     QString s2 = tr("up-to date v")+local_gui.toString();
     if(!(v1=="") && remote_hc>local_hc){
-        s1=tr("Newer version")+" -><a href=\"https://github.com/Sapd/HeadsetControl/releases/latest\">"+remote_hc.toString()+"</a>";
+        s1=tr("Newer version")+" -> <a href=\"https://github.com/Sapd/HeadsetControl/releases/latest\">"+remote_hc.toString()+"</a>";
+        needsUpdate = true;
     }
     if(!(v2=="") && remote_gui>local_gui){
-        s2=tr("Newer version")+" -><a href=\"https://github.com/nicola02nb/HeadsetControl-GUI/releases/latest\">"+remote_gui.toString()+"</a>";
+        s2=tr("Newer version")+" -> <a href=\"https://github.com/nicola02nb/HeadsetControl-GUI/releases/latest\">"+remote_gui.toString()+"</a>";
+        needsUpdate = true;
     }
 
-    QString text = "HeadesetControl: "+s1+"<br>HeadesetControl-GUI: "+s2;
-    dialogWindow->setLabel(text);
+    if((needsUpdate && firstStart) || !firstStart){
+        QString text = "HeadesetControl: "+s1+"<br>HeadesetControl-GUI: "+s2;
+        dialogWindow->setLabel(text);
 
-    dialogWindow->show();
+        dialogWindow->show();
+    }
+
 }
 
 void MainWindow::showAbout(){
@@ -804,23 +835,4 @@ void MainWindow::showCredits(){
     dialogWindow->setLabel(text);
 
     dialogWindow->show();
-}
-
-
-void MainWindow::changeEvent(QEvent* e)
-{
-    switch (e->type()){
-    case QEvent::PaletteChange:
-        darkMode = isOsDarkMode();
-        updateIcons();
-        break;
-    case QEvent::WindowStateChange:
-        if (this->windowState()==Qt::WindowMinimized){
-            this->hide();
-        }
-    default:
-        break;
-    }
-
-    QMainWindow::changeEvent(e);
 }

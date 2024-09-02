@@ -271,7 +271,7 @@
     </message>
     <message>
         <location filename="../../UI/mainwindow.ui" line="1705"/>
-        <location filename="../../UI/mainwindow.cpp" line="800"/>
+        <location filename="../../UI/mainwindow.cpp" line="831"/>
         <source>Credits</source>
         <translation></translation>
     </message>
@@ -287,7 +287,7 @@
     </message>
     <message>
         <location filename="../../UI/mainwindow.cpp" line="32"/>
-        <source>Show</source>
+        <source>Hide/Show</source>
         <translation></translation>
     </message>
     <message>
@@ -316,92 +316,92 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="428"/>
+        <location filename="../../UI/mainwindow.cpp" line="453"/>
         <source>Headset Off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="429"/>
+        <location filename="../../UI/mainwindow.cpp" line="454"/>
         <source>HeadsetControl <byte value="xd"/>
 Headset Off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="433"/>
+        <location filename="../../UI/mainwindow.cpp" line="458"/>
         <source>% - Charging</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="434"/>
+        <location filename="../../UI/mainwindow.cpp" line="459"/>
         <source>HeadsetControl <byte value="xd"/>
 Battery Charging</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="438"/>
+        <location filename="../../UI/mainwindow.cpp" line="463"/>
         <source>% - Descharging</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="439"/>
+        <location filename="../../UI/mainwindow.cpp" line="464"/>
         <source>HeadsetControl <byte value="xd"/>
 Battery: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="451"/>
+        <location filename="../../UI/mainwindow.cpp" line="476"/>
         <source>Battery Alert!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="451"/>
+        <location filename="../../UI/mainwindow.cpp" line="476"/>
         <source>The battery of your headset is running low</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="456"/>
+        <location filename="../../UI/mainwindow.cpp" line="481"/>
         <source>No battery info</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="568"/>
+        <location filename="../../UI/mainwindow.cpp" line="593"/>
         <source>Game</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="569"/>
+        <location filename="../../UI/mainwindow.cpp" line="594"/>
         <source>Chat</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="764"/>
+        <location filename="../../UI/mainwindow.cpp" line="790"/>
         <source>Check for updates</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="772"/>
-        <location filename="../../UI/mainwindow.cpp" line="773"/>
+        <location filename="../../UI/mainwindow.cpp" line="798"/>
+        <location filename="../../UI/mainwindow.cpp" line="799"/>
         <source>up-to date v</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="775"/>
-        <location filename="../../UI/mainwindow.cpp" line="778"/>
+        <location filename="../../UI/mainwindow.cpp" line="801"/>
+        <location filename="../../UI/mainwindow.cpp" line="805"/>
         <source>Newer version</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="789"/>
+        <location filename="../../UI/mainwindow.cpp" line="820"/>
         <source>About this program</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="790"/>
+        <location filename="../../UI/mainwindow.cpp" line="821"/>
         <source>&lt;a href=&apos;https://github.com/nicola02nb/HeadsetControl-GUI&apos;&gt;This&lt;/a&gt; is a forked version of &lt;a href=&apos;https://github.com/LeoKlaus/HeadsetControl-GUI&apos;&gt;HeadsetControl-GUI&lt;/a&gt;.&lt;br&gt;Made by &lt;a href=&apos;https://github.com/nicola02nb/HeadsetControl-GUI&apos;&gt;nicola02nb&lt;/a&gt;&lt;br&gt;Version: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="801"/>
+        <location filename="../../UI/mainwindow.cpp" line="832"/>
         <source>Big shout-out to:&lt;br&gt; - Sapd for &lt;a href=&apos;https://github.com/Sapd/HeadsetControl&apos;&gt;HeadsetCoontrol&lt;/a&gt;&lt;br&gt; - LeoKlaus for &lt;a href=&apos;https://github.com/LeoKlaus/HeadsetControl-GUI&apos;&gt;HeadsetControl-GUI&lt;/a&gt;</source>
         <translation></translation>
     </message>
