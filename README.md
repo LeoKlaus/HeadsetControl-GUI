@@ -22,7 +22,7 @@ You HAVE to download a version of the [original headsetcontrol](https://github.c
 The executable of headsetcontrol has to be called "HeadsetControl".
 Only if both these requirements are met, the GUI can work.
 
-### Auto startup
+### Auto startup (Windows)
 
 1. Press on your keyboard `win` + `R` and write on prompt `shell:common startup`; after pressing `ok` button your file explorer will open on the startup folder.
 2. There you can create a link to the HeadsetControl-GUI.exe executable.
