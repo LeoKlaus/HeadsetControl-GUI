@@ -59,7 +59,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     this->setMaximumHeight(this->minimumHeight());
-    this->show();
 }
 
 MainWindow::~MainWindow()

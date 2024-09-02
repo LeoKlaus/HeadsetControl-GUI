@@ -123,7 +123,7 @@ bool setOSRunOnStartup(bool enable){
         if (desktopFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
             QTextStream out(&desktopFile);
             out << "[Desktop Entry]\n";
-            out << "Path=" + appDir + "\n"
+            out << "Path=" + appDir + "\n";
             out << "Type=Application\n";
             out << "Exec=" << appPath << "\n";
             out << "Name=" << appName << "\n";

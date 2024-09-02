@@ -9,14 +9,13 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     app.setApplicationVersion(GUI_VERSION);
-    QLocale language = QLocale::system();
-    QString nation = language.amText();
+    QLocale locale = QLocale::system();
+    QString languageCode = locale.name();
     QTranslator translator;
-    if (translator.load(":/translations/tr/HeadsetControl_GUI_it_IT.qm")) {
+    if (translator.load(":/translations/tr/HeadsetControl_GUI_"+languageCode+".qm")) {
         app.installTranslator(&translator);
     }
     MainWindow window;
-
 
     return app.exec();
 }
