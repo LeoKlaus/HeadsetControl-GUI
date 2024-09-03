@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     updateIcons();
 
+    tray->setIcon(QIcon(":/icons/headphones-inv.png"));
     tray->show();
     tray->setToolTip("HeadsetControl");
 
@@ -794,7 +795,7 @@ void MainWindow::checkForUpdates(bool firstStart){
     const QVersionNumber& local_hc=getHCVersion();
     const QVersionNumber local_gui=QVersionNumber::fromString(qApp->applicationVersion());
     QString v1 = getLatestGitHubReleaseVersion("Sapd","HeadsetControl");
-    QString v2 = getLatestGitHubReleaseVersion("nicola02nb","HeadsetControl-GUI");
+    QString v2 = getLatestGitHubReleaseVersion("LeoKlaus","HeadsetControl-GUI");
     QVersionNumber remote_hc =QVersionNumber::fromString(v1);
     QVersionNumber remote_gui =QVersionNumber::fromString(v2);
     QString s1 = tr("up-to date v")+local_hc.toString();
@@ -804,7 +805,7 @@ void MainWindow::checkForUpdates(bool firstStart){
         needsUpdate = true;
     }
     if(!(v2=="") && remote_gui>local_gui){
-        s2=tr("Newer version")+" -> <a href=\"https://github.com/nicola02nb/HeadsetControl-GUI/releases/latest\">"+remote_gui.toString()+"</a>";
+        s2=tr("Newer version")+" -> <a href=\"https://github.com/LeoKlaus/HeadsetControl-GUI/releases/latest\">"+remote_gui.toString()+"</a>";
         needsUpdate = true;
     }
 
@@ -820,8 +821,8 @@ void MainWindow::checkForUpdates(bool firstStart){
 void MainWindow::showAbout(){
     DialogInfo* dialogWindow=new DialogInfo(this);
     dialogWindow->setTitle(tr("About this program"));
-    QString text = tr("<a href='https://github.com/nicola02nb/HeadsetControl-GUI'>This</a> is a forked version of <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>."
-                   "<br>Made by <a href='https://github.com/nicola02nb/HeadsetControl-GUI'>nicola02nb</a>"
+    QString text = tr("You can find HeadsetControl-GUI source code on <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>GitHub</a>."
+                   "<br>Made by <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>LeoKlaus</a> and <a href='https://github.com/nicola02nb'>nicola02nb</a>."
                       "<br>Version: ")+qApp->applicationVersion();
     dialogWindow->setLabel(text);
 
@@ -832,8 +833,7 @@ void MainWindow::showCredits(){
     DialogInfo* dialogWindow=new DialogInfo(this);
     dialogWindow->setTitle(tr("Credits"));
     QString text = tr("Big shout-out to:"
-                   "<br> - Sapd for <a href='https://github.com/Sapd/HeadsetControl'>HeadsetCoontrol</a>"
-                      "<br> - LeoKlaus for <a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>HeadsetControl-GUI</a>");
+                   "<br> - Sapd for <a href='https://github.com/Sapd/HeadsetControl'>HeadsetCoontrol</a>");
     dialogWindow->setLabel(text);
 
     dialogWindow->show();
