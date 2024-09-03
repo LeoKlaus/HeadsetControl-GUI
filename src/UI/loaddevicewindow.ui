@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>174</width>
-    <height>112</height>
+    <width>184</width>
+    <height>114</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,10 +18,6 @@
   </property>
   <property name="windowTitle">
    <string>Select device to load</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="../Resources/icons.qrc">
-    <normaloff>:/icons/headphones-inv.png</normaloff>:/icons/headphones-inv.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -71,9 +67,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../Resources/icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

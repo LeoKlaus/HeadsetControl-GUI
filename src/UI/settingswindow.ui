@@ -7,15 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>352</width>
-    <height>206</height>
+    <height>209</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Settings</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="../Resources/icons.qrc">
-    <normaloff>:/icons/headphones-inv.png</normaloff>:/icons/headphones-inv.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -28,9 +24,6 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">text-align: left;</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -51,8 +44,8 @@
         <property name="layoutDirection">
          <enum>Qt::RightToLeft</enum>
         </property>
-        <property name="styleSheet">
-         <string notr="true">text-align: end</string>
+        <property name="autoFillBackground">
+         <bool>false</bool>
         </property>
         <property name="text">
          <string/>
@@ -177,9 +170,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../Resources/icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
