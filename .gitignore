@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Folders
+build/*
+
+# User files
+HeadsetControl-GUI.pro.user
