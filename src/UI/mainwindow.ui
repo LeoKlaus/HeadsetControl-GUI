@@ -22,7 +22,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>HeadsetControl - GUI</string>
+   <string>HeadsetControl-GUI</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../Resources/icons.qrc">
@@ -1659,7 +1659,7 @@
      <x>0</x>
      <y>0</y>
      <width>488</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -37,7 +37,6 @@ private:
     int n_connected = 0, n_saved = 0;
 
     Settings settings;
-    bool darkMode;
     QString trayIconPath;
 
     QMenu *menu;
@@ -57,8 +56,9 @@ private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
 
     void toggleWindow();
+    void moveToBottomRight();
 
-    bool isOsDarkMode();
+    bool isAppDarkMode();
     void updateIcons();
 
     void disableFrames();

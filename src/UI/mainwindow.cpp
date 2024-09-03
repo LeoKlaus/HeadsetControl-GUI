@@ -4,6 +4,8 @@
 #include "dialoginfo.h"
 #include "settingswindow.h"
 #include "loaddevicewindow.h"
+#include <QScreen>
+#include <QStyleHints>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -13,18 +15,9 @@ MainWindow::MainWindow(QWidget *parent)
     this->bindEvents();
 
     settings=loadSettingsFromFile(PROGRAM_SETTINGS_FILENAME);
-    darkMode = isOsDarkMode();
 
-    if(darkMode){
-        this->setWindowIcon(QIcon(":/icons/headphones-inv.png"));
-        trayIconPath = ":/icons/headphones-inv.png";
-    }
-    else{
-        this->setWindowIcon(QIcon(":/icons/headphones.png"));
-        trayIconPath = ":/icons/headphones.png";
-    }
+    updateIcons();
 
-    tray->setIcon(QIcon(trayIconPath));
     tray->show();
     tray->setToolTip("HeadsetControl");
 
@@ -109,7 +102,6 @@ void MainWindow::changeEvent(QEvent* e)
 {
     switch (e->type()){
     case QEvent::PaletteChange:
-        darkMode = isOsDarkMode();
         updateIcons();
         break;
     case QEvent::WindowStateChange:
@@ -135,6 +127,7 @@ void MainWindow::toggleWindow(){
     if(this->isHidden()){
         this->show();
         if(firstShow){
+            this->moveToBottomRight();
             checkForUpdates(firstShow);
             firstShow = false;
         }
@@ -143,19 +136,27 @@ void MainWindow::toggleWindow(){
     }
 }
 
-bool MainWindow::isOsDarkMode(){
-    // Check if the application is using a dark palette
-    QPalette palette = QApplication::palette();
-    QColor textColor = palette.color(QPalette::WindowText);
-    QColor backgroundColor = palette.color(QPalette::Window);
+void MainWindow::moveToBottomRight(){
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect screenGeometry = screen->availableGeometry();
 
-    // If text is brighter than background, it's likely a dark theme
-    return textColor.lightness() > backgroundColor.lightness();
+    int x = screenGeometry.width() - width();
+    int y = screenGeometry.height() - height();
+
+    move(x, y);
+}
+
+bool MainWindow::isAppDarkMode(){
+    // Check if the application is using a dark palette
+    Qt::ColorScheme scheme = qApp->styleHints()->colorScheme();
+    if(scheme == Qt::ColorScheme::Dark)
+        return true;
+    return false;
 }
 
 void MainWindow::updateIcons(){
     QString inv = "";
-    if(darkMode){
+    if(isAppDarkMode()){
         inv = "-inv";
         trayIconPath.replace(".png", "-inv.png");
     }
@@ -164,6 +165,7 @@ void MainWindow::updateIcons(){
     }
 
     this->setWindowIcon(QIcon(":/icons/headphones"+inv+".png"));
+    qApp->setWindowIcon(QIcon(":/icons/headphones"+inv+".png"));
     tray->setIcon(QIcon(trayIconPath));
 }
 
@@ -483,7 +485,7 @@ void MainWindow::setBatteryStatus()
         trayIconPath = ":/icons/headphones-inv.png";
     }
 
-    if(!darkMode){
+    if(!isAppDarkMode()){
         trayIconPath.replace("-inv", "");
     }
     tray->setIcon(QIcon(trayIconPath));
