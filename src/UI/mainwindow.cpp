@@ -13,36 +13,14 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->bindEvents();
+    bindEvents();
+    createTrayIcon();
+    updateIconsTheme();
+    resetGUI();
 
     settings = loadSettingsFromFile(PROGRAM_SETTINGS_FILENAME);
 
-    updateIcons();
-
-    tray->setIcon(QIcon(":/icons/headphones-inv.png"));
-    tray->show();
-    tray->setToolTip("HeadsetControl");
-
-    menu = new QMenu(nullptr);
-    menu->addAction(tr("Hide/Show"), this, &MainWindow::toggleWindow);
-    ledOn = menu->addAction(tr("Turn Lights On"), this, &MainWindow::onlightButton_clicked);
-    ledOff = menu->addAction(tr("Turn Lights Off"), this, &MainWindow::offlightButton_clicked);
-    menu->addAction(tr("Exit"), this, &QApplication::quit);
-
-    tray->setContextMenu(menu);
-    tray->connect(tray,
-                  SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-                  this,
-                  SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
-
-    this->disableFrames();
-
-    QString exe = "headsetcontrol";
-#ifdef Q_OS_WIN
-    exe = exe + ".exe";
-#endif
-
-    if (!fileExists(exe)) {
+    if (!fileExists(HEADSETCONTROL)) {
         openFileExplorer(".");
         DialogInfo *dialog = new DialogInfo(this);
         dialog->setTitle(tr("Missing headsetcontrol"));
@@ -51,19 +29,34 @@ MainWindow::MainWindow(QWidget *parent)
                             "href='https://github.com/Sapd/HeadsetControl/releases/"
                             "latest'>headsetcontrol</a> in the opened folder."));
         dialog->exec();
+    } else {
+        loadDevices();
+        if (deviceList.length() && n_connected > 0) {
+            loadDevice();
+        }
     }
-
-    this->loadDevices();
-    if (deviceList.length() && n_connected > 0) {
-        this->loadDevice();
-    }
-
-    this->setMaximumHeight(this->minimumHeight());
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::changeEvent(QEvent *e)
+{
+    switch (e->type()) {
+    case QEvent::PaletteChange:
+        updateIconsTheme();
+        break;
+    case QEvent::WindowStateChange:
+        if (windowState() == Qt::WindowMinimized) {
+            hide();
+        }
+    default:
+        break;
+    }
+
+    QMainWindow::changeEvent(e);
 }
 
 void MainWindow::bindEvents()
@@ -148,21 +141,25 @@ void MainWindow::bindEvents()
             &MainWindow::btonlyRadioButton_clicked);
 }
 
-void MainWindow::changeEvent(QEvent *e)
+//Tray Icon Section
+void MainWindow::createTrayIcon()
 {
-    switch (e->type()) {
-    case QEvent::PaletteChange:
-        updateIcons();
-        break;
-    case QEvent::WindowStateChange:
-        if (this->windowState() == Qt::WindowMinimized) {
-            this->hide();
-        }
-    default:
-        break;
-    }
+    trayIconPath = ":/icons/headphones-inv.png";
+    tray->setIcon(QIcon(trayIconPath));
+    tray->setToolTip("HeadsetControl");
 
-    QMainWindow::changeEvent(e);
+    trayMenu = new QMenu(this);
+    trayMenu->addAction(tr("Hide/Show"), this, &MainWindow::toggleWindow);
+    ledOn = trayMenu->addAction(tr("Turn Lights On"), this, &MainWindow::onlightButton_clicked);
+    ledOff = trayMenu->addAction(tr("Turn Lights Off"), this, &MainWindow::offlightButton_clicked);
+    trayMenu->addAction(tr("Exit"), this, &QApplication::quit);
+
+    tray->setContextMenu(trayMenu);
+    tray->connect(tray,
+                  SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+                  this,
+                  SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
+    tray->show();
 }
 
 void MainWindow::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -172,31 +169,7 @@ void MainWindow::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
     }
 }
 
-void MainWindow::toggleWindow()
-{
-    if (this->isHidden()) {
-        this->show();
-        if (firstShow) {
-            this->moveToBottomRight();
-            checkForUpdates(firstShow);
-            firstShow = false;
-        }
-    } else {
-        this->hide();
-    }
-}
-
-void MainWindow::moveToBottomRight()
-{
-    QScreen *screen = QGuiApplication::primaryScreen();
-    QRect screenGeometry = screen->availableGeometry();
-
-    int x = screenGeometry.width() - width();
-    int y = screenGeometry.height() - height();
-
-    move(x, y);
-}
-
+//Theme mode Section
 bool MainWindow::isAppDarkMode()
 {
     // Check if the application is using a dark palette
@@ -206,7 +179,7 @@ bool MainWindow::isAppDarkMode()
     return false;
 }
 
-void MainWindow::updateIcons()
+void MainWindow::updateIconsTheme()
 {
     QString inv = "";
     if (isAppDarkMode()) {
@@ -216,12 +189,44 @@ void MainWindow::updateIcons()
         trayIconPath.replace("-inv.png", ".png");
     }
 
-    this->setWindowIcon(QIcon(":/icons/headphones" + inv + ".png"));
+    setWindowIcon(QIcon(":/icons/headphones" + inv + ".png"));
     qApp->setWindowIcon(QIcon(":/icons/headphones" + inv + ".png"));
     tray->setIcon(QIcon(trayIconPath));
 }
 
-void MainWindow::disableFrames()
+//Window Position and Size Section
+void MainWindow::toggleWindow()
+{
+    if (isHidden()) {
+        show();
+        if (firstShow) {
+            checkForUpdates(firstShow);
+            firstShow = false;
+        }
+        minimizeWindowSize();
+        moveToBottomRight();
+    } else {
+        hide();
+    }
+}
+
+void MainWindow::minimizeWindowSize()
+{
+    resize(minimumSize());
+}
+
+void MainWindow::moveToBottomRight()
+{
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect screenGeometry = screen->availableGeometry();
+
+    int x = screenGeometry.width() - width();
+    int y = screenGeometry.height() - height() - ui->notSupportedFrame->height();
+
+    move(x, y);
+}
+
+void MainWindow::resetGUI()
 {
     ledOn->setEnabled(false);
     ledOff->setEnabled(false);
@@ -257,9 +262,10 @@ void MainWindow::disableFrames()
     ui->btcallvolumeFrame->setHidden(true);
 }
 
+//Devices Managing Section
 void MainWindow::loadDevices()
 {
-    QList<Device *> c = getConnectedDevices(), s = getSavedDevices(FILE_DEVICES_SETTINGS);
+    QList<Device *> c = getConnectedDevices(), s = getSavedDevices();
     n_connected = c.length();
     n_saved = s.length();
     deviceList = mergeDevices(c, s);
@@ -267,7 +273,7 @@ void MainWindow::loadDevices()
 
 void MainWindow::loadDevice(int deviceIndex)
 {
-    disableFrames();
+    resetGUI();
 
     if (deviceIndex < 0) {
         selectedDevice = nullptr;
@@ -282,7 +288,6 @@ void MainWindow::loadDevice(int deviceIndex)
         timerGUI = nullptr;
     }
     timerGUI = new QTimer(this);
-    connect(timerGUI, SIGNAL(timeout()), this, SLOT(updateDevice()));
     connect(timerGUI, SIGNAL(timeout()), this, SLOT(saveDevicesSettings()));
     connect(timerGUI, SIGNAL(timeout()), this, SLOT(updateGUI()));
     timerGUI->start(settings.msecUpdateIntervalTime);
@@ -295,7 +300,7 @@ void MainWindow::loadDevice(int deviceIndex)
     ui->deviceinfoFrame->setHidden(false);
     if (capabilities.contains("CAP_BATTERY_STATUS")) {
         ui->batteryFrame->setHidden(false);
-        this->setBatteryStatus();
+        setBatteryStatus();
         qDebug() << "Battery percentage supported";
     }
 
@@ -331,7 +336,7 @@ void MainWindow::loadDevice(int deviceIndex)
     if (capabilities.contains("CAP_CHATMIX_STATUS")) {
         ui->chatmixFrame->setHidden(false);
         ui->tabWidget->setTabEnabled(0, true);
-        this->setChatmixStatus();
+        setChatmixStatus();
         qDebug() << "Chatmix supported";
     }
     // Eualizer Section
@@ -379,7 +384,8 @@ void MainWindow::loadDevice(int deviceIndex)
     }
 
     loadGUIValues();
-    this->setMaximumHeight(this->minimumHeight());
+    minimizeWindowSize();
+    moveToBottomRight();
 }
 
 void MainWindow::loadGUIValues()
@@ -399,6 +405,10 @@ void MainWindow::loadGUIValues()
         ui->inactivitySlider->setSliderPosition(selectedDevice->inactive_time);
     }
 
+    QHBoxLayout *equalizerLayout = ui->equalizerLayout;
+    clearEqualizerSliders(equalizerLayout);
+    createEqualizerSliders(equalizerLayout);
+
     ui->equalizerPresetcomboBox->clear();
     ui->equalizerPresetcomboBox->addItem("-");
     ui->equalizerPresetcomboBox->setCurrentIndex(0);
@@ -407,36 +417,8 @@ void MainWindow::loadGUIValues()
     }
     if (selectedDevice->equalizer_preset >= 0) {
         ui->equalizerPresetcomboBox->setCurrentIndex(selectedDevice->equalizer_preset);
-    }
-
-    QHBoxLayout *equalizerLayout = ui->equalizerLayout;
-    clearLayout(equalizerLayout);
-    if (selectedDevice->equalizer.bands_number > 0) {
-        int i;
-        for (i = 0; i < selectedDevice->equalizer.bands_number; ++i) {
-            QLabel *l = new QLabel(QString::number(i));
-            l->setAlignment(Qt::AlignHCenter);
-
-            QSlider *s = new QSlider(Qt::Vertical);
-            s->setMaximum(selectedDevice->equalizer.band_max / selectedDevice->equalizer.band_step);
-            s->setMinimum(selectedDevice->equalizer.band_min / selectedDevice->equalizer.band_step);
-            s->setSingleStep(1);
-            s->setTickInterval(1 / selectedDevice->equalizer.band_step);
-            s->setTickPosition(QSlider::TicksBothSides);
-            if (selectedDevice->equalizer_curve.size() == selectedDevice->equalizer.bands_number) {
-                s->setValue(selectedDevice->equalizer_curve.value(i));
-            } else {
-                s->setValue(selectedDevice->equalizer.band_baseline);
-            }
-
-            QVBoxLayout *lb = new QVBoxLayout();
-            lb->addWidget(l);
-            lb->addWidget(s);
-
-            slidersEq.append(s);
-            equalizerLayout->addLayout(lb);
-        }
-        ui->applyEqualizer->setEnabled(true);
+    } else {
+        setEqualizerSliders(selectedDevice->equalizer_curve);
     }
 
     if (selectedDevice->volume_limiter >= 0) {
@@ -480,7 +462,13 @@ void MainWindow::saveDevicesSettings()
 {
     if (!savedDevices) {
         serializeDevices(deviceList, FILE_DEVICES_SETTINGS);
+        savedDevices = true;
     }
+}
+
+QList<Device *> MainWindow::getSavedDevices()
+{
+    return deserializeDevices(FILE_DEVICES_SETTINGS);
 }
 
 void MainWindow::updateDevice()
@@ -491,8 +479,10 @@ void MainWindow::updateDevice()
     }
 }
 
+//Update GUI Section
 void MainWindow::updateGUI()
 {
+    updateDevice();
     setBatteryStatus();
     setChatmixStatus();
 }
@@ -668,7 +658,7 @@ void MainWindow::equalizerPresetcomboBox_currentIndexChanged()
     if (preset == 0) {
         // setSliders(selectedDevice->equalizer.band_baseline);
     } else if (preset >= 1 && preset <= selectedDevice->presets_list.length()) {
-        this->setSliders(selectedDevice->presets_list.value(preset - 1).values);
+        setEqualizerSliders(selectedDevice->presets_list.value(preset - 1).values);
         QStringList args = QStringList()
                            << QString("--equalizer-preset") << QString::number(preset - 1);
         Action s = sendAction(args);
@@ -683,10 +673,11 @@ void MainWindow::applyEqualizer_clicked()
 {
     ui->equalizerPresetcomboBox->setCurrentIndex(0);
     QString eq_string = "";
-    QList<int> values;
+    QList<double> values;
     for (QSlider *slider : slidersEq) {
-        eq_string += QString::number(slider->value()) + ",";
-        values.append(slider->value() / selectedDevice->equalizer.band_step);
+        double value = slider->value() * selectedDevice->equalizer.band_step;
+        eq_string += QString::number(value) + ",";
+        values.append(value);
     }
     eq_string.removeLast();
     QStringList args = QStringList() << QString("--equalizer") << eq_string;
@@ -695,43 +686,6 @@ void MainWindow::applyEqualizer_clicked()
         selectedDevice->equalizer_curve = values;
         selectedDevice->equalizer_preset = -1;
         savedDevices = false;
-    }
-}
-
-void MainWindow::setSliders(int value)
-{
-    for (QSlider *slider : slidersEq) {
-        slider->setValue(value / selectedDevice->equalizer.band_step);
-    }
-}
-
-void MainWindow::setSliders(QList<double> values)
-{
-    int i = 0;
-    if (values.length() == selectedDevice->equalizer.bands_number) {
-        for (QSlider *slider : slidersEq) {
-            slider->setValue(values[i++] / selectedDevice->equalizer.band_step);
-        }
-    } else {
-        qDebug() << "ERROR: Bad Equalizer Preset";
-    }
-}
-
-void MainWindow::clearLayout(QLayout *layout)
-{
-    if (!layout) {
-        return;
-    }
-
-    QLayoutItem *item;
-    while ((item = layout->takeAt(0))) {
-        if (item->layout()) {
-            clearLayout(item->layout()); // Delete the layout if it exists
-        }
-        if (item->widget()) {
-            delete item->widget(); // Delete the widget
-        }
-        delete item; // Delete the layout item
     }
 }
 
@@ -752,6 +706,68 @@ void MainWindow::volumelimiterOnButton_clicked()
     if (s.status == "success") {
         selectedDevice->volume_limiter = 1;
         savedDevices = false;
+    }
+}
+
+//Equalizer Slidesrs Section
+void MainWindow::createEqualizerSliders(QHBoxLayout *layout)
+{
+    if (selectedDevice->equalizer.bands_number > 0) {
+        int i;
+        for (i = 0; i < selectedDevice->equalizer.bands_number; ++i) {
+            QLabel *l = new QLabel(QString::number(i));
+            l->setAlignment(Qt::AlignHCenter);
+
+            QSlider *s = new QSlider(Qt::Vertical);
+            s->setMaximum(selectedDevice->equalizer.band_max / selectedDevice->equalizer.band_step);
+            s->setMinimum(selectedDevice->equalizer.band_min / selectedDevice->equalizer.band_step);
+            s->setSingleStep(1);
+            s->setTickInterval(1 / selectedDevice->equalizer.band_step);
+            s->setTickPosition(QSlider::TicksBothSides);
+            if (selectedDevice->equalizer_curve.size() == selectedDevice->equalizer.bands_number) {
+                s->setValue(selectedDevice->equalizer_curve.value(i));
+            } else {
+                s->setValue(selectedDevice->equalizer.band_baseline);
+            }
+
+            QVBoxLayout *lb = new QVBoxLayout();
+            lb->addWidget(l);
+            lb->addWidget(s);
+
+            slidersEq.append(s);
+            layout->addLayout(lb);
+        }
+        ui->applyEqualizer->setEnabled(true);
+    }
+}
+
+void MainWindow::setEqualizerSliders(double value)
+{
+    for (QSlider *slider : slidersEq) {
+        slider->setValue(value / selectedDevice->equalizer.band_step);
+    }
+}
+
+void MainWindow::setEqualizerSliders(QList<double> values)
+{
+    int i = 0;
+    if (values.length() == selectedDevice->equalizer.bands_number) {
+        for (QSlider *slider : slidersEq) {
+            slider->setValue((int) (values[i++] / selectedDevice->equalizer.band_step));
+        }
+    } else {
+        qDebug() << "ERROR: Bad Equalizer Preset";
+    }
+}
+
+void MainWindow::clearEqualizerSliders(QLayout *layout)
+{
+    QLayoutItem *item;
+    while (!layout->isEmpty()) {
+        item = layout->takeAt(0);
+        delete item->widget();
+        delete item;
+        slidersEq.removeFirst();
     }
 }
 
@@ -831,16 +847,6 @@ void MainWindow::btonlyRadioButton_clicked()
 }
 
 // Tool Bar Events
-void MainWindow::editProgramSetting()
-{
-    SettingsWindow *settingsW = new SettingsWindow(settings, this);
-    if (settingsW->exec() == QDialog::Accepted) {
-        settings = settingsW->getSettings();
-        saveSettingstoFile(settings, PROGRAM_SETTINGS_FILENAME);
-        timerGUI->setInterval(settings.msecUpdateIntervalTime);
-    }
-}
-
 void MainWindow::selectDevice()
 {
     this->loadDevices();
@@ -855,15 +861,24 @@ void MainWindow::selectDevice()
     LoaddeviceWindow *loadDevWindow = new LoaddeviceWindow(devices, this);
     if (loadDevWindow->exec() == QDialog::Accepted) {
         int index = loadDevWindow->getDeviceIndex();
-        this->disableFrames();
-        if (index >= 0) {
+        if (index >= 0 && index < devices.length()) {
             if (index == 0) {
                 ui->tabWidget->setDisabled(false);
             } else {
                 ui->tabWidget->setDisabled(true);
             }
-            this->loadDevice(index);
+            loadDevice(index);
         }
+    }
+}
+
+void MainWindow::editProgramSetting()
+{
+    SettingsWindow *settingsW = new SettingsWindow(settings, this);
+    if (settingsW->exec() == QDialog::Accepted) {
+        settings = settingsW->getSettings();
+        saveSettingstoFile(settings, PROGRAM_SETTINGS_FILENAME);
+        timerGUI->setInterval(settings.msecUpdateIntervalTime);
     }
 }
 

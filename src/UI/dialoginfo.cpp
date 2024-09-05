@@ -16,7 +16,7 @@ DialogInfo::~DialogInfo()
 
 void DialogInfo::setTitle(const QString &title)
 {
-    this->setWindowTitle(title);
+    setWindowTitle(title);
 }
 
 void DialogInfo::setLabel(const QString &text)

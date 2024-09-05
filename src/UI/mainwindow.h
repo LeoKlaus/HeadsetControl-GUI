@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QHBoxLayout>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QMainWindow>
@@ -24,54 +25,78 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    bool firstShow = true;
-    bool notified = false;
-    bool savedDevices = true;
-    QSystemTrayIcon *tray = new QSystemTrayIcon(this);
 
 private:
     const QString FILE_DEVICES_SETTINGS = "devices.json";
     const QString PROGRAM_SETTINGS_FILENAME = "settings.json";
+#ifdef Q_OS_WIN
+    const QString HEADSETCONTROL = "headsetcontrol.exe";
+#elif
+    const QString HEADSETCONTROL = "headsetcontrol";
+#endif
+    bool firstShow = true;
+    bool notified = false;
+    bool savedDevices = true;
 
-    int n_connected = 0, n_saved = 0;
-
-    Settings settings;
+    QSystemTrayIcon *tray = new QSystemTrayIcon(this);
     QString trayIconPath;
-
-    QMenu *menu;
-
+    QMenu *trayMenu;
     QAction *ledOn;
     QAction *ledOff;
+
+    Settings settings;
+
+    QTimer *timerGUI = nullptr;
+
+    int n_connected = 0, n_saved = 0;
 
     Device *selectedDevice;
     QList<Device *> deviceList;
     QList<QSlider *> slidersEq;
 
-    QTimer *timerGUI = nullptr;
-
-private slots:
     void bindEvents();
-    void changeEvent(QEvent *e);
-    void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
 
-    void toggleWindow();
-    void moveToBottomRight();
+    //Tray Icon Section
+    void createTrayIcon();
 
+    //Theme mode Section
     bool isAppDarkMode();
-    void updateIcons();
+    void updateIconsTheme();
 
-    void disableFrames();
+    void resetGUI();
 
-    void loadDevices();
+    //Window Position and Size Section
+    void minimizeWindowSize();
+    void moveToBottomRight();
+    void toggleWindow();
+
+    //Devices Managing Section
+    void updateDevice();
     void loadDevice(int deviceIndex = 0);
+    void loadDevices();
     void loadGUIValues();
 
-    void saveDevicesSettings();
-
-    void updateDevice();
-    void updateGUI();
-
+    // Info Section Events
     void setBatteryStatus();
+
+    //Equalizer Slidesrs Section
+    void createEqualizerSliders(QHBoxLayout *layout);
+    void setEqualizerSliders(double value);
+    void setEqualizerSliders(QList<double> values);
+    void clearEqualizerSliders(QLayout *layout);
+
+private slots:
+    void changeEvent(QEvent *e);
+
+    //Tray Icon Section
+    void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
+
+    //Devices Managing Section
+    void saveDevicesSettings();
+    QList<Device *> getSavedDevices();
+
+    //Update GUI Section
+    void updateGUI();
 
     // Other Section Events
     void onlightButton_clicked();
@@ -94,11 +119,7 @@ private slots:
 
     // Equalizer Section Events
     void equalizerPresetcomboBox_currentIndexChanged();
-
     void applyEqualizer_clicked();
-    void setSliders(int value);
-    void setSliders(QList<double> values);
-    void clearLayout(QLayout *layout);
 
     void volumelimiterOffButton_clicked();
     void volumelimiterOnButton_clicked();
@@ -116,9 +137,9 @@ private slots:
     void btonlyRadioButton_clicked();
 
     // Tool Bar Events
+    void selectDevice();
     void editProgramSetting();
     void checkForUpdates(bool firstStart = false);
-    void selectDevice();
     void showAbout();
     void showCredits();
 

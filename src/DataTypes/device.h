@@ -73,7 +73,7 @@ public:
     int voice_prompts = -1;
     int inactive_time = -1;
     int equalizer_preset = -1;
-    QList<int> equalizer_curve;
+    QList<double> equalizer_curve;
     int volume_limiter = -1;
     int rotate_to_mute = -1;
     int mic_mute_led_brightness = -1;

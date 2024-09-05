@@ -12,25 +12,22 @@ Settings loadSettingsFromFile(const QString &filename)
 
     QFile file(filename);
 
-    if (!file.open(QIODevice::ReadOnly)) {
-        qWarning("Couldn't open save file.");
-        return s;
-    }
+    if (file.open(QIODevice::ReadOnly)) {
+        QByteArray saveData = file.readAll();
+        file.close();
 
-    QByteArray saveData = file.readAll();
-    file.close();
+        QJsonDocument doc(QJsonDocument::fromJson(saveData));
+        QJsonObject json = doc.object();
 
-    QJsonDocument doc(QJsonDocument::fromJson(saveData));
-    QJsonObject json = doc.object();
-
-    if (json.contains("runOnStartup")) {
-        s.runOnstartup = json["runOnStartup"].toBool();
-    }
-    if (json.contains("batteryLowThreshold")) {
-        s.batteryLowThreshold = json["batteryLowThreshold"].toInt();
-    }
-    if (json.contains("msecUpdateIntervalTime")) {
-        s.msecUpdateIntervalTime = json["msecUpdateIntervalTime"].toInt();
+        if (json.contains("runOnStartup")) {
+            s.runOnstartup = json["runOnStartup"].toBool();
+        }
+        if (json.contains("batteryLowThreshold")) {
+            s.batteryLowThreshold = json["batteryLowThreshold"].toInt();
+        }
+        if (json.contains("msecUpdateIntervalTime")) {
+            s.msecUpdateIntervalTime = json["msecUpdateIntervalTime"].toInt();
+        }
     }
 
     return s;
@@ -52,4 +49,5 @@ void saveSettingstoFile(const Settings &settings, const QString &filename)
 
     file.write(doc.toJson());
     file.close();
+    qDebug() << "Settings Saved" << json;
 }

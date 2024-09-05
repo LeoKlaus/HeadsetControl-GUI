@@ -81,7 +81,7 @@ Device::Device(const QJsonObject &jsonObj, QString jsonData)
                                   jEq["step"].toDouble(),
                                   jEq["min"].toInt(),
                                   jEq["max"].toInt());
-            equalizer_curve = QVector<int>(equalizer.bands_number, equalizer.band_baseline);
+            equalizer_curve = QVector<double>(equalizer.bands_number, equalizer.band_baseline);
         }
     }
 }
@@ -161,7 +161,7 @@ Device Device::fromJson(const QJsonObject &json)
 
     QJsonArray curveArray = json["equalizer_curve"].toArray();
     for (const auto &value : curveArray) {
-        device.equalizer_curve.append(value.toInt());
+        device.equalizer_curve.append(value.toDouble());
     }
 
     device.volume_limiter = json["volume_limiter"].toInt();
@@ -179,14 +179,13 @@ QString sendCommand(const QStringList &args_list)
 {
     QProcess *proc = new QProcess();
     QStringList args = QStringList() << QString("--output") << QString("JSON");
-    // args << QString("--test-device");    //Uncomment this to enable all
-    // "modules"
+    // args << QString("--test-device");    //Uncomment this to enable all "modules"
     args << args_list;
 
     proc->start("headsetcontrol", args);
     proc->waitForFinished();
     QString output = proc->readAllStandardOutput();
-    // qDebug() << args;
+    qDebug() << "Command: \theadsetcontrol " << args;
     // qDebug() << output;
     return output;
 }
@@ -205,6 +204,11 @@ Action sendAction(const QStringList &args_list)
         action.capability = jaction["capability"].toString();
         action.status = jaction["status"].toString();
         action.error_message = jaction["error_message"].toString();
+
+        qDebug() << "device:\t" << action.device;
+        qDebug() << "capability:" << action.capability;
+        qDebug() << "status:\t" << action.status;
+        qDebug() << "error:\t" << action.error_message;
     }
 
     return action;
@@ -255,11 +259,6 @@ QList<Device *> mergeDevices(QList<Device *> connectedDevices, const QList<Devic
     return connectedDevices;
 }
 
-QList<Device *> getSavedDevices(const QString &file_name)
-{
-    return deserializeDevices(file_name);
-}
-
 QList<Device *> getConnectedDevices()
 {
     QStringList args = QStringList() << QString("--output") << QString("JSON");
@@ -268,11 +267,14 @@ QList<Device *> getConnectedDevices()
     QJsonObject jsonInfo = jsonDoc.object();
 
     int device_number = jsonInfo["device_count"].toInt();
+    qDebug() << "Found" << device_number << "devices:";
     QList<Device *> devices;
     QJsonArray jsonDevices = jsonInfo["devices"].toArray();
     if (!jsonDoc.isNull()) {
         for (int i = 0; i < device_number; ++i) {
-            devices.append(new Device(jsonDevices[i].toObject(), output));
+            Device *device = new Device(jsonDevices[i].toObject(), output);
+            devices.append(device);
+            qDebug() << "\t" << device->device;
         }
     }
 
@@ -291,6 +293,7 @@ void serializeDevices(const QList<Device *> &devices, const QString &filename)
     if (file.open(QIODevice::WriteOnly)) {
         file.write(doc.toJson());
         file.close();
+        qDebug() << "Devices Serialized" << jsonArray;
     }
 }
 
