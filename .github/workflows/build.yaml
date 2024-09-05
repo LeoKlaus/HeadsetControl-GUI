@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches: [main]
-    paths-ignore:
+    paths:
       - '.src/**'
       - 'HeadsetControl-GUI.pro'
   pull_request:

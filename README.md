@@ -56,4 +56,4 @@ It's not properly tested for memory leakage and may or may not work with configu
 
 **Disclaimer**:
 This program is in no way affiliated with Sapd or HeadsetControl.
-All issues regarding the functionality of HeadsetControl (like compatiblity with devices) are beyond the scope of this project.
+All issues regarding the functionality of HeadsetControl (like [compatiblity with devices](https://github.com/Sapd/HeadsetControl/?tab=readme-ov-file#supported-headsets)) are beyond the scope of this project.
