@@ -3,13 +3,11 @@
 
 #include <QString>
 
-QString getLatestGitHubReleaseVersion(const QString& owner, const QString& repo);
+QString getLatestGitHubReleaseVersion(const QString &owner, const QString &repo);
 
-bool downloadAndUnzipGithubRepo(const QString& user, const QString& repo, const QString& savePath);
+bool fileExists(const QString &filepath);
 
-bool fileExists(const QString& filepath);
-
-bool openFileExplorer(const QString& path);
+bool openFileExplorer(const QString &path);
 
 bool setOSRunOnStartup(bool enable);
 

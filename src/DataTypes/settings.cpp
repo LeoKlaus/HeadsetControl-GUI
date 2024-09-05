@@ -1,11 +1,13 @@
 #include "settings.h"
+
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
 
 Settings::Settings() {}
 
-Settings loadSettingsFromFile(const QString& filename){
+Settings loadSettingsFromFile(const QString &filename)
+{
     Settings s;
 
     QFile file(filename);
@@ -34,7 +36,8 @@ Settings loadSettingsFromFile(const QString& filename){
     return s;
 }
 
-void saveSettingstoFile(const Settings& settings, const QString& filename){
+void saveSettingstoFile(const Settings &settings, const QString &filename)
+{
     QJsonObject json;
     json["runOnStartup"] = settings.runOnstartup;
     json["batteryLowThreshold"] = settings.batteryLowThreshold;

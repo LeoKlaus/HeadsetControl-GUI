@@ -14,12 +14,12 @@ DialogInfo::~DialogInfo()
     delete ui;
 }
 
-void DialogInfo::setTitle(const QString& title)
+void DialogInfo::setTitle(const QString &title)
 {
     this->setWindowTitle(title);
 }
 
-void DialogInfo::setLabel(const QString& text)
+void DialogInfo::setLabel(const QString &text)
 {
     ui->label->setText(text);
 }

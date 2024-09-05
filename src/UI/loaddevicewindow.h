@@ -12,10 +12,10 @@ class LoaddeviceWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit LoaddeviceWindow(const QStringList& devices, QWidget *parent = nullptr);
+    explicit LoaddeviceWindow(const QStringList &devices, QWidget *parent = nullptr);
     ~LoaddeviceWindow();
 
-    int getDeviceIndex();  
+    int getDeviceIndex();
 
 private:
     Ui::loaddevicewindow *ui;

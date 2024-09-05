@@ -1,20 +1,19 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "utils.h"
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QMainWindow>
+#include <QSlider>
+#include <QSystemTrayIcon>
+#include <QTimer>
+#include <QVersionNumber>
 #include "device.h"
 #include "settings.h"
-#include <QMainWindow>
-#include <QSystemTrayIcon>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QSlider>
-#include <QVersionNumber>
-#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 QT_END_NAMESPACE
 
@@ -28,7 +27,7 @@ public:
     bool firstShow = true;
     bool notified = false;
     bool savedDevices = true;
-    QSystemTrayIcon* tray = new QSystemTrayIcon(this);
+    QSystemTrayIcon *tray = new QSystemTrayIcon(this);
 
 private:
     const QString FILE_DEVICES_SETTINGS = "devices.json";
@@ -41,14 +40,14 @@ private:
 
     QMenu *menu;
 
-    QAction* ledOn;
-    QAction* ledOff;
+    QAction *ledOn;
+    QAction *ledOff;
 
-    Device* selectedDevice;
-    QList<Device*> deviceList;
-    QList<QSlider*> slidersEq;
+    Device *selectedDevice;
+    QList<Device *> deviceList;
+    QList<QSlider *> slidersEq;
 
-    QTimer* timerGUI = nullptr;
+    QTimer *timerGUI = nullptr;
 
 private slots:
     void bindEvents();
@@ -64,7 +63,7 @@ private slots:
     void disableFrames();
 
     void loadDevices();
-    void loadDevice(int deviceIndex=0);
+    void loadDevice(int deviceIndex = 0);
     void loadGUIValues();
 
     void saveDevicesSettings();
@@ -74,7 +73,7 @@ private slots:
 
     void setBatteryStatus();
 
-    //Other Section Events
+    // Other Section Events
     void onlightButton_clicked();
     void offlightButton_clicked();
 
@@ -93,22 +92,22 @@ private slots:
 
     void setChatmixStatus();
 
-    //Equalizer Section Events
+    // Equalizer Section Events
     void equalizerPresetcomboBox_currentIndexChanged();
 
     void applyEqualizer_clicked();
     void setSliders(int value);
     void setSliders(QList<double> values);
-    void clearLayout(QLayout* layout);
+    void clearLayout(QLayout *layout);
 
     void volumelimiterOffButton_clicked();
     void volumelimiterOnButton_clicked();
 
-    //Microphone Section Events
+    // Microphone Section Events
     void muteledbrightnessSlider_sliderReleased();
     void micvolumeSlider_sliderReleased();
 
-    //Bluetooth Section Events
+    // Bluetooth Section Events
     void btwhenonOffButton_clicked();
     void btwhenonOnButton_clicked();
 
@@ -116,7 +115,7 @@ private slots:
     void btpcdbRadioButton_clicked();
     void btonlyRadioButton_clicked();
 
-    //Tool Bar Events
+    // Tool Bar Events
     void editProgramSetting();
     void checkForUpdates(bool firstStart = false);
     void selectDevice();
@@ -124,6 +123,6 @@ private slots:
     void showCredits();
 
 private:
-    Ui::MainWindow* ui;
+    Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

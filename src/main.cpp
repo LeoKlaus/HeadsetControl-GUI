@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     QLocale locale = QLocale::system();
     QString languageCode = locale.name();
     QTranslator translator;
-    if (translator.load(":/translations/tr/HeadsetControl_GUI_"+languageCode+".qm")) {
+    if (translator.load(":/translations/tr/HeadsetControl_GUI_" + languageCode + ".qm")) {
         app.installTranslator(&translator);
     }
     MainWindow window;

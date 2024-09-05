@@ -15,8 +15,8 @@ public:
     explicit DialogInfo(QWidget *parent = nullptr);
     ~DialogInfo();
 
-    void setTitle(const QString& title);
-    void setLabel(const QString& text);
+    void setTitle(const QString &title);
+    void setLabel(const QString &text);
 
 private:
     Ui::dialogInfo *ui;

@@ -8,12 +8,12 @@ class Settings
 public:
     Settings();
 
-    bool runOnstartup=false;
-    int batteryLowThreshold=15;
-    int msecUpdateIntervalTime=30000;
+    bool runOnstartup = false;
+    int batteryLowThreshold = 15;
+    int msecUpdateIntervalTime = 30000;
 };
 
-Settings loadSettingsFromFile(const QString& filename);
-void saveSettingstoFile(const Settings& settings, const QString& filename);
+Settings loadSettingsFromFile(const QString &filename);
+void saveSettingstoFile(const Settings &settings, const QString &filename);
 
 #endif // SETTINGS_H
