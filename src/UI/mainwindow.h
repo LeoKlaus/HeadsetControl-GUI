@@ -31,7 +31,7 @@ private:
     const QString PROGRAM_SETTINGS_FILENAME = "settings.json";
 #ifdef Q_OS_WIN
     const QString HEADSETCONTROL = "headsetcontrol.exe";
-#elif
+#else
     const QString HEADSETCONTROL = "headsetcontrol";
 #endif
     bool firstShow = true;
