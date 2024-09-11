@@ -281,7 +281,7 @@ QList<Device *> getConnectedDevices()
     return devices;
 }
 
-void serializeDevices(const QList<Device *> &devices, const QString &filename)
+void serializeDevices(const QList<Device *> &devices, const QString &filePath)
 {
     QJsonArray jsonArray;
     for (const auto *device : devices) {
@@ -289,7 +289,7 @@ void serializeDevices(const QList<Device *> &devices, const QString &filename)
     }
 
     QJsonDocument doc(jsonArray);
-    QFile file(filename);
+    QFile file(filePath);
     if (file.open(QIODevice::WriteOnly)) {
         file.write(doc.toJson());
         file.close();
@@ -297,10 +297,10 @@ void serializeDevices(const QList<Device *> &devices, const QString &filename)
     }
 }
 
-QList<Device *> deserializeDevices(const QString &filename)
+QList<Device *> deserializeDevices(const QString &filePath)
 {
     QList<Device *> devices;
-    QFile file(filename);
+    QFile file(filePath);
     if (file.open(QIODevice::ReadOnly)) {
         QByteArray data = file.readAll();
         QJsonDocument doc = QJsonDocument::fromJson(data);

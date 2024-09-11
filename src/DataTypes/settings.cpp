@@ -6,11 +6,11 @@
 
 Settings::Settings() {}
 
-Settings loadSettingsFromFile(const QString &filename)
+Settings loadSettingsFromFile(const QString &filePath)
 {
     Settings s;
 
-    QFile file(filename);
+    QFile file(filePath);
 
     if (file.open(QIODevice::ReadOnly)) {
         QByteArray saveData = file.readAll();
@@ -37,7 +37,7 @@ Settings loadSettingsFromFile(const QString &filename)
     return s;
 }
 
-void saveSettingstoFile(const Settings &settings, const QString &filename)
+void saveSettingstoFile(const Settings &settings, const QString &filePath)
 {
     QJsonObject json;
     json["runOnStartup"] = settings.runOnstartup;
@@ -46,7 +46,7 @@ void saveSettingstoFile(const Settings &settings, const QString &filename)
     json["styleName"] = settings.styleName;
 
     QJsonDocument doc(json);
-    QFile file(filename);
+    QFile file(filePath);
 
     if (!file.open(QIODevice::WriteOnly)) {
         qWarning("Couldn't open save file.");

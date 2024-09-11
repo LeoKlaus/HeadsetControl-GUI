@@ -178,6 +178,12 @@ DON'T PUT TOO LOW VALUES</string>
       </item>
       <item>
        <widget class="QComboBox" name="selectstyleComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="maxVisibleItems">
          <number>99</number>
         </property>
@@ -187,6 +193,13 @@ DON'T PUT TOO LOW VALUES</string>
        <widget class="QPushButton" name="loadstylePushButton">
         <property name="text">
          <string>Load</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="removestylePushButton">
+        <property name="text">
+         <string>Remove</string>
         </property>
        </widget>
       </item>

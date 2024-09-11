@@ -34,9 +34,9 @@ QString getLatestGitHubReleaseVersion(const QString &owner, const QString &repo)
     }
 }
 
-bool fileExists(const QString &filepath)
+bool fileExists(const QString &filePath)
 {
-    QFileInfo checkFile(filepath);
+    QFileInfo checkFile(filePath);
     return checkFile.exists();
 }
 
@@ -55,7 +55,6 @@ bool openFileExplorer(const QString &path)
 bool setOSRunOnStartup(bool enable)
 {
     QString appName = QCoreApplication::applicationName();
-    QString appDir = QCoreApplication::applicationDirPath();
     QString appPath = QCoreApplication::applicationFilePath();
 
 #ifdef Q_OS_WIN
@@ -70,6 +69,7 @@ bool setOSRunOnStartup(bool enable)
     return false;
 
 #elif defined(Q_OS_LINUX)
+    QString appDir = QCoreApplication::applicationDirPath();
     QString autostartPath = QDir::homePath() + "/.config/autostart/";
     QString desktopFilePath = autostartPath + appName + ".desktop";
 

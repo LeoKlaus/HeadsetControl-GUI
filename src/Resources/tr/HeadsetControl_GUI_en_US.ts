@@ -9,401 +9,396 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="93"/>
+        <location filename="../../UI/mainwindow.ui" line="96"/>
         <source>HeadsetControl couldn&apos;t find any compatible or working headsets. :(</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="145"/>
+        <location filename="../../UI/mainwindow.ui" line="150"/>
         <source>Device:
 Vendor:
 Model:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="175"/>
+        <location filename="../../UI/mainwindow.ui" line="180"/>
         <source>No info of the device</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="261"/>
+        <location filename="../../UI/mainwindow.ui" line="268"/>
         <source>Battery:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="294"/>
+        <location filename="../../UI/mainwindow.ui" line="301"/>
         <source>No compatible Device found!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="375"/>
+        <location filename="../../UI/mainwindow.ui" line="382"/>
         <source>Other</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="420"/>
+        <location filename="../../UI/mainwindow.ui" line="429"/>
         <source>Lights:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="436"/>
+        <location filename="../../UI/mainwindow.ui" line="445"/>
         <source>RGB OFF</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="462"/>
+        <location filename="../../UI/mainwindow.ui" line="471"/>
         <source>RGB ON</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="505"/>
+        <location filename="../../UI/mainwindow.ui" line="516"/>
         <source>Sidetone Level:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="523"/>
-        <source>Drag to adjust Sidetone Level</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../UI/mainwindow.ui" line="547"/>
+        <location filename="../../UI/mainwindow.ui" line="552"/>
         <source>Quiet (Off)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="570"/>
-        <location filename="../../UI/mainwindow.ui" line="1453"/>
+        <location filename="../../UI/mainwindow.ui" line="575"/>
+        <location filename="../../UI/mainwindow.ui" line="1478"/>
         <source>Loud</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="626"/>
+        <location filename="../../UI/mainwindow.ui" line="633"/>
         <source>Voice Prompts:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="644"/>
+        <location filename="../../UI/mainwindow.ui" line="651"/>
         <source>Voice Off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="670"/>
+        <location filename="../../UI/mainwindow.ui" line="677"/>
         <source>Voice On</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="715"/>
+        <location filename="../../UI/mainwindow.ui" line="724"/>
         <source>Notification Sound:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="727"/>
+        <location filename="../../UI/mainwindow.ui" line="736"/>
         <source>Test 0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="747"/>
+        <location filename="../../UI/mainwindow.ui" line="756"/>
         <source>Test 1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="792"/>
+        <location filename="../../UI/mainwindow.ui" line="803"/>
         <source>Inactivity Timer:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="825"/>
+        <location filename="../../UI/mainwindow.ui" line="836"/>
         <source>0 Minute (Off)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="845"/>
+        <location filename="../../UI/mainwindow.ui" line="856"/>
         <source>90 Minutes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="895"/>
+        <location filename="../../UI/mainwindow.ui" line="908"/>
         <source>Chatmix:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="908"/>
+        <location filename="../../UI/mainwindow.ui" line="921"/>
         <source>None</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="964"/>
+        <location filename="../../UI/mainwindow.ui" line="977"/>
         <source>Equalizer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="997"/>
+        <location filename="../../UI/mainwindow.ui" line="1012"/>
         <source>Equalizer preset:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1060"/>
+        <location filename="../../UI/mainwindow.ui" line="1077"/>
         <source>Equalizer:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1088"/>
+        <location filename="../../UI/mainwindow.ui" line="1105"/>
         <source>Apply Equalizer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1131"/>
+        <location filename="../../UI/mainwindow.ui" line="1150"/>
         <source>Volume Limiter:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1140"/>
+        <location filename="../../UI/mainwindow.ui" line="1159"/>
         <source>Limiter Off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1160"/>
+        <location filename="../../UI/mainwindow.ui" line="1179"/>
         <source>Limiter On</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1179"/>
+        <location filename="../../UI/mainwindow.ui" line="1198"/>
         <source>Microphone</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1218"/>
+        <location filename="../../UI/mainwindow.ui" line="1239"/>
         <source>Rotate to mute:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1228"/>
+        <location filename="../../UI/mainwindow.ui" line="1249"/>
         <source>Off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1248"/>
+        <location filename="../../UI/mainwindow.ui" line="1269"/>
         <source>On</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1294"/>
+        <location filename="../../UI/mainwindow.ui" line="1317"/>
         <source>Muted led brightness:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1330"/>
+        <location filename="../../UI/mainwindow.ui" line="1353"/>
         <source>Low (Off)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1350"/>
+        <location filename="../../UI/mainwindow.ui" line="1373"/>
         <source>High</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1400"/>
+        <location filename="../../UI/mainwindow.ui" line="1425"/>
         <source>Microphone volume:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1433"/>
+        <location filename="../../UI/mainwindow.ui" line="1458"/>
         <source>Quiet</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1490"/>
+        <location filename="../../UI/mainwindow.ui" line="1515"/>
         <source>Bluetooth</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1529"/>
+        <location filename="../../UI/mainwindow.ui" line="1556"/>
         <source>Bluetooth when powered on:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1541"/>
+        <location filename="../../UI/mainwindow.ui" line="1568"/>
         <source>Bluetooth Off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1561"/>
+        <location filename="../../UI/mainwindow.ui" line="1588"/>
         <source>Bluetooth On</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1612"/>
+        <location filename="../../UI/mainwindow.ui" line="1641"/>
         <source>Bluetooth call volume:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1626"/>
+        <location filename="../../UI/mainwindow.ui" line="1655"/>
         <source>BT and PC</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1633"/>
+        <location filename="../../UI/mainwindow.ui" line="1662"/>
         <source>PC -12dB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1640"/>
+        <location filename="../../UI/mainwindow.ui" line="1669"/>
         <source>BT only</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1681"/>
+        <location filename="../../UI/mainwindow.ui" line="1710"/>
         <source>File</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1690"/>
+        <location filename="../../UI/mainwindow.ui" line="1719"/>
         <source>Help</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1703"/>
+        <location filename="../../UI/mainwindow.ui" line="1732"/>
         <source>Check Updates</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1711"/>
+        <location filename="../../UI/mainwindow.ui" line="1740"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1719"/>
-        <location filename="../../UI/mainwindow.cpp" line="959"/>
+        <location filename="../../UI/mainwindow.ui" line="1748"/>
+        <location filename="../../UI/mainwindow.cpp" line="965"/>
         <source>Credits</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1730"/>
+        <location filename="../../UI/mainwindow.ui" line="1759"/>
         <source>Load Device</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.ui" line="1738"/>
+        <location filename="../../UI/mainwindow.ui" line="1767"/>
         <source>Settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="156"/>
+        <location filename="../../UI/mainwindow.cpp" line="157"/>
         <source>Hide/Show</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="157"/>
+        <location filename="../../UI/mainwindow.cpp" line="158"/>
         <source>Turn Lights On</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="158"/>
+        <location filename="../../UI/mainwindow.cpp" line="159"/>
         <source>Turn Lights Off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="159"/>
+        <location filename="../../UI/mainwindow.cpp" line="160"/>
         <source>Exit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="30"/>
+        <location filename="../../UI/mainwindow.cpp" line="31"/>
         <source>Missing headsetcontrol</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="31"/>
+        <location filename="../../UI/mainwindow.cpp" line="32"/>
         <source>Missing headsetcontrol&lt;br/&gt;Download &lt;a href=&apos;https://github.com/Sapd/HeadsetControl/releases/latest&apos;&gt;headsetcontrol&lt;/a&gt; in the opened folder.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="521"/>
+        <location filename="../../UI/mainwindow.cpp" line="527"/>
         <source>Headset Off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="522"/>
+        <location filename="../../UI/mainwindow.cpp" line="528"/>
         <source>HeadsetControl <byte value="xd"/>
 Headset Off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="525"/>
+        <location filename="../../UI/mainwindow.cpp" line="531"/>
         <source>% - Charging</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="526"/>
+        <location filename="../../UI/mainwindow.cpp" line="532"/>
         <source>HeadsetControl <byte value="xd"/>
 Battery Charging</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="529"/>
+        <location filename="../../UI/mainwindow.cpp" line="535"/>
         <source>% - Descharging</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="530"/>
+        <location filename="../../UI/mainwindow.cpp" line="536"/>
         <source>HeadsetControl <byte value="xd"/>
 Battery: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="540"/>
+        <location filename="../../UI/mainwindow.cpp" line="546"/>
         <source>Battery Alert!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="541"/>
+        <location filename="../../UI/mainwindow.cpp" line="547"/>
         <source>The battery of your headset is running low</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="547"/>
+        <location filename="../../UI/mainwindow.cpp" line="553"/>
         <source>No battery info</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="663"/>
+        <location filename="../../UI/mainwindow.cpp" line="669"/>
         <source>Game</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="665"/>
+        <location filename="../../UI/mainwindow.cpp" line="671"/>
         <source>Chat</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="906"/>
+        <location filename="../../UI/mainwindow.cpp" line="912"/>
         <source>Check for updates</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="914"/>
-        <location filename="../../UI/mainwindow.cpp" line="915"/>
+        <location filename="../../UI/mainwindow.cpp" line="920"/>
+        <location filename="../../UI/mainwindow.cpp" line="921"/>
         <source>up-to date v</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="917"/>
-        <location filename="../../UI/mainwindow.cpp" line="924"/>
+        <location filename="../../UI/mainwindow.cpp" line="923"/>
+        <location filename="../../UI/mainwindow.cpp" line="930"/>
         <source>Newer version</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="943"/>
+        <location filename="../../UI/mainwindow.cpp" line="949"/>
         <source>About this program</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="944"/>
+        <location filename="../../UI/mainwindow.cpp" line="950"/>
         <source>You can find HeadsetControl-GUI source code on &lt;a href=&apos;https://github.com/LeoKlaus/HeadsetControl-GUI&apos;&gt;GitHub&lt;/a&gt;.&lt;br/&gt;Made by:&lt;br/&gt; - &lt;a href=&apos;https://github.com/LeoKlaus&apos;&gt;LeoKlaus&lt;/a&gt;&lt;br/&gt; - &lt;a href=&apos;https://github.com/nicola02nb&apos;&gt;nicola02nb&lt;/a&gt;&lt;br/&gt;Version: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/mainwindow.cpp" line="960"/>
+        <location filename="../../UI/mainwindow.cpp" line="966"/>
         <source>Big shout-out to:&lt;br/&gt; - &lt;a href=&apos;https://github.com/Sapd&apos;&gt;Sapd&lt;/a&gt; for &lt;a href=&apos;https://github.com/Sapd/HeadsetControl&apos;&gt;HeadsetCoontrol</source>
         <translation></translation>
     </message>
@@ -411,7 +406,7 @@ Battery: </source>
 <context>
     <name>SettingsWindow</name>
     <message>
-        <location filename="../../UI/settingswindow.cpp" line="59"/>
+        <location filename="../../UI/settingswindow.cpp" line="65"/>
         <source>QStyle (*.qss)</source>
         <translation></translation>
     </message>
@@ -459,8 +454,13 @@ DON&apos;T PUT TOO LOW VALUES</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../UI/settingswindow.ui" line="189"/>
+        <location filename="../../UI/settingswindow.ui" line="195"/>
         <source>Load</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../UI/settingswindow.ui" line="202"/>
+        <source>Remove</source>
         <translation></translation>
     </message>
 </context>

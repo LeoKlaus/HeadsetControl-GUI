@@ -98,10 +98,9 @@ Action sendAction(const QStringList &args_list);
 QVersionNumber getHCVersion();
 
 QList<Device *> mergeDevices(QList<Device *> connectedDevices, const QList<Device *> &savedDevices);
-QList<Device *> getSavedDevices(const QString &file_name);
 QList<Device *> getConnectedDevices();
 
-void serializeDevices(const QList<Device *> &devices, const QString &filename);
-QList<Device *> deserializeDevices(const QString &filename);
+void serializeDevices(const QList<Device *> &devices, const QString &filePath);
+QList<Device *> deserializeDevices(const QString &filePath);
 
 #endif // DEVICE_H

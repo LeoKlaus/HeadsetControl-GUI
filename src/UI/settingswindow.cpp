@@ -3,7 +3,6 @@
 #include "utils.h"
 
 #include <QFileDialog>
-#include <QStandardPaths>
 #include <QStyleHints>
 
 SettingsWindow::SettingsWindow(const Settings &programSettings, QWidget *parent)
@@ -14,7 +13,14 @@ SettingsWindow::SettingsWindow(const Settings &programSettings, QWidget *parent)
     ui->setupUi(this);
 
     connect(ui->runonstartupCheckBox, &QCheckBox::clicked, this, &SettingsWindow::setRunOnStartup);
+    connect(ui->selectstyleComboBox,
+            &QComboBox::currentTextChanged,
+            this,
+            [this](const QString &text) {
+                this->ui->removestylePushButton->setEnabled(text != "Default");
+            });
     connect(ui->loadstylePushButton, &QPushButton::clicked, this, &SettingsWindow::saveStyle);
+    connect(ui->removestylePushButton, &QPushButton::clicked, this, &SettingsWindow::removeStyle);
 
     ui->runonstartupCheckBox->setChecked(programSettings.runOnstartup);
     ui->batterylowtresholdSpinBox->setValue(programSettings.batteryLowThreshold);
@@ -44,11 +50,11 @@ void SettingsWindow::setRunOnStartup()
 
 void SettingsWindow::loadStyles()
 {
-    QString destination = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
-                          + "/styles/";
+    QString destination = PROGRAM_STYLES_PATH;
     QDir directory = QDir(destination);
     QStringList list = directory.entryList(QStringList() << "*.qss", QDir::Files);
     ui->selectstyleComboBox->clear();
+    ui->selectstyleComboBox->addItem("Default");
     ui->selectstyleComboBox->addItems(list);
 }
 
@@ -57,17 +63,30 @@ void SettingsWindow::saveStyle()
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::AnyFile);
     dialog.setNameFilter(tr("QStyle (*.qss)"));
+
     QUrl fileUrl = dialog.getOpenFileUrl();
-    QString source = fileUrl.path().removeFirst();
-    QString destination = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
-                          + "/styles/";
-    QDir().mkpath(destination);
-    destination += fileUrl.fileName();
-    QFile file(destination);
+    if (fileUrl.isValid()) {
+        QString source = fileUrl.path().removeFirst();
+        QString destination = PROGRAM_STYLES_PATH;
+        QDir().mkpath(destination);
+        destination += "/" + fileUrl.fileName();
+        QFile file(destination);
+        if (file.exists()) {
+            file.remove();
+        }
+        QFile::copy(source, destination);
+
+        loadStyles();
+    }
+}
+
+void SettingsWindow::removeStyle()
+{
+    QString stylePath = PROGRAM_STYLES_PATH + "/" + ui->selectstyleComboBox->currentText();
+    QFile file(stylePath);
     if (file.exists()) {
         file.remove();
     }
-    QFile::copy(source, destination);
 
     loadStyles();
 }

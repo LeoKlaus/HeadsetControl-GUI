@@ -28,6 +28,9 @@
    <iconset resource="../Resources/icons.qrc">
     <normaloff>:/icons/headphones-inv.png</normaloff>:/icons/headphones-inv.png</iconset>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -137,7 +140,9 @@
          </property>
          <property name="font">
           <font>
+           <family>Segoe UI</family>
            <pointsize>11</pointsize>
+           <italic>false</italic>
            <bold>true</bold>
           </font>
          </property>
@@ -253,7 +258,9 @@ Model:</string>
          </property>
          <property name="font">
           <font>
+           <family>Segoe UI</family>
            <pointsize>11</pointsize>
+           <italic>false</italic>
            <bold>true</bold>
           </font>
          </property>
@@ -412,7 +419,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -497,7 +506,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -516,12 +527,6 @@ Model:</string>
              </property>
              <item>
               <widget class="QSlider" name="sidetoneSlider">
-               <property name="acceptDrops">
-                <bool>false</bool>
-               </property>
-               <property name="toolTip">
-                <string>Drag to adjust Sidetone Level</string>
-               </property>
                <property name="maximum">
                 <number>128</number>
                </property>
@@ -618,7 +623,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -707,7 +714,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -784,7 +793,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -887,7 +898,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -989,7 +1002,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -1052,7 +1067,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -1123,7 +1140,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -1210,7 +1229,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -1283,7 +1304,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -1392,7 +1415,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -1521,7 +1546,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>
@@ -1604,7 +1631,9 @@ Model:</string>
              </property>
              <property name="font">
               <font>
+               <family>Segoe UI</family>
                <pointsize>11</pointsize>
+               <italic>false</italic>
                <bold>true</bold>
               </font>
              </property>

@@ -9,6 +9,7 @@
 #include <QJsonObject>
 #include <QMainWindow>
 #include <QSlider>
+#include <QStandardPaths>
 #include <QSystemTrayIcon>
 #include <QTimer>
 #include <QVersionNumber>
@@ -24,20 +25,22 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    const QString PROGRAM_APP_PATH = qApp->applicationDirPath();
+#ifdef Q_OS_WIN
+    const QString HEADSETCONTROL_FILE_PATH = PROGRAM_APP_PATH + "/headsetcontrol.exe";
+#else
+    const QString HEADSETCONTROL_FILE_PATH = PROGRAM_APP_PATH + "/headsetcontrol";
+#endif
+
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
-    const QString FILE_DEVICES_SETTINGS = "devices.json";
-    const QString PROGRAM_SETTINGS_FILENAME = "settings.json";
-#ifdef Q_OS_WIN
-    const QString HEADSETCONTROL = "headsetcontrol.exe";
-#else
-    const QString HEADSETCONTROL = "headsetcontrol";
-#endif
     bool firstShow = true;
     bool notified = false;
     bool savedDevices = true;
+
+    QString defaultStyle;
 
     QSystemTrayIcon *tray = new QSystemTrayIcon(this);
     QString trayIconPath;

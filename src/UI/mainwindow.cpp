@@ -9,14 +9,15 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QScreen>
-#include <QStandardPaths>
 #include <QStyleHints>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    settings = loadSettingsFromFile(PROGRAM_SETTINGS_FILENAME);
+    defaultStyle = styleSheet();
+    QDir().mkpath(PROGRAM_CONFIG_PATH);
+    settings = loadSettingsFromFile(PROGRAM_SETTINGS_FILEPATH);
     ui->setupUi(this);
     bindEvents();
     createTrayIcon();
@@ -24,8 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
     updateStyle();
     resetGUI();
 
-    if (!fileExists(HEADSETCONTROL)) {
-        openFileExplorer(".");
+    if (!fileExists(HEADSETCONTROL_FILE_PATH)) {
+        openFileExplorer(PROGRAM_APP_PATH);
         DialogInfo *dialog = new DialogInfo(this);
         dialog->setTitle(tr("Missing headsetcontrol"));
         dialog->setLabel(tr("Missing headsetcontrol<br/>"
@@ -201,13 +202,18 @@ void MainWindow::updateIconsTheme()
 
 void MainWindow::updateStyle()
 {
-    QString destination = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
-                          + "/styles/" + settings.styleName;
-    QFile file(destination);
-    if (file.open(QFile::ReadOnly)) {
-        QString styleSheet = QLatin1String(file.readAll());
-        qApp->setStyleSheet(styleSheet);
+    if (settings.styleName != "Default") {
+        QString destination = PROGRAM_STYLES_PATH + "/" + settings.styleName;
+        QFile file(destination);
+        if (file.open(QFile::ReadOnly)) {
+            QString styleSheet = QLatin1String(file.readAll());
+            setStyleSheet(styleSheet);
+        }
+    } else {
+        setStyleSheet(defaultStyle);
     }
+    minimizeWindowSize();
+    moveToBottomRight();
 }
 
 //Window Position and Size Section
@@ -477,14 +483,14 @@ void MainWindow::loadGUIValues()
 void MainWindow::saveDevicesSettings()
 {
     if (!savedDevices) {
-        serializeDevices(deviceList, FILE_DEVICES_SETTINGS);
+        serializeDevices(deviceList, DEVICES_SETTINGS_FILEPATH);
         savedDevices = true;
     }
 }
 
 QList<Device *> MainWindow::getSavedDevices()
 {
-    return deserializeDevices(FILE_DEVICES_SETTINGS);
+    return deserializeDevices(DEVICES_SETTINGS_FILEPATH);
 }
 
 void MainWindow::updateDevice()
@@ -893,7 +899,7 @@ void MainWindow::editProgramSetting()
     SettingsWindow *settingsW = new SettingsWindow(settings, this);
     if (settingsW->exec() == QDialog::Accepted) {
         settings = settingsW->getSettings();
-        saveSettingstoFile(settings, PROGRAM_SETTINGS_FILENAME);
+        saveSettingstoFile(settings, PROGRAM_SETTINGS_FILEPATH);
         timerGUI->setInterval(settings.msecUpdateIntervalTime);
         updateStyle();
     }

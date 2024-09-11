@@ -25,6 +25,7 @@ private:
     void setRunOnStartup();
     void loadStyles();
     void saveStyle();
+    void removeStyle();
 };
 
 #endif // SETTINGSWINDOW_H
