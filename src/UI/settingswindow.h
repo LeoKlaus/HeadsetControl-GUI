@@ -1,8 +1,9 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
-#include <QDialog>
 #include "settings.h"
+
+#include <QDialog>
 
 namespace Ui {
 class settingswindow;
@@ -22,6 +23,8 @@ private:
     Ui::settingswindow *ui;
 
     void setRunOnStartup();
+    void loadStyles();
+    void saveStyle();
 };
 
 #endif // SETTINGSWINDOW_H

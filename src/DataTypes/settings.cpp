@@ -28,6 +28,10 @@ Settings loadSettingsFromFile(const QString &filename)
         if (json.contains("msecUpdateIntervalTime")) {
             s.msecUpdateIntervalTime = json["msecUpdateIntervalTime"].toInt();
         }
+        if (json.contains("styleName")) {
+            s.styleName = json["styleName"].toString();
+        }
+        qDebug() << "Settings Loaded:\t" << json;
     }
 
     return s;
@@ -39,6 +43,7 @@ void saveSettingstoFile(const Settings &settings, const QString &filename)
     json["runOnStartup"] = settings.runOnstartup;
     json["batteryLowThreshold"] = settings.batteryLowThreshold;
     json["msecUpdateIntervalTime"] = settings.msecUpdateIntervalTime;
+    json["styleName"] = settings.styleName;
 
     QJsonDocument doc(json);
     QFile file(filename);
@@ -49,5 +54,5 @@ void saveSettingstoFile(const Settings &settings, const QString &filename)
 
     file.write(doc.toJson());
     file.close();
-    qDebug() << "Settings Saved" << json;
+    qDebug() << "Settings Saved:\t" << json;
 }

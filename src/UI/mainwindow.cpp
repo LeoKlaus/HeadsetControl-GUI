@@ -1,6 +1,4 @@
 #include "mainwindow.h"
-#include <QScreen>
-#include <QStyleHints>
 #include "device.h"
 #include "dialoginfo.h"
 #include "loaddevicewindow.h"
@@ -8,23 +6,29 @@
 #include "ui_mainwindow.h"
 #include "utils.h"
 
+#include <QFile>
+#include <QFileDialog>
+#include <QScreen>
+#include <QStandardPaths>
+#include <QStyleHints>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    settings = loadSettingsFromFile(PROGRAM_SETTINGS_FILENAME);
     ui->setupUi(this);
     bindEvents();
     createTrayIcon();
     updateIconsTheme();
+    updateStyle();
     resetGUI();
-
-    settings = loadSettingsFromFile(PROGRAM_SETTINGS_FILENAME);
 
     if (!fileExists(HEADSETCONTROL)) {
         openFileExplorer(".");
         DialogInfo *dialog = new DialogInfo(this);
         dialog->setTitle(tr("Missing headsetcontrol"));
-        dialog->setLabel(tr("Missing headsetcontrol<br>"
+        dialog->setLabel(tr("Missing headsetcontrol<br/>"
                             "Download <a "
                             "href='https://github.com/Sapd/HeadsetControl/releases/"
                             "latest'>headsetcontrol</a> in the opened folder."));
@@ -45,7 +49,7 @@ MainWindow::~MainWindow()
 void MainWindow::changeEvent(QEvent *e)
 {
     switch (e->type()) {
-    case QEvent::PaletteChange:
+    case QEvent::ThemeChange:
         updateIconsTheme();
         break;
     case QEvent::WindowStateChange:
@@ -166,6 +170,7 @@ void MainWindow::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::ActivationReason::Trigger) {
         toggleWindow();
+        updateIconsTheme();
     }
 }
 
@@ -192,6 +197,17 @@ void MainWindow::updateIconsTheme()
     setWindowIcon(QIcon(":/icons/headphones" + inv + ".png"));
     qApp->setWindowIcon(QIcon(":/icons/headphones" + inv + ".png"));
     tray->setIcon(QIcon(trayIconPath));
+}
+
+void MainWindow::updateStyle()
+{
+    QString destination = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
+                          + "/styles/" + settings.styleName;
+    QFile file(destination);
+    if (file.open(QFile::ReadOnly)) {
+        QString styleSheet = QLatin1String(file.readAll());
+        qApp->setStyleSheet(styleSheet);
+    }
 }
 
 //Window Position and Size Section
@@ -295,8 +311,8 @@ void MainWindow::loadDevice(int deviceIndex)
     ui->notSupportedFrame->setHidden(true);
 
     // Info section
-    ui->deviceinfovalueLabel->setText(selectedDevice->device + "\n" + selectedDevice->vendor + "\n"
-                                      + selectedDevice->product);
+    ui->deviceinfovalueLabel->setText(selectedDevice->device + "<br/>" + selectedDevice->vendor
+                                      + "<br/>" + selectedDevice->product);
     ui->deviceinfoFrame->setHidden(false);
     if (capabilities.contains("CAP_BATTERY_STATUS")) {
         ui->batteryFrame->setHidden(false);
@@ -879,6 +895,7 @@ void MainWindow::editProgramSetting()
         settings = settingsW->getSettings();
         saveSettingstoFile(settings, PROGRAM_SETTINGS_FILENAME);
         timerGUI->setInterval(settings.msecUpdateIntervalTime);
+        updateStyle();
     }
 }
 
@@ -913,7 +930,7 @@ void MainWindow::checkForUpdates(bool firstStart)
     }
 
     if ((needsUpdate && firstStart) || !firstStart) {
-        QString text = "HeadesetControl: " + s1 + "<br>HeadesetControl-GUI: " + s2;
+        QString text = "HeadesetControl: " + s1 + "<br/>HeadesetControl-GUI: " + s2;
         dialogWindow->setLabel(text);
 
         dialogWindow->show();
@@ -924,12 +941,12 @@ void MainWindow::showAbout()
 {
     DialogInfo *dialogWindow = new DialogInfo(this);
     dialogWindow->setTitle(tr("About this program"));
-    QString text = tr("You can find HeadsetControl-GUI source code on <a "
-                      "href='https://github.com/LeoKlaus/HeadsetControl-GUI'>GitHub</a>."
-                      "<br>Made by <a "
-                      "href='https://github.com/LeoKlaus/HeadsetControl-GUI'>LeoKlaus</a> "
-                      "and <a href='https://github.com/nicola02nb'>nicola02nb</a>."
-                      "<br>Version: ")
+    QString text = tr("You can find HeadsetControl-GUI source code on "
+                      "<a href='https://github.com/LeoKlaus/HeadsetControl-GUI'>GitHub</a>.<br/>"
+                      "Made by:<br/>"
+                      " - <a href='https://github.com/LeoKlaus'>LeoKlaus</a><br/>"
+                      " - <a href='https://github.com/nicola02nb'>nicola02nb</a><br/>"
+                      "Version: ")
                    + qApp->applicationVersion();
     dialogWindow->setLabel(text);
 
@@ -940,9 +957,9 @@ void MainWindow::showCredits()
 {
     DialogInfo *dialogWindow = new DialogInfo(this);
     dialogWindow->setTitle(tr("Credits"));
-    QString text = tr("Big shout-out to:"
-                      "<br> - Sapd for <a "
-                      "href='https://github.com/Sapd/HeadsetControl'>HeadsetCoontrol</a>");
+    QString text = tr("Big shout-out to:<br/>"
+                      " - <a href='https://github.com/Sapd'>Sapd</a> for <a "
+                      "href='https://github.com/Sapd/HeadsetControl'>HeadsetCoontrol");
     dialogWindow->setLabel(text);
 
     dialogWindow->show();

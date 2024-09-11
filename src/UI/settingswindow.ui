@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>352</width>
-    <height>209</height>
+    <height>256</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -126,7 +126,9 @@
       <item>
        <widget class="QLabel" name="updatetimeLabel">
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update Info interval time (seconds):&lt;br/&gt;Default: 30,0 seconds&lt;br/&gt;DON'T PUT TOO LOW VALUES&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>Update Info interval time (seconds):
+Default: 30,0 seconds
+DON'T PUT TOO LOW VALUES</string>
         </property>
        </widget>
       </item>
@@ -152,6 +154,39 @@
         </property>
         <property name="value">
          <double>30.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame_4">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Custom Style:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="selectstyleComboBox">
+        <property name="maxVisibleItems">
+         <number>99</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="loadstylePushButton">
+        <property name="text">
+         <string>Load</string>
         </property>
        </widget>
       </item>

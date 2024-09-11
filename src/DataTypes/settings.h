@@ -11,6 +11,7 @@ public:
     bool runOnstartup = false;
     int batteryLowThreshold = 15;
     int msecUpdateIntervalTime = 30000;
+    QString styleName = "";
 };
 
 Settings loadSettingsFromFile(const QString &filename);

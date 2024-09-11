@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>488</width>
-    <height>681</height>
+    <height>690</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -142,7 +142,9 @@
           </font>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Device:&lt;br/&gt;Vendor:&lt;br/&gt;Model:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>Device:
+Vendor:
+Model:</string>
          </property>
         </widget>
        </item>
@@ -1064,10 +1066,22 @@
            </item>
            <item row="1" column="0">
             <widget class="QPushButton" name="applyEqualizer">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
                <width>120</width>
-               <height>30</height>
+               <height>16777215</height>
               </size>
              </property>
              <property name="text">
@@ -1659,7 +1673,7 @@
      <x>0</x>
      <y>0</y>
      <width>488</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

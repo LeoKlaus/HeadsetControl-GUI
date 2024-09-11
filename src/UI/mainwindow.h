@@ -1,6 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "device.h"
+#include "settings.h"
+
 #include <QHBoxLayout>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -9,8 +12,6 @@
 #include <QSystemTrayIcon>
 #include <QTimer>
 #include <QVersionNumber>
-#include "device.h"
-#include "settings.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -62,6 +63,7 @@ private:
     //Theme mode Section
     bool isAppDarkMode();
     void updateIconsTheme();
+    void updateStyle();
 
     void resetGUI();
 
