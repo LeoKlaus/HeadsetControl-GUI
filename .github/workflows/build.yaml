@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '.src/**'
+      - 'src/**'
       - 'HeadsetControl-GUI.pro'
   pull_request:
     branches: [main]
