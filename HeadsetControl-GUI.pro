@@ -10,6 +10,7 @@ INCLUDEPATH += \
 
 SOURCES += \
     src/UI/settingswindow.cpp \
+    src/Utils/headsetcontrolapi.cpp \
     src/main.cpp \
     src/DataTypes/device.cpp \
     src/DataTypes/settings.cpp \
@@ -25,6 +26,7 @@ HEADERS += \
     src/UI/loaddevicewindow.h \
     src/UI/mainwindow.h \
     src/UI/settingswindow.h \
+    src/Utils/headsetcontrolapi.h \
     src/Utils/utils.h
 
 FORMS += \

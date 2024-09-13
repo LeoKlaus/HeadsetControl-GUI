@@ -1,18 +1,9 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
+#include <QJsonObject>
 #include <QSet>
 #include <QString>
-#include <QVersionNumber>
-
-class Action
-{
-public:
-    QString capability;
-    QString device;
-    QString status;
-    QString error_message;
-};
 
 class Battery
 {
@@ -92,13 +83,7 @@ public:
     static Device fromJson(const QJsonObject &json);
 };
 
-QString sendCommand(const QStringList &args_list);
-Action sendAction(const QStringList &args_list);
-
-QVersionNumber getHCVersion();
-
 QList<Device *> mergeDevices(QList<Device *> connectedDevices, const QList<Device *> &savedDevices);
-QList<Device *> getConnectedDevices();
 
 void serializeDevices(const QList<Device *> &devices, const QString &filePath);
 QList<Device *> deserializeDevices(const QString &filePath);

@@ -174,54 +174,6 @@ Device Device::fromJson(const QJsonObject &json)
     return device;
 }
 
-// HC rleated functions
-QString sendCommand(const QStringList &args_list)
-{
-    QProcess *proc = new QProcess();
-    QStringList args = QStringList() << QString("--output") << QString("JSON");
-    // args << QString("--test-device");    //Uncomment this to enable all "modules"
-    args << args_list;
-
-    proc->start("headsetcontrol", args);
-    proc->waitForFinished();
-    QString output = proc->readAllStandardOutput();
-    qDebug() << "Command: \theadsetcontrol " << args;
-    // qDebug() << output;
-    return output;
-}
-
-Action sendAction(const QStringList &args_list)
-{
-    QString output = sendCommand(args_list);
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(output.toUtf8());
-    QJsonObject jsonInfo = jsonDoc.object();
-    QJsonArray actions = jsonInfo["actions"].toArray();
-    Action action;
-    if (!actions.isEmpty()) {
-        QJsonObject jaction = actions[0].toObject();
-
-        action.device = jaction["device"].toString();
-        action.capability = jaction["capability"].toString();
-        action.status = jaction["status"].toString();
-        action.error_message = jaction["error_message"].toString();
-
-        qDebug() << "device:\t" << action.device;
-        qDebug() << "capability:" << action.capability;
-        qDebug() << "status:\t" << action.status;
-        qDebug() << "error:\t" << action.error_message;
-    }
-
-    return action;
-}
-
-QVersionNumber getHCVersion()
-{
-    QStringList args = QStringList() << QString("--output") << QString("JSON");
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(sendCommand(args).toUtf8());
-    QJsonObject jsonInfo = jsonDoc.object();
-    return QVersionNumber::fromString(jsonInfo["version"].toString());
-}
-
 QList<Device *> mergeDevices(QList<Device *> connectedDevices, const QList<Device *> &savedDevices)
 {
     for (Device *savedDevice : savedDevices) {
@@ -257,28 +209,6 @@ QList<Device *> mergeDevices(QList<Device *> connectedDevices, const QList<Devic
         }
     }
     return connectedDevices;
-}
-
-QList<Device *> getConnectedDevices()
-{
-    QStringList args = QStringList() << QString("--output") << QString("JSON");
-    QString output = sendCommand(args);
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(output.toUtf8());
-    QJsonObject jsonInfo = jsonDoc.object();
-
-    int device_number = jsonInfo["device_count"].toInt();
-    qDebug() << "Found" << device_number << "devices:";
-    QList<Device *> devices;
-    QJsonArray jsonDevices = jsonInfo["devices"].toArray();
-    if (!jsonDoc.isNull()) {
-        for (int i = 0; i < device_number; ++i) {
-            Device *device = new Device(jsonDevices[i].toObject(), output);
-            devices.append(device);
-            qDebug() << "\t" << device->device;
-        }
-    }
-
-    return devices;
 }
 
 void serializeDevices(const QList<Device *> &devices, const QString &filePath)

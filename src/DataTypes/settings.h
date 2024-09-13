@@ -6,8 +6,12 @@
 #include <QStandardPaths>
 #include <QString>
 
+#ifdef QT_DEBUG
+const QString PROGRAM_CONFIG_PATH = "./DEBUG-Config";
+#else
 const QString PROGRAM_CONFIG_PATH = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
                                     + "/HeadsetControl-GUI";
+#endif
 const QString PROGRAM_STYLES_PATH = PROGRAM_CONFIG_PATH + "/styles";
 const QString PROGRAM_SETTINGS_FILEPATH = PROGRAM_CONFIG_PATH + "/settings.json";
 const QString DEVICES_SETTINGS_FILEPATH = PROGRAM_CONFIG_PATH + "/devices.json";

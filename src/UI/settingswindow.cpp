@@ -1,5 +1,6 @@
 #include "settingswindow.h"
 #include "ui_settingswindow.h"
+
 #include "utils.h"
 
 #include <QFileDialog>

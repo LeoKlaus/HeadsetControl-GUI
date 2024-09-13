@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "device.h"
+#include "headsetcontrolapi.h"
 #include "settings.h"
 
 #include <QHBoxLayout>
@@ -38,11 +39,12 @@ public:
 private:
     bool firstShow = true;
     bool notified = false;
-    bool savedDevices = true;
 
     QString defaultStyle;
 
-    QSystemTrayIcon *tray = new QSystemTrayIcon(this);
+    Ui::MainWindow *ui;
+    QSystemTrayIcon *trayIcon;
+    QTimer *timerGUI;
     QString trayIconPath;
     QMenu *trayMenu;
     QAction *ledOn;
@@ -50,18 +52,18 @@ private:
 
     Settings settings;
 
-    QTimer *timerGUI = nullptr;
-
     int n_connected = 0, n_saved = 0;
 
+    HeadsetControlAPI API;
     Device *selectedDevice;
     QList<Device *> deviceList;
+
     QList<QSlider *> slidersEq;
 
     void bindEvents();
 
     //Tray Icon Section
-    void createTrayIcon();
+    void setupTrayIcon();
 
     //Theme mode Section
     bool isAppDarkMode();
@@ -80,9 +82,11 @@ private:
     void loadDevice(int deviceIndex = 0);
     void loadDevices();
     void loadGUIValues();
+    QList<Device *> getSavedDevices();
 
     // Info Section Events
     void setBatteryStatus();
+    void setChatmixStatus();
 
     //Equalizer Slidesrs Section
     void createEqualizerSliders(QHBoxLayout *layout);
@@ -98,48 +102,13 @@ private slots:
 
     //Devices Managing Section
     void saveDevicesSettings();
-    QList<Device *> getSavedDevices();
 
     //Update GUI Section
     void updateGUI();
 
-    // Other Section Events
-    void onlightButton_clicked();
-    void offlightButton_clicked();
-
-    void sidetoneSlider_sliderReleased();
-
-    void voiceOnButton_clicked();
-    void voiceOffButton_clicked();
-
-    void notification0Button_clicked();
-    void notification1Button_clicked();
-
-    void inactivitySlider_sliderReleased();
-
-    void rotateOn_clicked();
-    void rotateOff_clicked();
-
-    void setChatmixStatus();
-
     // Equalizer Section Events
-    void equalizerPresetcomboBox_currentIndexChanged();
-    void applyEqualizer_clicked();
-
-    void volumelimiterOffButton_clicked();
-    void volumelimiterOnButton_clicked();
-
-    // Microphone Section Events
-    void muteledbrightnessSlider_sliderReleased();
-    void micvolumeSlider_sliderReleased();
-
-    // Bluetooth Section Events
-    void btwhenonOffButton_clicked();
-    void btwhenonOnButton_clicked();
-
-    void btbothRadioButton_clicked();
-    void btpcdbRadioButton_clicked();
-    void btonlyRadioButton_clicked();
+    void equalizerPresetChanged();
+    void applyEqualizer();
 
     // Tool Bar Events
     void selectDevice();
@@ -147,8 +116,5 @@ private slots:
     void checkForUpdates(bool firstStart = false);
     void showAbout();
     void showCredits();
-
-private:
-    Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H
