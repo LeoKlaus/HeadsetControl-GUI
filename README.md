@@ -25,7 +25,7 @@ Start HeadsetControl-GUI by double-clicking "HeadsetControl-GUI.exe", and if you
 
 If you don't find some features in you ui, probably it's not supported by your headset or it has not been implemented by [HeadsetControl](https://github.com/Sapd/HeadsetControl/).
 
-![338264266-ce6a9628-4705-4a79-a262-8c43db2c92b0](https://github.com/user-attachments/assets/622624c1-664c-4504-9245-775f5ac9fbb6)
+![Videosenzatitolo-RealizzatoconClipchamp-ezgif com-crop](https://github.com/user-attachments/assets/9a25de13-deca-45e0-aeb5-2a9d3876e9b2)
 
 Here you can adjust all settings supported by your headset.
 Changes may or may not persist even after rebooting the system or turning the headset off(It depends on how headsets stores their own settings).
