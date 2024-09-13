@@ -685,8 +685,6 @@ void MainWindow::editProgramSetting()
 void MainWindow::checkForUpdates(bool firstStart)
 {
     bool needsUpdate = false;
-    DialogInfo *dialogWindow = new DialogInfo(this);
-    dialogWindow->setTitle(tr("Check for updates"));
 
     const QVersionNumber &local_hc = API.getVersion();
     const QVersionNumber local_gui = QVersionNumber::fromString(qApp->applicationVersion());
@@ -713,6 +711,8 @@ void MainWindow::checkForUpdates(bool firstStart)
     }
 
     if ((needsUpdate && firstStart) || !firstStart) {
+        DialogInfo *dialogWindow = new DialogInfo(this);
+        dialogWindow->setTitle(tr("Check for updates"));
         QString text = "HeadesetControl: " + s1 + "<br/>HeadesetControl-GUI: " + s2;
         dialogWindow->setLabel(text);
 
