@@ -33,7 +33,7 @@ jobs:
         run: |
           $buildDir = "build/release"
           if (Test-Path $buildDir) {
-              Get-ChildItem -Path $buildDir -Include *.cpp, *.h, *.obj, *.res -Recurse | Remove-Item -Force
+              Get-ChildItem -Path $buildDir -Include *.cpp, *.h, *.obj, *.res, *.qrc, *.qm -Recurse | Remove-Item -Force
           } else {
               Write-Host "Directory not found: $buildDir"
           }
