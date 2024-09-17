@@ -55,7 +55,7 @@ private:
     int n_connected = 0, n_saved = 0;
 
     HeadsetControlAPI API;
-    Device *selectedDevice;
+    Device *selectedDevice = nullptr;
     QList<Device *> deviceList;
 
     QList<QSlider *> slidersEq;
@@ -63,6 +63,7 @@ private:
     void bindEvents();
 
     //Tray Icon Section
+    void changeTrayIconTo(QString iconPath);
     void setupTrayIcon();
 
     //Theme mode Section

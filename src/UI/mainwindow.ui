@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>488</width>
-    <height>690</height>
+    <height>792</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,10 +23,6 @@
   </property>
   <property name="windowTitle">
    <string>HeadsetControl-GUI</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="../Resources/icons.qrc">
-    <normaloff>:/icons/headphones-inv.png</normaloff>:/icons/headphones-inv.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -54,6 +50,83 @@
     <string notr="true"/>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_4">
+    <item>
+     <widget class="QFrame" name="missingheadsetcontrolFrame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_11">
+       <item>
+        <widget class="QLabel" name="label_9">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Missing headsetcontrol!&lt;br/&gt;Download &lt;a href=&quot;https://github.com/Sapd/HeadsetControl/releases/latest&quot;&gt;headsetcontrol&lt;/a&gt; in the program folder.</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::AutoText</enum>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="wordWrap">
+          <bool>false</bool>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::TextBrowserInteraction</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_26">
+         <item>
+          <spacer name="horizontalSpacer_15">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="openfolderPushButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Open Program Folder</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_16">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item>
      <widget class="QFrame" name="notSupportedFrame">
       <property name="sizePolicy">
@@ -1781,8 +1854,6 @@ Model:</string>
   <tabstop>muteledbrightnessSlider</tabstop>
   <tabstop>micvolumeSlider</tabstop>
  </tabstops>
- <resources>
-  <include location="../Resources/icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

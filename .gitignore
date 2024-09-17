@@ -31,6 +31,9 @@
 *.out
 *.app
 
+#Translations
+*.qm
+
 # Folders
 build/*
 

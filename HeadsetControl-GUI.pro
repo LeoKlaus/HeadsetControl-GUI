@@ -36,17 +36,20 @@ FORMS += \
     src/UI/settingswindow.ui
 
 TRANSLATIONS += \
-    src/Resources/tr/HeadsetControl_GUI_en_US.ts \
-    src/Resources/tr/HeadsetControl_GUI_it_IT.ts
+    src/Resources/tr/HeadsetControl_GUI_en.ts \
+    src/Resources/tr/HeadsetControl_GUI_it.ts
 
 RESOURCES += \
-    src/Resources/icons.qrc \
-    src/Resources/translations.qrc
+    src/Resources/icons.qrc
 
 RC_FILE = src/Resources/appicon.rc
 
 DISTFILES += \
     .gitignore
+
+CONFIG += lrelease
+QM_FILES_RESOURCE_PREFIX=/translations/tr
+CONFIG += embed_translations
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

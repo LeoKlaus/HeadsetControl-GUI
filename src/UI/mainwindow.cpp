@@ -30,22 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     updateIconsTheme();
     updateStyle();
     resetGUI();
-
-    if (!fileExists(HEADSETCONTROL_FILE_PATH)) {
-        openFileExplorer(PROGRAM_APP_PATH);
-        DialogInfo *dialog = new DialogInfo(this);
-        dialog->setTitle(tr("Missing headsetcontrol"));
-        dialog->setLabel(tr("Missing headsetcontrol<br/>"
-                            "Download <a "
-                            "href='https://github.com/Sapd/HeadsetControl/releases/"
-                            "latest'>headsetcontrol</a> in the opened folder."));
-        dialog->exec();
-    } else {
-        loadDevices();
-        if (!deviceList.isEmpty() && n_connected > 0) {
-            loadDevice();
-        }
-    }
+    updateGUI();
 
     connect(&API, &HeadsetControlAPI::actionSuccesful, this, &::MainWindow::saveDevicesSettings);
 
@@ -86,6 +71,11 @@ void MainWindow::bindEvents()
 
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::showAbout);
     connect(ui->actionCredits, &QAction::triggered, this, &MainWindow::showCredits);
+
+    //Error frames
+    connect(ui->openfolderPushButton, &QPushButton::clicked, this, [=]() {
+        openFileExplorer(PROGRAM_APP_PATH);
+    });
 
     // Other Section
     connect(ui->onlightButton, &QPushButton::clicked, &API, [=]() {
@@ -159,10 +149,20 @@ void MainWindow::bindEvents()
 }
 
 //Tray Icon Section
+void MainWindow::changeTrayIconTo(QString iconPath)
+{
+    trayIconPath = iconPath;
+    if (isAppDarkMode()) {
+        trayIconPath.replace("-dark", "-light");
+    } else {
+        trayIconPath.replace("-light", "-dark");
+    }
+    trayIcon->setIcon(QIcon(trayIconPath));
+}
+
 void MainWindow::setupTrayIcon()
 {
-    trayIconPath = ":/icons/headphones-inv.png";
-    trayIcon->setIcon(QIcon(trayIconPath));
+    changeTrayIconTo(":/icons/headphones-light.png");
     trayIcon->setToolTip("HeadsetControl");
 
     trayMenu = new QMenu(this);
@@ -203,17 +203,16 @@ bool MainWindow::isAppDarkMode()
 
 void MainWindow::updateIconsTheme()
 {
-    QString inv = "";
+    QString t = "";
     if (isAppDarkMode()) {
-        inv = "-inv";
-        trayIconPath.replace(".png", "-inv.png");
+        //qApp->setWindowIcon(QIcon(":/icons/headphones-light.png"));
+        t = "-light";
     } else {
-        trayIconPath.replace("-inv.png", ".png");
+        //qApp->setWindowIcon(QIcon(":/icons/headphones-dark.png"));
+        t = "-dark";
     }
 
-    setWindowIcon(QIcon(":/icons/headphones" + inv + ".png"));
-    qApp->setWindowIcon(QIcon(":/icons/headphones" + inv + ".png"));
-    trayIcon->setIcon(QIcon(trayIconPath));
+    changeTrayIconTo(trayIconPath);
 }
 
 void MainWindow::updateStyle()
@@ -260,7 +259,8 @@ void MainWindow::moveToBottomRight()
     QRect screenGeometry = screen->availableGeometry();
 
     int x = screenGeometry.width() - width();
-    int y = screenGeometry.height() - height() - ui->notSupportedFrame->height();
+    int y = screenGeometry.height() - height() - ui->notSupportedFrame->height()
+            - ui->missingheadsetcontrolFrame->height();
 
     move(x, y);
 }
@@ -270,6 +270,7 @@ void MainWindow::resetGUI()
     ledOn->setEnabled(false);
     ledOff->setEnabled(false);
 
+    ui->missingheadsetcontrolFrame->setHidden(false);
     ui->notSupportedFrame->setHidden(false);
 
     ui->deviceinfoFrame->setHidden(true);
@@ -292,6 +293,7 @@ void MainWindow::resetGUI()
     ui->equalizerpresetFrame->setHidden(true);
     ui->equalizerFrame->setHidden(true);
     ui->applyEqualizer->setEnabled(false);
+    clearEqualizerSliders(ui->equalizerLayout);
 
     ui->rotatetomuteFrame->setHidden(true);
     ui->muteledbrightnessFrame->setHidden(true);
@@ -322,6 +324,7 @@ void MainWindow::loadDevice(int deviceIndex)
     selectedDevice = deviceList.value(deviceIndex);
     QSet<QString> &capabilities = selectedDevice->capabilities;
 
+    ui->missingheadsetcontrolFrame->setHidden(true);
     ui->notSupportedFrame->setHidden(true);
 
     qDebug() << selectedDevice->capabilities;
@@ -486,16 +489,29 @@ QList<Device *> MainWindow::getSavedDevices()
 
 void MainWindow::updateDevice()
 {
-    if (selectedDevice != nullptr) {
-        QList<Device *> newDl = API.getConnectedDevices();
-        selectedDevice->updateDevice(newDl);
-    }
+    QList<Device *> newDl = API.getConnectedDevices();
+    selectedDevice->updateDevice(newDl);
 }
 
 //Update GUI Section
 void MainWindow::updateGUI()
 {
-    updateDevice();
+    if (!fileExists(HEADSETCONTROL_FILE_PATH)) {
+        resetGUI();
+        ui->notSupportedFrame->setHidden(true);
+        selectedDevice = nullptr;
+    } else {
+        if (selectedDevice == nullptr) {
+            loadDevices();
+            if (!deviceList.isEmpty() && n_connected > 0) {
+                loadDevice();
+            } else {
+                ui->missingheadsetcontrolFrame->setHidden(true);
+            }
+        } else {
+            updateDevice();
+        }
+    }
     setBatteryStatus();
     setChatmixStatus();
 }
@@ -503,6 +519,11 @@ void MainWindow::updateGUI()
 // Info Section Events
 void MainWindow::setBatteryStatus()
 {
+    if (selectedDevice == nullptr) {
+        changeTrayIconTo(":/icons/headphones-light.png");
+        return;
+    }
+
     QString status = selectedDevice->battery.status;
     int batteryLevel = selectedDevice->battery.level;
     QString level = QString::number(batteryLevel);
@@ -517,43 +538,43 @@ void MainWindow::setBatteryStatus()
     if (status == "BATTERY_UNAVAILABLE") {
         ui->batteryPercentage->setText(tr("Headset Off"));
         trayIcon->setToolTip(tr("HeadsetControl \r\nHeadset Off"));
-        trayIconPath = ":/icons/headphones-inv.png";
+        changeTrayIconTo(":/icons/headphones-light.png");
     } else if (status == "BATTERY_CHARGING") {
         ui->batteryPercentage->setText(level + tr("% - Charging"));
         trayIcon->setToolTip(tr("HeadsetControl \r\nBattery Charging"));
-        trayIconPath = ":/icons/battery-charging-inv.png";
+        changeTrayIconTo(":/icons/battery-charging-light.png");
     } else if (status == "BATTERY_AVAILABLE") {
         ui->batteryPercentage->setText(level + tr("% - Descharging"));
         trayIcon->setToolTip(tr("HeadsetControl \r\nBattery: ") + level + "%");
         if (level.toInt() > 75) {
-            trayIconPath = ":/icons/battery-level-full-inv.png";
+            changeTrayIconTo(":/icons/battery-level-full-light.png");
             notified = false;
         } else if (level.toInt() > settings.batteryLowThreshold) {
-            trayIconPath = ":/icons/battery-medium-inv.png";
+            changeTrayIconTo(":/icons/battery-medium-light.png");
             notified = false;
         } else {
-            trayIconPath = ":/icons/battery-low-inv.png";
+            changeTrayIconTo(":/icons/battery-low-light.png");
             if (!notified) {
                 trayIcon->showMessage(tr("Battery Alert!"),
                                       tr("The battery of your headset is running low"),
-                                      QIcon(":/icons/battery-low-inv.png"));
+                                      QIcon(":/icons/battery-low-light.png"));
                 notified = true;
             }
         }
     } else {
         ui->batteryPercentage->setText(tr("No battery info"));
         trayIcon->setToolTip("HeadsetControl");
-        trayIconPath = ":/icons/headphones-inv.png";
+        changeTrayIconTo(":/icons/headphones-light.png");
     }
-
-    if (!isAppDarkMode()) {
-        trayIconPath.replace("-inv", "");
-    }
-    trayIcon->setIcon(QIcon(trayIconPath));
 }
 
 void MainWindow::setChatmixStatus()
 {
+    if (selectedDevice == nullptr) {
+        ui->chatmixvalueLabel->setText(tr("None"));
+        return;
+    }
+
     int chatmix = selectedDevice->chatmix;
     QString chatmixValue = QString::number(chatmix);
     QString chatmixStatus;

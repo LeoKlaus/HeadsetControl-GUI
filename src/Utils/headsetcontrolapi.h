@@ -3,6 +3,7 @@
 
 #include "device.h"
 
+#include <QFile>
 #include <QObject>
 #include <QVersionNumber>
 
@@ -32,6 +33,7 @@ public:
 
 private:
     QString headsetcontrolFilePath;
+    QFile headsetcontrol;
 
     QString name;
     QVersionNumber version;

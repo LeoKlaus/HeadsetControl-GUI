@@ -10,52 +10,6 @@ HeadsetControlAPI::HeadsetControlAPI(QString headsetcontrolFilePath)
     sendCommand(QStringList());
 }
 
-// HC rleated functions
-QString HeadsetControlAPI::sendCommand(const QStringList &args_list)
-{
-    QProcess *proc = new QProcess();
-    QStringList args = QStringList() << QString("--output") << QString("JSON");
-    //args << QString("--test-device"); //Uncomment this to enable all "modules"
-    args << args_list;
-
-    proc->start(headsetcontrolFilePath, args);
-    proc->waitForFinished();
-    QString output = proc->readAllStandardOutput();
-    qDebug() << "Command: \t" << headsetcontrolFilePath;
-    qDebug() << "\tArgs: \theadsetcontrol " << args;
-    // qDebug() << output;
-
-    return output;
-}
-
-Action HeadsetControlAPI::sendAction(const QStringList &args_list)
-{
-    QString output = sendCommand(args_list);
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(output.toUtf8());
-    QJsonObject jsonInfo = jsonDoc.object();
-    QJsonArray actions = jsonInfo["actions"].toArray();
-    Action action;
-    if (!actions.isEmpty()) {
-        QJsonObject jaction = actions[0].toObject();
-
-        action.device = jaction["device"].toString();
-        action.capability = jaction["capability"].toString();
-        action.status = jaction["status"].toString();
-        action.error_message = jaction["error_message"].toString();
-
-        action.success = action.status == "success";
-
-        qDebug() << "Device:\t" << action.device;
-        qDebug() << "Capability:" << action.capability;
-        qDebug() << "Status:\t" << action.status;
-        if (!action.success) {
-            qDebug() << "Error:\t" << action.error_message;
-        }
-    }
-
-    return action;
-}
-
 QString HeadsetControlAPI::getName()
 {
     return name;
@@ -102,6 +56,53 @@ QList<Device *> HeadsetControlAPI::getConnectedDevices()
     }
 
     return devices;
+}
+
+// HC rleated functions
+QString HeadsetControlAPI::sendCommand(const QStringList &args_list)
+{
+    QProcess *proc = new QProcess();
+    QStringList args = QStringList() << QString("--output") << QString("JSON");
+    //args << QString("--test-device"); //Uncomment this to enable all "modules"
+    args << args_list;
+
+    proc->start(headsetcontrolFilePath, args);
+    proc->waitForFinished();
+    QString output = proc->readAllStandardOutput();
+    qDebug() << "Command: \t" << headsetcontrolFilePath;
+    qDebug() << "\tArgs: \theadsetcontrol " << args;
+    // qDebug() << output;
+    qDebug() << "Error: \t" << proc->error();
+
+    return output;
+}
+
+Action HeadsetControlAPI::sendAction(const QStringList &args_list)
+{
+    QString output = sendCommand(args_list);
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(output.toUtf8());
+    QJsonObject jsonInfo = jsonDoc.object();
+    QJsonArray actions = jsonInfo["actions"].toArray();
+    Action action;
+    if (!actions.isEmpty()) {
+        QJsonObject jaction = actions[0].toObject();
+
+        action.device = jaction["device"].toString();
+        action.capability = jaction["capability"].toString();
+        action.status = jaction["status"].toString();
+        action.error_message = jaction["error_message"].toString();
+
+        action.success = action.status == "success";
+
+        qDebug() << "Device:\t" << action.device;
+        qDebug() << "Capability:" << action.capability;
+        qDebug() << "Status:\t" << action.status;
+        if (!action.success) {
+            qDebug() << "Error:\t" << action.error_message;
+        }
+    }
+
+    return action;
 }
 
 void HeadsetControlAPI::setSidetone(Device *device, int level)
