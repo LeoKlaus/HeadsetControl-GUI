@@ -45,7 +45,7 @@ private:
     Ui::MainWindow *ui;
     QSystemTrayIcon *trayIcon;
     QTimer *timerGUI;
-    QString trayIconPath;
+    QString trayIconName;
     QMenu *trayMenu;
     QAction *ledOn;
     QAction *ledOff;
@@ -63,7 +63,7 @@ private:
     void bindEvents();
 
     //Tray Icon Section
-    void changeTrayIconTo(QString iconPath);
+    void changeTrayIconTo(QString iconName);
     void setupTrayIcon();
 
     //Theme mode Section

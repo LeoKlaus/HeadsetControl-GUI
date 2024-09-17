@@ -1,14 +1,16 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/battery-charging-dark.png</file>
-        <file>icons/battery-level-full-dark.png</file>
-        <file>icons/battery-low-dark.png</file>
-        <file>icons/battery-medium-dark.png</file>
-        <file>icons/headphones-dark.png</file>
-        <file>icons/battery-charging-light.png</file>
-        <file>icons/battery-level-full-light.png</file>
-        <file>icons/battery-low-light.png</file>
-        <file>icons/battery-medium-light.png</file>
-        <file>icons/headphones-light.png</file>
+        <file>icons/dark/png/battery-charging.png</file>
+        <file>icons/dark/png/battery-level-full.png</file>
+        <file>icons/dark/png/battery-low.png</file>
+        <file>icons/dark/png/battery-medium.png</file>
+        <file>icons/dark/png/headphones.png</file>
+        <file>icons/dark/index.theme</file>
+        <file>icons/light/index.theme</file>
+        <file>icons/light/png/battery-charging.png</file>
+        <file>icons/light/png/battery-level-full.png</file>
+        <file>icons/light/png/battery-low.png</file>
+        <file>icons/light/png/battery-medium.png</file>
+        <file>icons/light/png/headphones.png</file>
     </qresource>
 </RCC>

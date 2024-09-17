@@ -21,21 +21,29 @@ MainWindow::MainWindow(QWidget *parent)
     , timerGUI(new QTimer(this))
     , API(HeadsetControlAPI(HEADSETCONTROL_FILE_PATH))
 {
-    defaultStyle = styleSheet();
     QDir().mkpath(PROGRAM_CONFIG_PATH);
     settings = loadSettingsFromFile(PROGRAM_SETTINGS_FILEPATH);
+    defaultStyle = styleSheet();
+
+    setupTrayIcon();
     ui->setupUi(this);
     bindEvents();
-    setupTrayIcon();
+
     updateIconsTheme();
     updateStyle();
+
     resetGUI();
+
     updateGUI();
 
     connect(&API, &HeadsetControlAPI::actionSuccesful, this, &::MainWindow::saveDevicesSettings);
 
     connect(timerGUI, &QTimer::timeout, this, &::MainWindow::updateGUI);
     timerGUI->start(settings.msecUpdateIntervalTime);
+
+    //Small trick to make work theme style change (Won't work unless you show window once)
+    show();
+    hide();
 }
 
 MainWindow::~MainWindow()
@@ -149,20 +157,15 @@ void MainWindow::bindEvents()
 }
 
 //Tray Icon Section
-void MainWindow::changeTrayIconTo(QString iconPath)
+void MainWindow::changeTrayIconTo(QString iconName)
 {
-    trayIconPath = iconPath;
-    if (isAppDarkMode()) {
-        trayIconPath.replace("-dark", "-light");
-    } else {
-        trayIconPath.replace("-light", "-dark");
-    }
-    trayIcon->setIcon(QIcon(trayIconPath));
+    trayIconName = iconName;
+    trayIcon->setIcon(QIcon::fromTheme(iconName));
 }
 
 void MainWindow::setupTrayIcon()
 {
-    changeTrayIconTo(":/icons/headphones-light.png");
+    changeTrayIconTo("headphones");
     trayIcon->setToolTip("HeadsetControl");
 
     trayMenu = new QMenu(this);
@@ -187,14 +190,12 @@ void MainWindow::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::ActivationReason::Trigger) {
         toggleWindow();
-        updateIconsTheme();
     }
 }
 
 //Theme mode Section
 bool MainWindow::isAppDarkMode()
 {
-    // Check if the application is using a dark palette
     Qt::ColorScheme scheme = qApp->styleHints()->colorScheme();
     if (scheme == Qt::ColorScheme::Dark)
         return true;
@@ -203,16 +204,13 @@ bool MainWindow::isAppDarkMode()
 
 void MainWindow::updateIconsTheme()
 {
-    QString t = "";
     if (isAppDarkMode()) {
-        //qApp->setWindowIcon(QIcon(":/icons/headphones-light.png"));
-        t = "-light";
+        QIcon::setThemeName("light");
     } else {
-        //qApp->setWindowIcon(QIcon(":/icons/headphones-dark.png"));
-        t = "-dark";
+        QIcon::setThemeName("dark");
     }
-
-    changeTrayIconTo(trayIconPath);
+    setWindowIcon(QIcon::fromTheme("headphones"));
+    changeTrayIconTo(trayIconName);
 }
 
 void MainWindow::updateStyle()
@@ -238,7 +236,6 @@ void MainWindow::toggleWindow()
         show();
         if (firstShow) {
             checkForUpdates(firstShow);
-            //QtConcurrent::run([this] { checkForUpdates(firstShow); });
             firstShow = false;
         }
         minimizeWindowSize();
@@ -261,7 +258,6 @@ void MainWindow::moveToBottomRight()
     int x = screenGeometry.width() - width();
     int y = screenGeometry.height() - height() - ui->notSupportedFrame->height()
             - ui->missingheadsetcontrolFrame->height();
-
     move(x, y);
 }
 
@@ -367,7 +363,7 @@ void MainWindow::loadDevice(int deviceIndex)
         ui->tabWidget->setTabEnabled(0, true);
         setChatmixStatus();
     }
-    // Eualizer Section
+    // Equalizer Section
     if (capabilities.contains("CAP_EQUALIZER_PRESET") && !selectedDevice->presets_list.empty()) {
         ui->equalizerpresetFrame->setHidden(false);
         ui->tabWidget->setTabEnabled(1, true);
@@ -520,7 +516,7 @@ void MainWindow::updateGUI()
 void MainWindow::setBatteryStatus()
 {
     if (selectedDevice == nullptr) {
-        changeTrayIconTo(":/icons/headphones-light.png");
+        changeTrayIconTo("headphones");
         return;
     }
 
@@ -538,50 +534,52 @@ void MainWindow::setBatteryStatus()
     if (status == "BATTERY_UNAVAILABLE") {
         ui->batteryPercentage->setText(tr("Headset Off"));
         trayIcon->setToolTip(tr("HeadsetControl \r\nHeadset Off"));
-        changeTrayIconTo(":/icons/headphones-light.png");
+        changeTrayIconTo("headphones-light");
     } else if (status == "BATTERY_CHARGING") {
         ui->batteryPercentage->setText(level + tr("% - Charging"));
         trayIcon->setToolTip(tr("HeadsetControl \r\nBattery Charging"));
-        changeTrayIconTo(":/icons/battery-charging-light.png");
+        changeTrayIconTo("battery-charging");
     } else if (status == "BATTERY_AVAILABLE") {
         ui->batteryPercentage->setText(level + tr("% - Descharging"));
         trayIcon->setToolTip(tr("HeadsetControl \r\nBattery: ") + level + "%");
         if (level.toInt() > 75) {
-            changeTrayIconTo(":/icons/battery-level-full-light.png");
+            changeTrayIconTo("battery-level-full");
             notified = false;
         } else if (level.toInt() > settings.batteryLowThreshold) {
-            changeTrayIconTo(":/icons/battery-medium-light.png");
+            changeTrayIconTo("battery-medium");
             notified = false;
         } else {
-            changeTrayIconTo(":/icons/battery-low-light.png");
+            changeTrayIconTo("battery-low");
             if (!notified) {
                 trayIcon->showMessage(tr("Battery Alert!"),
                                       tr("The battery of your headset is running low"),
-                                      QIcon(":/icons/battery-low-light.png"));
+                                      QIcon("battery-low"));
                 notified = true;
             }
         }
     } else {
         ui->batteryPercentage->setText(tr("No battery info"));
         trayIcon->setToolTip("HeadsetControl");
-        changeTrayIconTo(":/icons/headphones-light.png");
+        changeTrayIconTo("headphones");
     }
 }
 
 void MainWindow::setChatmixStatus()
 {
+    QString chatmixStatus = tr("None");
+
     if (selectedDevice == nullptr) {
-        ui->chatmixvalueLabel->setText(tr("None"));
+        ui->chatmixvalueLabel->setText(chatmixStatus);
         return;
     }
 
     int chatmix = selectedDevice->chatmix;
     QString chatmixValue = QString::number(chatmix);
-    QString chatmixStatus;
     if (chatmix < 65)
         chatmixStatus = tr("Game");
     else if (chatmix > 65)
         chatmixStatus = tr("Chat");
+
     ui->chatmixvalueLabel->setText(chatmixValue);
     ui->chatmixstatusLabel->setText(chatmixStatus);
 }
