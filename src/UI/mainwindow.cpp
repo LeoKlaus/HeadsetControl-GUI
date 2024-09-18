@@ -63,6 +63,7 @@ void MainWindow::changeEvent(QEvent *e)
         if (windowState() == Qt::WindowMinimized) {
             hide();
         }
+        break;
     default:
         break;
     }
@@ -234,12 +235,12 @@ void MainWindow::toggleWindow()
 {
     if (isHidden()) {
         show();
+        minimizeWindowSize();
+        moveToBottomRight();
         if (firstShow) {
             checkForUpdates(firstShow);
             firstShow = false;
         }
-        minimizeWindowSize();
-        moveToBottomRight();
     } else {
         hide();
     }
@@ -247,18 +248,15 @@ void MainWindow::toggleWindow()
 
 void MainWindow::minimizeWindowSize()
 {
-    resize(minimumSize());
+    resize(sizeHint());
 }
 
 void MainWindow::moveToBottomRight()
 {
     QScreen *screen = QGuiApplication::primaryScreen();
-    QRect screenGeometry = screen->availableGeometry();
-
-    int x = screenGeometry.width() - width();
-    int y = screenGeometry.height() - height() - ui->notSupportedFrame->height()
-            - ui->missingheadsetcontrolFrame->height();
-    move(x, y);
+    QSize screenSize = screen->availableSize();
+    QSize finalPosition = screenSize - sizeHint();
+    move(finalPosition.width() - 5, finalPosition.height() - 35);
 }
 
 void MainWindow::resetGUI()
