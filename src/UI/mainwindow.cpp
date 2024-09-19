@@ -532,7 +532,7 @@ void MainWindow::setBatteryStatus()
     if (status == "BATTERY_UNAVAILABLE") {
         ui->batteryPercentage->setText(tr("Headset Off"));
         trayIcon->setToolTip(tr("HeadsetControl \r\nHeadset Off"));
-        changeTrayIconTo("headphones-light");
+        changeTrayIconTo("headphones");
     } else if (status == "BATTERY_CHARGING") {
         ui->batteryPercentage->setText(level + tr("% - Charging"));
         trayIcon->setToolTip(tr("HeadsetControl \r\nBattery Charging"));
