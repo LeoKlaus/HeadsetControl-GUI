@@ -44,11 +44,11 @@ private:
 
     Ui::MainWindow *ui;
     QSystemTrayIcon *trayIcon;
-    QTimer *timerGUI;
     QString trayIconName;
     QMenu *trayMenu;
     QAction *ledOn;
     QAction *ledOff;
+    QTimer *timerGUI;
 
     Settings settings;
 
@@ -59,6 +59,8 @@ private:
     QList<Device *> deviceList;
 
     QList<QSlider *> slidersEq;
+
+    void deleteDevices(QList<Device *> deviceList);
 
     void bindEvents();
 

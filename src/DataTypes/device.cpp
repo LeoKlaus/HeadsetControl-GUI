@@ -108,14 +108,15 @@ void Device::updateDevice(const Device *new_device)
     this->chatmix = new_device->chatmix;
 }
 
-void Device::updateDevice(const QList<Device *> &new_device_list)
+bool Device::updateDevice(const QList<Device *> &new_device_list)
 {
     for (int i = 0; i < new_device_list.length(); ++i) {
         if (this != new_device_list.at(i)) {
             this->updateDevice(new_device_list.at(i));
-            break;
+            return true;
         }
     }
+    return false;
 }
 
 QJsonObject Device::toJson() const
@@ -205,7 +206,7 @@ QList<Device *> mergeDevices(QList<Device *> connectedDevices, const QList<Devic
 
         if (!deviceFound) {
             // If the device wasn't found in saved devices, add it
-            connectedDevices.append(new Device(*savedDevice));
+            connectedDevices.append(savedDevice);
         }
     }
     return connectedDevices;

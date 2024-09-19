@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , trayIcon(new QSystemTrayIcon(this))
+    , trayMenu(new QMenu(this))
     , timerGUI(new QTimer(this))
     , API(HeadsetControlAPI(HEADSETCONTROL_FILE_PATH))
 {
@@ -46,9 +47,19 @@ MainWindow::MainWindow(QWidget *parent)
     hide();
 }
 
+void MainWindow::deleteDevices(QList<Device *> deviceList)
+{
+    for (Device *device : deviceList) {
+        delete device;
+    }
+    deviceList.clear();
+}
+
 MainWindow::~MainWindow()
 {
     timerGUI->stop();
+    delete timerGUI;
+    delete trayMenu;
     delete trayIcon;
     delete ui;
 }
@@ -169,7 +180,6 @@ void MainWindow::setupTrayIcon()
     changeTrayIconTo("headphones");
     trayIcon->setToolTip("HeadsetControl");
 
-    trayMenu = new QMenu(this);
     trayMenu->addAction(tr("Hide/Show"), this, &MainWindow::toggleWindow);
     ledOn = trayMenu->addAction(tr("Turn Lights On"), &API, [=]() {
         API.setLights(selectedDevice, true);
@@ -300,10 +310,15 @@ void MainWindow::resetGUI()
 //Devices Managing Section
 void MainWindow::loadDevices()
 {
-    QList<Device *> c = API.getConnectedDevices(), s = getSavedDevices();
-    n_connected = c.length();
-    n_saved = s.length();
-    deviceList = mergeDevices(c, s);
+    QList<Device *> connected = API.getConnectedDevices(), saved = getSavedDevices();
+    n_connected = connected.length();
+    n_saved = saved.length();
+    QList<Device *> merged = mergeDevices(connected, saved);
+
+    deleteDevices(deviceList);
+    deleteDevices(saved);
+
+    deviceList = merged;
 }
 
 void MainWindow::loadDevice(int deviceIndex)
@@ -484,7 +499,11 @@ QList<Device *> MainWindow::getSavedDevices()
 void MainWindow::updateDevice()
 {
     QList<Device *> newDl = API.getConnectedDevices();
-    selectedDevice->updateDevice(newDl);
+    if (!selectedDevice->updateDevice(newDl)) {
+        selectedDevice = nullptr;
+    }
+
+    deleteDevices(newDl);
 }
 
 //Update GUI Section
@@ -686,6 +705,7 @@ void MainWindow::selectDevice()
             loadDevice(index);
         }
     }
+    delete (loadDevWindow);
 }
 
 void MainWindow::editProgramSetting()
@@ -697,6 +717,7 @@ void MainWindow::editProgramSetting()
         timerGUI->setInterval(settings.msecUpdateIntervalTime);
         updateStyle();
     }
+    delete (settingsW);
 }
 
 void MainWindow::checkForUpdates(bool firstStart)
@@ -733,7 +754,8 @@ void MainWindow::checkForUpdates(bool firstStart)
         QString text = "HeadesetControl: " + s1 + "<br/>HeadesetControl-GUI: " + s2;
         dialogWindow->setLabel(text);
 
-        dialogWindow->show();
+        dialogWindow->exec();
+        delete (dialogWindow);
     }
 }
 
@@ -750,7 +772,9 @@ void MainWindow::showAbout()
                    + qApp->applicationVersion();
     dialogWindow->setLabel(text);
 
-    dialogWindow->show();
+    dialogWindow->exec();
+
+    delete (dialogWindow);
 }
 
 void MainWindow::showCredits()
@@ -762,5 +786,7 @@ void MainWindow::showCredits()
                       "href='https://github.com/Sapd/HeadsetControl'>HeadsetCoontrol");
     dialogWindow->setLabel(text);
 
-    dialogWindow->show();
+    dialogWindow->exec();
+
+    delete (dialogWindow);
 }

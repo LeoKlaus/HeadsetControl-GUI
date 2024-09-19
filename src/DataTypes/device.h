@@ -77,7 +77,7 @@ public:
     bool operator==(const Device *d) const;
 
     void updateDevice(const Device *new_device);
-    void updateDevice(const QList<Device *> &new_device_list);
+    bool updateDevice(const QList<Device *> &new_device_list);
 
     QJsonObject toJson() const;
     static Device fromJson(const QJsonObject &json);

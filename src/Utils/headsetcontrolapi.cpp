@@ -74,6 +74,8 @@ QString HeadsetControlAPI::sendCommand(const QStringList &args_list)
     // qDebug() << output;
     qDebug() << "Error: \t" << proc->error();
 
+    delete (proc);
+
     return output;
 }
 
