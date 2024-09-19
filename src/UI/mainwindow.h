@@ -56,7 +56,7 @@ private:
 
     HeadsetControlAPI API;
     Device *selectedDevice = nullptr;
-    QList<Device *> deviceList;
+    QList<Device *> connectedDevices;
 
     QList<QSlider *> slidersEq;
 

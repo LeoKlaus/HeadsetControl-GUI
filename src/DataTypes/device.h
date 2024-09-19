@@ -83,7 +83,7 @@ public:
     static Device fromJson(const QJsonObject &json);
 };
 
-QList<Device *> mergeDevices(QList<Device *> connectedDevices, const QList<Device *> &savedDevices);
+void updateDevicesFromSource(QList<Device *> &devicesToUpdate, const QList<Device *> &sourceDevices);
 
 void serializeDevices(const QList<Device *> &devices, const QString &filePath);
 QList<Device *> deserializeDevices(const QString &filePath);

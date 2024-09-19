@@ -175,29 +175,29 @@ Device Device::fromJson(const QJsonObject &json)
     return device;
 }
 
-QList<Device *> mergeDevices(QList<Device *> connectedDevices, const QList<Device *> &savedDevices)
+void updateDevicesFromSource(QList<Device *> &devicesToUpdate, const QList<Device *> &sourceDevices)
 {
-    for (Device *savedDevice : savedDevices) {
+    for (Device *sourceDevice : sourceDevices) {
         bool deviceFound = false;
-        for (Device *connectedDevice : connectedDevices) {
-            if (connectedDevice->id_vendor == savedDevice->id_vendor
-                && connectedDevice->id_product == savedDevice->id_product) {
+        for (Device *toUpdateDevice : devicesToUpdate) {
+            if (toUpdateDevice->id_vendor == sourceDevice->id_vendor
+                && toUpdateDevice->id_product == sourceDevice->id_product) {
                 // Update the connected device with saved device's information
-                connectedDevice->lights = savedDevice->lights;
-                connectedDevice->sidetone = savedDevice->sidetone;
-                connectedDevice->voice_prompts = savedDevice->voice_prompts;
-                connectedDevice->inactive_time = savedDevice->inactive_time;
+                toUpdateDevice->lights = sourceDevice->lights;
+                toUpdateDevice->sidetone = sourceDevice->sidetone;
+                toUpdateDevice->voice_prompts = sourceDevice->voice_prompts;
+                toUpdateDevice->inactive_time = sourceDevice->inactive_time;
 
-                connectedDevice->equalizer_preset = savedDevice->equalizer_preset;
-                connectedDevice->equalizer_curve = savedDevice->equalizer_curve;
-                connectedDevice->volume_limiter = savedDevice->volume_limiter;
+                toUpdateDevice->equalizer_preset = sourceDevice->equalizer_preset;
+                toUpdateDevice->equalizer_curve = sourceDevice->equalizer_curve;
+                toUpdateDevice->volume_limiter = sourceDevice->volume_limiter;
 
-                connectedDevice->rotate_to_mute = savedDevice->rotate_to_mute;
-                connectedDevice->mic_mute_led_brightness = savedDevice->mic_mute_led_brightness;
-                connectedDevice->mic_volume = savedDevice->mic_volume;
+                toUpdateDevice->rotate_to_mute = sourceDevice->rotate_to_mute;
+                toUpdateDevice->mic_mute_led_brightness = sourceDevice->mic_mute_led_brightness;
+                toUpdateDevice->mic_volume = sourceDevice->mic_volume;
 
-                connectedDevice->bt_when_powered_on = savedDevice->bt_when_powered_on;
-                connectedDevice->bt_call_volume = savedDevice->bt_call_volume;
+                toUpdateDevice->bt_when_powered_on = sourceDevice->bt_when_powered_on;
+                toUpdateDevice->bt_call_volume = sourceDevice->bt_call_volume;
 
                 deviceFound = true;
                 break;
@@ -206,10 +206,9 @@ QList<Device *> mergeDevices(QList<Device *> connectedDevices, const QList<Devic
 
         if (!deviceFound) {
             // If the device wasn't found in saved devices, add it
-            connectedDevices.append(savedDevice);
+            devicesToUpdate.append(sourceDevice);
         }
-    }
-    return connectedDevices;
+    };
 }
 
 void serializeDevices(const QList<Device *> &devices, const QString &filePath)

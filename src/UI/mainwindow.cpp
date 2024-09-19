@@ -310,15 +310,12 @@ void MainWindow::resetGUI()
 //Devices Managing Section
 void MainWindow::loadDevices()
 {
-    QList<Device *> connected = API.getConnectedDevices(), saved = getSavedDevices();
-    n_connected = connected.length();
-    n_saved = saved.length();
-    QList<Device *> merged = mergeDevices(connected, saved);
+    deleteDevices(connectedDevices);
+    QList<Device *> saved = getSavedDevices();
+    connectedDevices = API.getConnectedDevices();
+    updateDevicesFromSource(connectedDevices, saved);
 
-    deleteDevices(deviceList);
     deleteDevices(saved);
-
-    deviceList = merged;
 }
 
 void MainWindow::loadDevice(int deviceIndex)
@@ -330,7 +327,7 @@ void MainWindow::loadDevice(int deviceIndex)
         return;
     }
 
-    selectedDevice = deviceList.value(deviceIndex);
+    selectedDevice = connectedDevices.value(deviceIndex);
     QSet<QString> &capabilities = selectedDevice->capabilities;
 
     ui->missingheadsetcontrolFrame->setHidden(true);
@@ -488,7 +485,12 @@ void MainWindow::loadGUIValues()
 
 void MainWindow::saveDevicesSettings()
 {
-    serializeDevices(deviceList, DEVICES_SETTINGS_FILEPATH);
+    QList<Device *> toSave = getSavedDevices();
+    updateDevicesFromSource(toSave, connectedDevices);
+
+    serializeDevices(toSave, DEVICES_SETTINGS_FILEPATH);
+
+    deleteDevices(toSave);
 }
 
 QList<Device *> MainWindow::getSavedDevices()
@@ -516,10 +518,10 @@ void MainWindow::updateGUI()
     } else {
         if (selectedDevice == nullptr) {
             loadDevices();
-            if (!deviceList.isEmpty() && n_connected > 0) {
-                loadDevice();
-            } else {
+            if (connectedDevices.isEmpty()) {
                 ui->missingheadsetcontrolFrame->setHidden(true);
+            } else {
+                loadDevice();
             }
         } else {
             updateDevice();
@@ -687,7 +689,7 @@ void MainWindow::selectDevice()
     this->loadDevices();
 
     QStringList devices = QStringList();
-    for (Device *device : deviceList) {
+    for (Device *device : connectedDevices) {
         if (device->connected) {
             devices << device->device;
         }
