@@ -29,7 +29,7 @@ Device::Device() {}
 
 Device::Device(const QJsonObject &jsonObj, QString jsonData)
 {
-    connected = jsonObj["status"].toString() == "success";
+    status = jsonObj["status"].toString();
 
     device = jsonObj["device"].toString();
     vendor = jsonObj["vendor"].toString();

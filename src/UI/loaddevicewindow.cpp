@@ -1,14 +1,16 @@
 #include "loaddevicewindow.h"
 #include "ui_loaddevicewindow.h"
 
-LoaddeviceWindow::LoaddeviceWindow(const QStringList &devices, QWidget *parent)
+LoaddeviceWindow::LoaddeviceWindow(const QList<Device *> &devices, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::loaddevicewindow)
 {
     setModal(true);
     ui->setupUi(this);
 
-    ui->devicelistComboBox->addItems(devices);
+    for (Device *device : devices) {
+        ui->devicelistComboBox->addItem(device->device);
+    }
 }
 
 int LoaddeviceWindow::getDeviceIndex()

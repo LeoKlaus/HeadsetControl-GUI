@@ -41,7 +41,7 @@ public:
     Device(const QJsonObject &jsonObj, QString jsonData);
 
     // Status
-    bool connected = false;
+    QString status;
 
     // Basic info
     QString device;

@@ -1,6 +1,8 @@
 #ifndef LOADDEVICEWINDOW_H
 #define LOADDEVICEWINDOW_H
 
+#include "device.h"
+
 #include <QDialog>
 
 namespace Ui {
@@ -12,7 +14,7 @@ class LoaddeviceWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit LoaddeviceWindow(const QStringList &devices, QWidget *parent = nullptr);
+    explicit LoaddeviceWindow(const QList<Device *> &devices, QWidget *parent = nullptr);
     ~LoaddeviceWindow();
 
     int getDeviceIndex();

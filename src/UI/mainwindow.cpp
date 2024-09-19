@@ -688,17 +688,10 @@ void MainWindow::selectDevice()
 {
     this->loadDevices();
 
-    QStringList devices = QStringList();
-    for (Device *device : connectedDevices) {
-        if (device->connected) {
-            devices << device->device;
-        }
-    }
-
-    LoaddeviceWindow *loadDevWindow = new LoaddeviceWindow(devices, this);
+    LoaddeviceWindow *loadDevWindow = new LoaddeviceWindow(connectedDevices, this);
     if (loadDevWindow->exec() == QDialog::Accepted) {
         int index = loadDevWindow->getDeviceIndex();
-        if (index >= 0 && index < devices.length()) {
+        if (index >= 0 && index < connectedDevices.length()) {
             if (index == 0) {
                 ui->tabWidget->setDisabled(false);
             } else {
