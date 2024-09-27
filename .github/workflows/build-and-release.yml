@@ -133,6 +133,12 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
+          body: |
+            ## Contributor
+            @nicola02nb Mantainer
+
+            ## Credits
+            @Sapd for [HeadsetControl](https://github.com/Sapd/HeadsetControl)
           draft: false
           prerelease: false
 
