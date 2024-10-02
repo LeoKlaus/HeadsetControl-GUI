@@ -16,7 +16,11 @@ jobs:
         id: get_latest_tag
         shell: pwsh  # Use PowerShell
         run: |
-          $latest_tag = git describe --tags $(git rev-list --tags --max-count=1)
+          $latest_tag = git describe --tags $(git rev-list --tags --max-count=1) 2>$null
+          if (-not $latest_tag) {
+            Write-Host "No tags found, using default version 0.0.0"
+            $latest_tag = "v0.0.0"
+          }
           Write-Host "Latest tag is: $latest_tag"
           Add-Content -Path $env:GITHUB_ENV -Value "latest_tag=$latest_tag"
 
