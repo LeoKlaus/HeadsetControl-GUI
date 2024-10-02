@@ -4,30 +4,21 @@ on:
   release:
     types: [published]
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Release tag to test (e.g., v1.0.0)'
-        required: true
-      asset_url:
-        description: 'URL of the release asset ZIP file'
-        required: true
-
+    
 jobs:
   submit:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get release info
-        id: get_release
-        uses: bruceadams/get-release@v1.2.3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get latest release tag
+        run: |
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
 
       - name: Extract version from tag
         id: get_version
         run: |
-          $version = "${{ steps.get_release.outputs.tag_name }}" -replace '^v', ''
+          $version = "${{ latest_tag }}" -replace '^v', ''
           echo "::set-output name=version::$version"
 
       - name: Download release asset
