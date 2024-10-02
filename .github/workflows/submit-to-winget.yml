@@ -13,17 +13,19 @@ jobs:
 
       - name: Get latest release tag
         id: get_latest_tag
+        shell: pwsh  # Use PowerShell Core
         run: |
-          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          echo "Latest tag is: $latest_tag"
-          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
+          $latest_tag = git describe --tags $(git rev-list --tags --max-count=1)
+          Write-Host "Latest tag is: $latest_tag"
+          echo "latest_tag=$latest_tag" >> $env:GITHUB_ENV
 
       - name: Extract version from tag
         id: get_version
+        shell: pwsh  # Use PowerShell Core
         run: |
-          version="${latest_tag#v}"
-          echo "Version without 'v' is: $version"
-          echo "version=$version" >> $GITHUB_ENV
+          $version = $latest_tag -replace '^v', ''
+          Write-Host "Version without 'v' is: $version"
+          echo "version=$version" >> $env:GITHUB_ENV
           
       - name: Download release asset
         run: |
