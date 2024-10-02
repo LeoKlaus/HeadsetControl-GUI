@@ -1,0 +1,82 @@
+name: Submit to Winget
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to test (e.g., v1.0.0)'
+        required: true
+      asset_url:
+        description: 'URL of the release asset ZIP file'
+        required: true
+
+jobs:
+  submit:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get release info
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          $version = "${{ steps.get_release.outputs.tag_name }}" -replace '^v', ''
+          echo "::set-output name=version::$version"
+
+      - name: Download release asset
+        run: |
+          Invoke-WebRequest -Uri "${{ steps.get_release.outputs.assets[0].browser_download_url }}" -OutFile "HeadsetControl-GUI.zip"
+
+      - name: Calculate SHA256
+        id: sha256
+        run: |
+          $hash = (Get-FileHash -Algorithm SHA256 -Path .\HeadsetControl-GUI.zip).Hash
+          echo "::set-output name=hash::$hash"
+
+      - name: Create winget manifest
+        run: |
+          $manifest = @"
+          PackageIdentifier: LeoKlaus.HeadsetControl-GUI
+          PackageVersion: ${{ steps.get_version.outputs.version }}
+          PackageLocale: en-US
+          Publisher: LeoKlaus
+          PublisherUrl: https://github.com/LeoKlaus
+          PackageName: HeadsetControl-GUI
+          PackageUrl: https://github.com/LeoKlaus/HeadsetControl-GUI
+          License: MIT
+          LicenseUrl: https://github.com/LeoKlaus/HeadsetControl-GUI/blob/main/LICENSE
+          ShortDescription: A GUI for headsetcontrol, a tool for controlling certain headsets
+          Installers:
+            - Architecture: x64
+              InstallerType: zip
+              InstallerUrl: ${{ steps.get_release.outputs.assets[0].browser_download_url }}
+              InstallerSha256: ${{ steps.sha256.outputs.hash }}
+              NestedInstallerType: portable
+              NestedInstallerFiles:
+                - RelativeFilePath: HeadsetControl-GUI.exe
+          ManifestType: singleton
+          ManifestVersion: 1.0.0
+          "@
+          $manifest | Out-File -FilePath .\LeoKlaus.HeadsetControl-GUI.yaml -Encoding utf8
+
+      - name: Install Winget-Create
+        run: |
+          Invoke-WebRequest -Uri https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
+          .\wingetcreate.exe --version
+
+      - name: Validate manifest
+        run: |
+          .\wingetcreate.exe validate .\LeoKlaus.HeadsetControl-GUI.yaml
+
+      - name: Submit manifest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          .\wingetcreate.exe submit .\LeoKlaus.HeadsetControl-GUI.yaml --token $env:GITHUB_TOKEN
