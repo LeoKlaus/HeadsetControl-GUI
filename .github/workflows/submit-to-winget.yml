@@ -16,15 +16,15 @@ jobs:
         run: |
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
           echo "Latest tag is: $latest_tag"
-          echo "::set-output name=latest_tag::$latest_tag"
+          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
 
       - name: Extract version from tag
         id: get_version
         run: |
-          version="${{ steps.get_latest_tag.outputs.latest_tag#v }}"
+          version="${latest_tag#v}"
           echo "Version without 'v' is: $version"
-          echo "::set-output name=version::$version"
-
+          echo "version=$version" >> $GITHUB_ENV
+          
       - name: Download release asset
         run: |
           Invoke-WebRequest -Uri "${{ steps.get_release.outputs.assets[0].browser_download_url }}" -OutFile "HeadsetControl-GUI.zip"
