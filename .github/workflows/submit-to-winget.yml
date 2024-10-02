@@ -9,23 +9,25 @@ jobs:
   submit:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Get latest release tag
         id: get_latest_tag
-        shell: pwsh  # Use PowerShell Core
+        shell: pwsh  # Use PowerShell
         run: |
           $latest_tag = git describe --tags $(git rev-list --tags --max-count=1)
           Write-Host "Latest tag is: $latest_tag"
-          echo "latest_tag=$latest_tag" >> $env:GITHUB_ENV
+          Add-Content -Path $env:GITHUB_ENV -Value "latest_tag=$latest_tag"
 
       - name: Extract version from tag
         id: get_version
-        shell: pwsh  # Use PowerShell Core
+        shell: pwsh  # Use PowerShell
         run: |
+          $latest_tag = $env:latest_tag
           $version = $latest_tag -replace '^v', ''
           Write-Host "Version without 'v' is: $version"
-          echo "version=$version" >> $env:GITHUB_ENV
+          Add-Content -Path $env:GITHUB_ENV -Value "version=$version"
           
       - name: Download release asset
         run: |
