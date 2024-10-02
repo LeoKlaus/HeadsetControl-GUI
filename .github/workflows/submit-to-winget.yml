@@ -18,7 +18,8 @@ jobs:
       - name: Extract version from tag
         id: get_version
         run: |
-          $version = "${{ latest_tag }}" -replace '^v', ''
+          version="${{ steps.get_latest_tag.outputs.latest_tag#v }}"
+          echo "Version without 'v' is: $version"
           echo "::set-output name=version::$version"
 
       - name: Download release asset
