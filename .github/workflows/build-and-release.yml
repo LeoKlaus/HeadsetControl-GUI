@@ -170,6 +170,7 @@ jobs:
   winget-release:
     needs: [create-release]
     runs-on: windows-latest
+    if: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
