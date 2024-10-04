@@ -45,6 +45,7 @@ jobs:
           version: "6.7.2"
           host: "linux"
           add-tools-to-path: true
+          cache: true
 
       - name: Install dependencies
         run: |

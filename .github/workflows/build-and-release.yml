@@ -91,6 +91,7 @@ jobs:
           version: "6.7.2"
           host: "linux"
           add-tools-to-path: true
+          cache: true
 
       - name: Install dependencies
         run: |
@@ -188,6 +189,7 @@ jobs:
           $manifest = @"
           PackageIdentifier: LeoKlaus.HeadsetControl-GUI
           PackageVersion: ${{ inputs.version }} 
+          PackageLocale: en-US
           Publisher: LeoKlaus
           PublisherUrl: https://github.com/LeoKlaus
           PackageName: HeadsetControl-GUI
