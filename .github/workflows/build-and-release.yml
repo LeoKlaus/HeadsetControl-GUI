@@ -20,6 +20,7 @@ jobs:
         with:
           version: "6.7.2"
           add-tools-to-path: true
+          cache: true
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
@@ -68,7 +69,7 @@ jobs:
       - name: Zip binaries folder
         run: |
           $zipFile = "HeadsetControl-GUI_windows_64.zip"
-          $folder = "build/release/"
+          $folder = "build/release/*"
           Compress-Archive -Path $folder -DestinationPath $zipFile
         shell: pwsh
 
@@ -105,13 +106,13 @@ jobs:
 
       - name: Zip binaries folder
         run: |
-          zip build/HeadsetControl-GUI_linux_64.zip build/HeadsetControl-GUI
+          zip -r HeadsetControl-GUI_linux_64.zip build/HeadsetControl-GUI
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: HeadsetControl-GUI_linux_64
-          path: build/HeadsetControl-GUI_linux_64.zip
+          path: HeadsetControl-GUI_linux_64.zip
 
   create-release:
     needs: [build-linux, build-windows]
