@@ -135,8 +135,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ inputs.version }}
-          release_name: Release ${{ inputs.version }}
+          tag_name: v${{ inputs.version }}
+          release_name: Release v${{ inputs.version }}
           body: |
             ## Contributor
             @nicola02nb Mantainer
@@ -166,7 +166,7 @@ jobs:
           asset_name: HeadsetControl-GUI_windows_64.zip
           asset_content_type: application/octet-stream
   
-  submit:
+  winget-release:
     needs: [create-release]
     runs-on: windows-latest
     steps:
@@ -212,6 +212,7 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
           .\wingetcreate.exe --version
+        continue-on-error: true
 
       - name: Validate manifest
         run: |
