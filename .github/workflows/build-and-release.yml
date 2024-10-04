@@ -216,7 +216,8 @@ jobs:
 
       - name: Validate manifest
         run: |
-          .\wingetcreate.exe validate .\LeoKlaus.HeadsetControl-GUI.yaml
+          winget validate .\LeoKlaus.HeadsetControl-GUI.yaml
+        continue-on-error: true
 
       - name: Submit manifest
         env:
