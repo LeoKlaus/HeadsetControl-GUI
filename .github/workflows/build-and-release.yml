@@ -199,12 +199,13 @@ jobs:
           ShortDescription: A GUI for the great HeadsetControl
           Installers:
             - Architecture: x64
-              InstallerType: zip
+              InstallerType: exe
+              Scope: user
               InstallerUrl: https://github.com/LeoKlaus/HeadsetControl-GUI/releases/latest/download/HeadsetControl-GUI_windows_64.zip
               InstallerSha256: ${{ steps.sha256.outputs.hash }}
-              NestedInstallerType: portable
-              NestedInstallerFiles:
-                - RelativeFilePath: HeadsetControl-GUI.exe
+              InstallerSwitches:
+                Silent: /S
+                SilentWithProgress: /S
           ManifestType: singleton
           ManifestVersion: 1.0.0
           "@
