@@ -7,7 +7,13 @@ InstallerType: zip
 NestedInstallerType: portable
 NestedInstallerFiles:
 - RelativeFilePath: release\HeadsetControl-GUI.exe
-  PortableCommandAlias: zip
+  PortableCommandAlias: HeadsetControl-GUI
+Dependencies:
+  WindowsFeatures: []
+  WindowsLibraries: []
+  PackageDependencies:
+    - PackageIdentifier: Microsoft.VCRedist.2015+.x64
+      MinimumVersion: 14.32.31332.0
 Installers:
 - Architecture: x64
   InstallerUrl: https://github.com/LeoKlaus/HeadsetControl-GUI/releases/latest/download/HeadsetControl-GUI_windows_64.zip
