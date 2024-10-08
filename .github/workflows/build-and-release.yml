@@ -196,5 +196,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ inputs.version }}
-        #run: |
-          #wingetcreate submit manifests\l\LeoKlaus\HeadsetControl-GUI\$env:VERSION\
+        run: |
+          ls
