@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     , API(HeadsetControlAPI(HEADSETCONTROL_FILE_PATH))
 {
     QDir().mkpath(PROGRAM_CONFIG_PATH);
+    createStartMenuShortcut();
     settings = loadSettingsFromFile(PROGRAM_SETTINGS_FILEPATH);
     defaultStyle = styleSheet();
 

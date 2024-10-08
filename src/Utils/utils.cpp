@@ -93,3 +93,55 @@ bool setOSRunOnStartup(bool enable)
     return false;
 #endif
 }
+
+bool createStartMenuShortcut()
+{
+    QString appName = QCoreApplication::applicationName();
+    QString appPath = QCoreApplication::applicationFilePath();
+
+#ifdef Q_OS_WIN
+    QString startupPath = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
+    QString linkPath = startupPath + QDir::separator() + appName + ".lnk";
+    QFile::remove(linkPath);
+    return QFile::link(appPath, linkPath);
+
+#elif defined(Q_OS_LINUX)
+    // Get the applications directory
+    QString applicationsDir = QDir::homePath() + "/.local/share/applications/";
+
+    // Create applications directory if it doesn't exist
+    QDir().mkpath(applicationsDir);
+
+    // Create .desktop file
+    QString desktopFilePath = applicationsDir + appName.toLower() + ".desktop";
+    QFile desktopFile(desktopFilePath);
+
+    if (!desktopFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "Failed to create .desktop file";
+        return false;
+    }
+
+    // Desktop entry content
+    QString desktopContent = QString("[Desktop Entry]\n"
+                                     "Version=1.0\n"
+                                     "Type=Application\n"
+                                     "Name=%1\n"
+                                     "Exec=%2\n"
+                                     "Terminal=false\n"
+                                     "Categories=Utility;\n")
+                                 .arg(appName, appPath);
+    desktopFile.write(desktopContent.toUtf8());
+    desktopFile.close();
+
+    // Make the .desktop file executable
+    QFile::setPermissions(desktopFilePath,
+                          QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner | QFile::ReadGroup
+                              | QFile::ReadOther);
+
+    return true;
+
+#else
+    qDebug() << "Unsupported operating system";
+    return false;
+#endif
+}
