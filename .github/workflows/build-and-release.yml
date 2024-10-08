@@ -170,62 +170,31 @@ jobs:
   winget-release:
     needs: [create-release]
     runs-on: windows-latest
-    if: false
+    #if: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-          
-      - name: Download release asset
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/LeoKlaus/HeadsetControl-GUI/releases/latest/download/HeadsetControl-GUI_windows_64.zip" -OutFile "HeadsetControl-GUI.zip"
-
-      - name: Calculate SHA256
-        id: sha256
-        run: |
-          $hash = (Get-FileHash -Algorithm SHA256 -Path .\HeadsetControl-GUI.zip).Hash
-          echo "::set-output name=hash::$hash"
-
-      - name: Create winget manifest
-        run: |
-          $manifest = @"
-          PackageIdentifier: LeoKlaus.HeadsetControl-GUI
-          PackageVersion: ${{ inputs.version }} 
-          PackageLocale: en-US
-          Publisher: LeoKlaus
-          PublisherUrl: https://github.com/LeoKlaus
-          PackageName: HeadsetControl-GUI
-          PackageUrl: https://github.com/LeoKlaus/HeadsetControl-GUI
-          License: LGPL-2.1
-          LicenseUrl: https://github.com/LeoKlaus/HeadsetControl-GUI/blob/main/LICENSE
-          ShortDescription: A GUI for the great HeadsetControl
-          Installers:
-            - Architecture: x64
-              InstallerType: exe
-              Scope: user
-              InstallerUrl: https://github.com/LeoKlaus/HeadsetControl-GUI/releases/latest/download/HeadsetControl-GUI_windows_64.zip
-              InstallerSha256: ${{ steps.sha256.outputs.hash }}
-              InstallerSwitches:
-                Silent: /S
-                SilentWithProgress: /S
-          ManifestType: singleton
-          ManifestVersion: 1.0.0
-          "@
-          $manifest | Out-File -FilePath .\LeoKlaus.HeadsetControl-GUI.yaml -Encoding utf8
 
       - name: Install Winget-Create
         run: |
-          Invoke-WebRequest -Uri https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
-          .\wingetcreate.exe --version
-        continue-on-error: true
+          winget install wingetcreate
 
-      - name: Validate manifest
+      - name: Update manifest
+        env:
+          VERSION: ${{ inputs.version }}
         run: |
+          wingetcreate update --version $env:VERSION --urls https://github.com/LeoKlaus/HeadsetControl-GUI/releases/latest/download/HeadsetControl-GUI_windows_64.zip LeoKlaus.HeadsetControl-GUI
           winget validate .\LeoKlaus.HeadsetControl-GUI.yaml
-        continue-on-error: true
-
+        
+      - name: Validate manifest
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |        
+          winget validate --manifest manifests\l\LeoKlaus\HeadsetControl-GUI\$env:VERSION\
+      
       - name: Submit manifest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          .\wingetcreate.exe submit .\LeoKlaus.HeadsetControl-GUI.yaml --token $env:GITHUB_TOKEN
-
+          VERSION: ${{ inputs.version }}
+        #run: |
+          #wingetcreate submit manifests\l\LeoKlaus\HeadsetControl-GUI\$env:VERSION\
