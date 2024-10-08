@@ -168,7 +168,7 @@ jobs:
           asset_content_type: application/octet-stream
   
   winget-release:
-    needs: [create-release]
+    #needs: [create-release]
     runs-on: windows-latest
     #if: false
     steps:
