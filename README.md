@@ -13,6 +13,17 @@ MacOS | ❌ | ❌
 If you are on Linux or Mac and try to build the app and test it, I'd be happy to hear if it did or didn't work.
 
 ## Installation (Windows)
+
+### WinGet
+```powershell
+winget install LeoKlaus.HeadsetControl-GUI
+```
+After that to you can reboot powershell an you can run the program with the command:
+```powershell
+HeadsetControl-GUI
+```
+
+### Manual
 1. Download the [latest release](https://github.com/LeoKlaus/HeadsetControl-GUI/releases/latest/) of HeadsetControl-GUI from the [releases section](https://github.com/nicola02nb/HeadsetControl-GUI/releases) of this page.
 2. Extract HeadsetControl-GUI to any folder.
 
@@ -20,7 +31,7 @@ The finished folder should look something like this:
 
 ![361239376-0145ca37-6e59-4170-ba26-804e8856dbc8](https://github.com/user-attachments/assets/36233a85-1500-4789-9368-1573ff8f4fed)
 
-### Usage
+## Usage
 Start HeadsetControl-GUI by double-clicking "HeadsetControl-GUI.exe", and if your headset is supported and everything was set up correctly, you will be greeted by the following screen HeadsetControl-GUI has..
 
 If you don't find some features in you ui, probably it's not supported by your headset or it has not been implemented by [HeadsetControl](https://github.com/Sapd/HeadsetControl/).
