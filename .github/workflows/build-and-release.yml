@@ -118,7 +118,7 @@ jobs:
   create-release:
     needs: [build-linux, build-windows]
     runs-on: ubuntu-latest
-    if: false
+    
     steps:
       - name: Download Linux artifact
         uses: actions/download-artifact@v4
@@ -166,41 +166,3 @@ jobs:
           asset_path: ./HeadsetControl-GUI_windows_64.zip
           asset_name: HeadsetControl-GUI_windows_64.zip
           asset_content_type: application/octet-stream
-  
-  winget-release:
-    #needs: [create-release]
-    runs-on: windows-latest
-    #if: false
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install App Installer (winget)
-        shell: powershell
-        run: |
-          Invoke-WebRequest -Uri https://aka.ms/getwinget -OutFile Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
-          Add-AppxPackage -Path Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
-
-      - name: Install Winget-Create
-        run: |
-          winget install wingetcreate
-
-      - name: Update manifest
-        env:
-          VERSION: ${{ inputs.version }}
-        run: |
-          wingetcreate update --version $env:VERSION --urls https://github.com/LeoKlaus/HeadsetControl-GUI/releases/latest/download/HeadsetControl-GUI_windows_64.zip LeoKlaus.HeadsetControl-GUI
-          winget validate .\LeoKlaus.HeadsetControl-GUI.yaml
-        
-      - name: Validate manifest
-        env:
-          VERSION: ${{ inputs.version }}
-        run: |        
-          winget validate --manifest manifests\l\LeoKlaus\HeadsetControl-GUI\$env:VERSION\
-      
-      - name: Submit manifest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ inputs.version }}
-        run: |
-          ls
