@@ -308,6 +308,14 @@ void MainWindow::resetGUI()
     ui->btcallvolumeFrame->setHidden(true);
 }
 
+//Utility Section
+void MainWindow::sendAppNotification(const QString &title,
+                                     const QString &description,
+                                     const QIcon &icon)
+{
+    trayIcon->showMessage(title, description, icon);
+}
+
 //Devices Managing Section
 void MainWindow::loadDevices()
 {
@@ -557,23 +565,35 @@ void MainWindow::setBatteryStatus()
         changeTrayIconTo("headphones");
     } else if (status == "BATTERY_CHARGING") {
         ui->batteryPercentage->setText(level + tr("% - Charging"));
-        trayIcon->setToolTip(tr("HeadsetControl \r\nBattery Charging"));
+        trayIcon->setToolTip(tr("HeadsetControl \r\nBattery: Charging - ") + level + "%");
         changeTrayIconTo("battery-charging");
+        if (settings.notificationBatteryFull && !notified && batteryLevel == 100) {
+            sendAppNotification(tr("Battery Charged!"),
+                                tr("The battery has been charged to 100%"),
+                                QIcon("battery-level-full"));
+            if (settings.audioNotification) {
+                API.playNotificationSound(selectedDevice, 1);
+            }
+            notified = true;
+        }
     } else if (status == "BATTERY_AVAILABLE") {
         ui->batteryPercentage->setText(level + tr("% - Descharging"));
         trayIcon->setToolTip(tr("HeadsetControl \r\nBattery: ") + level + "%");
-        if (level.toInt() > 75) {
+        if (batteryLevel > 75) {
             changeTrayIconTo("battery-level-full");
             notified = false;
-        } else if (level.toInt() > settings.batteryLowThreshold) {
+        } else if (batteryLevel > settings.batteryLowThreshold) {
             changeTrayIconTo("battery-medium");
             notified = false;
         } else {
             changeTrayIconTo("battery-low");
-            if (!notified) {
-                trayIcon->showMessage(tr("Battery Alert!"),
-                                      tr("The battery of your headset is running low"),
-                                      QIcon("battery-low"));
+            if (settings.notificationBatteryLow && !notified) {
+                sendAppNotification(tr("Battery Alert!"),
+                                    tr("The battery of your headset is running low"),
+                                    QIcon("battery-low"));
+                if (settings.audioNotification) {
+                    API.playNotificationSound(selectedDevice, 0);
+                }
                 notified = true;
             }
         }

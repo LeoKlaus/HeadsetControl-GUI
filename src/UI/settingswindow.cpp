@@ -24,9 +24,15 @@ SettingsWindow::SettingsWindow(const Settings &programSettings, QWidget *parent)
     connect(ui->removestylePushButton, &QPushButton::clicked, this, &SettingsWindow::removeStyle);
 
     ui->runonstartupCheckBox->setChecked(programSettings.runOnstartup);
+
+    ui->batteryfullnotificationCheckBox->setChecked(programSettings.notificationBatteryFull);
+    ui->batterylownotificationCheckBox->setChecked(programSettings.notificationBatteryLow);
     ui->batterylowtresholdSpinBox->setValue(programSettings.batteryLowThreshold);
+    ui->enableaudioNotificationCheckBox->setChecked(programSettings.audioNotification);
+
     ui->updateintervaltimeDoubleSpinBox->setValue((double) programSettings.msecUpdateIntervalTime
                                                   / 1000);
+
     loadStyles();
     ui->selectstyleComboBox->setCurrentIndex(
         ui->selectstyleComboBox->findText(programSettings.styleName));
@@ -36,7 +42,10 @@ Settings SettingsWindow::getSettings()
 {
     Settings settings;
     settings.runOnstartup = ui->runonstartupCheckBox->isChecked();
+    settings.notificationBatteryFull = ui->batteryfullnotificationCheckBox->isChecked();
+    settings.notificationBatteryLow = ui->batterylownotificationCheckBox->isChecked();
     settings.batteryLowThreshold = ui->batterylowtresholdSpinBox->value();
+    settings.audioNotification = ui->enableaudioNotificationCheckBox->isChecked();
     settings.msecUpdateIntervalTime = ui->updateintervaltimeDoubleSpinBox->value() * 1000;
     settings.styleName = ui->selectstyleComboBox->currentText();
 
@@ -63,7 +72,7 @@ void SettingsWindow::saveStyle()
 {
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::AnyFile);
-    dialog.setNameFilter(tr("QStyle (*.qss)"));
+    dialog.setNameFilter("QStyle (*.qss)");
 
     QUrl fileUrl = dialog.getOpenFileUrl();
     if (fileUrl.isValid()) {

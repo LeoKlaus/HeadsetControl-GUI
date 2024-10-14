@@ -80,6 +80,9 @@ private:
     void moveToBottomRight();
     void toggleWindow();
 
+    //Utility
+    void sendAppNotification(const QString &title, const QString &description, const QIcon &icon);
+
     //Devices Managing Section
     void updateDevice();
     void loadDevice(int deviceIndex = 0);

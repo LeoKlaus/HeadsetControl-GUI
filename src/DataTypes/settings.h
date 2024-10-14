@@ -22,8 +22,14 @@ public:
     Settings();
 
     bool runOnstartup = false;
+
+    bool notificationBatteryFull = true;
+    bool notificationBatteryLow = true;
     int batteryLowThreshold = 15;
+    bool audioNotification = true;
+
     int msecUpdateIntervalTime = 30000;
+
     QString styleName = "Default";
 };
 
