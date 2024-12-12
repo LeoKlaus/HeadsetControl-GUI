@@ -67,6 +67,8 @@ jobs:
           curl -L https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-linux-x86_64.zip -o headsetcontrol-linux-x86_64.zip
           unzip headsetcontrol-linux-x86_64.zip -d build/release/
           curl -L https://github.com/probonopd/linuxdeployqt/releases/latest/download/linuxdeployqt-continuous-x86_64.AppImage -o linuxdeployqt-continuous-x86_64.AppImage
+          sudo add-apt-repository universe
+          sudo apt install libfuse2t64
           chmod a+x linuxdeployqt-continuous-x86_64.AppImage
           ./linuxdeployqt-continuous-x86_64.AppImage build/release/HeadsetControl-GUI -appimage
 
