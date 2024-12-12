@@ -71,9 +71,7 @@ jobs:
 
       - name: zip binaries folder
         run: |
-          pwd
-          ls
-          tar -cfv HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.zip build/
+          zip -r HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.zip build/
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
