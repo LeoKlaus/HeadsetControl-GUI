@@ -4,165 +4,144 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release tag(e.g., v1.2.3) without starting 'v'"
+        description: "Release tag(e.g., 1.2.3) without starting 'v'"
         required: true
+        default: "continuous"
         type: string
+      prerelease:
+        description: "Set as prerelease"
+        required: true
+        default: true
+        type: boolean
+  push:
+    paths:
+      - '.github/workflows/build-and-release.yml'
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
-
+  build:
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        include:
+          - os: windows-latest
+            os_name: windows
+            architecture: x64
+            shell: pwsh
+            dependencies: |
+              choco install zip
+              Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+            build: |
+              mkdir build
+              cd build
+              qmake ../HeadsetControl-GUI.pro CONFIG+=release
+              nmake
+          - os: ubuntu-latest
+            os_name: linux
+            architecture: x64
+            shell: bash
+            dependencies: |
+              sudo apt-get update
+              sudo apt-get install -y zip
+            build: |
+              mkdir build
+              cd build
+              qmake ../HeadsetControl-GUI.pro CONFIG+=release
+              make -j$(nproc)
     steps:
       - uses: actions/checkout@v4
-
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: "6.7.2"
           add-tools-to-path: true
           cache: true
-
-      - name: Setup MSVC
-        uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Build
-        run: |
-          mkdir build
-          cd build
-          qmake ../
-          nmake
-
-      - name: Remove source and object files
-        shell: pwsh
-        run: |
-          $buildDir = "build/release"
-          if (Test-Path $buildDir) {
-              Get-ChildItem -Path $buildDir -Include *.cpp, *.h, *.obj, *.res, *.qrc, *.qm -Recurse | Remove-Item -Force
-          } else {
-              Write-Host "Directory not found: $buildDir"
-          }
-
-      - name: Deploy Qt
-        shell: pwsh
-        run: |
-          cd build
-          $windeployqtPath = "D:\a\HeadsetControl-GUI\Qt\6.7.2\msvc2019_64\bin\windeployqt6.exe"
-          if (Test-Path $windeployqtPath) {
-              & $windeployqtPath `
-                  --exclude-plugins qsvgicon,qsvg,qico,qjpeg,qgif,qnetworklistmanager,qtuiotouchplugin `
-                  --no-opengl-sw `
-                  --no-system-dxc-compiler `
-                  --no-compiler-runtime `
-                  --no-translations `
-                  --no-system-d3d-compiler `
-                  D:\a\HeadsetControl-GUI\HeadsetControl-GUI\build\release\HeadsetControl-GUI.exe
-          } else {
-              Write-Error "windeploygui not found at the expected path!"
-              exit 1
-          }
-      - name: Download ZIP from other repo
-        shell: pwsh
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/Sapd/HeadsetControl/releases/latest/download/headsetcontrol-windows.zip" -OutFile headsetcontrol-windows.zip
-          Expand-Archive -Path headsetcontrol-windows.zip -DestinationPath build/release/
-
-      - name: Zip binaries folder
-        run: |
-          $zipFile = "HeadsetControl-GUI_windows_64.zip"
-          $folder = "build/release/*"
-          Compress-Archive -Path $folder -DestinationPath $zipFile
-        shell: pwsh
-
-      - name: Upload Windows artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: HeadsetControl-GUI_windows_64
-          path: HeadsetControl-GUI_windows_64.zip
-
-  build-linux:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: "6.7.2"
-          host: "linux"
-          add-tools-to-path: true
-          cache: true
+          host: ${{ matrix.os_name }}
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential libgl1-mesa-dev
+        run: ${{ matrix.dependencies }}
 
-      - name: Build with qmake
-        run: |
-          mkdir build
-          cd build
-          qmake ../HeadsetControl-GUI.pro CONFIG+=release
-          make -j$(nproc)
+      - uses: TheMrMilchmann/setup-msvc-dev@v3
+        if: matrix.os_name == 'windows'
+        with:
+          arch: ${{ matrix.architecture }}
 
-      - name: Zip binaries folder
-        run: |
-          zip -r HeadsetControl-GUI_linux_64.zip build/HeadsetControl-GUI
+      - name: Build
+        run: ${{ matrix.build }}
 
-      - name: Upload Artifacts
+      - name: Deploy Qt Windows
+        if: matrix.os_name == 'windows'
+        run: |
+          Get-ChildItem -Path build/ -Include *.cpp, *.h, *.obj, *.res, *.qrc, *.qm -Recurse | Remove-Item -Force
+          Invoke-WebRequest -Uri "https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-windows-x86_64.zip" -OutFile headsetcontrol-windows.zip
+          Expand-Archive -Path headsetcontrol-windows.zip -DestinationPath build/release/
+          mv build/release/headsetcontrol build/release/headsetcontrol.exe
+          windeployqt6 --exclude-plugins qsvgicon,qsvg,qico,qjpeg,qgif,qnetworklistmanager,qtuiotouchplugin --no-opengl-sw --no-system-dxc-compiler --no-compiler-runtime --no-translations --no-system-d3d-compiler build/release/HeadsetControl-GUI.exe
+          
+      - name: Deploy Qt
+        if: matrix.os_name == 'linux'
+        run: |
+          curl -L https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-linux-x86_64.zip -o headsetcontrol-linux-x86_64.zip
+          mkdir -p build/release/
+          cp build/HeadsetControl-GUI build/release/
+          unzip headsetcontrol-linux-x86_64.zip -d build/release/
+
+      - name: zip binaries folder
+        run: |
+          cd build/release/
+          zip -r ../../HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.zip .
+      
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: HeadsetControl-GUI_linux_64
-          path: HeadsetControl-GUI_linux_64.zip
-  
+          name: HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}
+          path: HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.zip
+
   create-release:
-    needs: [build-linux, build-windows]
+    needs: [build]
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Download Linux artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: HeadsetControl-GUI_linux_64
+        - uses: actions/checkout@v4
+        - name: Download Artifact
+          uses: actions/download-artifact@v4
+          with:
+            merge-multiple: true
+        - name: Deploy continuous
+          uses: crowbarmaster/GH-Automatic-Releases@latest
+          with:
+            repo_token: ${{ secrets.GITHUB_TOKEN }}
+            automatic_release_tag: ${{ inputs.version }}
+            prerelease: ${{ startsWith(github.ref, 'refs/tags/continuous') || inputs.prerelease }}
+            title: Release ${{ inputs.version }}
+            files: |
+              HeadsetControl-GUI_*
+            body: |
+              ## Contributor
+              @nicola02nb Mantainer
+  
+              ## Credits
+              @Sapd for [HeadsetControl](https://github.com/Sapd/HeadsetControl)
 
-      - name: Download Windows artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: HeadsetControl-GUI_windows_64
+  winget-release:
+    if: ${{false && !inputs.prerelease}}
+    needs: [create-release]
+    runs-on: windows-latest
+    steps:
+    - name: Submit package to Windows Package Manager Community Repository
+      run: |
+        # Download latest wingetcreate
+        Invoke-WebRequest https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
+        
+        $packageId = "LeoKlaus.HeadsetControl-GUI"
+        $installerUrl = "https://github.com/LeoKlaus/HeadsetControl-GUI/releases/download/${{ inputs.version }}/HeadsetControl_${{ inputs.version }}_windows_x64.zip"
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ inputs.version }}
-          release_name: Release v${{ inputs.version }}
-          body: |
-            ## Contributor
-            @nicola02nb Mantainer
-
-            ## Credits
-            @Sapd for [HeadsetControl](https://github.com/Sapd/HeadsetControl)
-          draft: false
-          prerelease: false
-
-      - name: Upload Linux Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./HeadsetControl-GUI_linux_64.zip
-          asset_name: HeadsetControl-GUI_linux_64.zip
-          asset_content_type: application/octet-stream
-
-      - name: Upload Windows Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./HeadsetControl-GUI_windows_64.zip
-          asset_name: HeadsetControl-GUI_windows_64.zip
-          asset_content_type: application/octet-stream
+        # Submit package update
+        .\wingetcreate.exe update "$packageId" `
+          --version "${{ inputs.version }}" `
+          --urls "$installerUrl" `
+          --submit `
+          --token "${{ secrets.WINGET_DEPLOY_TOKEN }}"
+      shell: pwsh
