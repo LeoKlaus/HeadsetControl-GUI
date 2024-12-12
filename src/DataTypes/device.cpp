@@ -110,9 +110,9 @@ void Device::updateDevice(const Device *new_device)
 
 bool Device::updateDevice(const QList<Device *> &new_device_list)
 {
-    for (int i = 0; i < new_device_list.length(); ++i) {
-        if (this != new_device_list.at(i)) {
-            this->updateDevice(new_device_list.at(i));
+    foreach (Device *new_device, new_device_list) {
+        if (*this == new_device) {
+            this->updateDevice(new_device);
             return true;
         }
     }
@@ -145,68 +145,62 @@ QJsonObject Device::toJson() const
     return json;
 }
 
-Device Device::fromJson(const QJsonObject &json)
+Device *Device::fromJson(
+    const QJsonObject &json)
 {
-    Device device;
-    device.device = json["device"].toString();
-    device.vendor = json["vendor"].toString();
-    device.product = json["product"].toString();
-    device.id_vendor = json["id_vendor"].toString();
-    device.id_product = json["id_product"].toString();
+    Device *device = new Device();
+    device->device = json["device"].toString();
+    device->vendor = json["vendor"].toString();
+    device->product = json["product"].toString();
+    device->id_vendor = json["id_vendor"].toString();
+    device->id_product = json["id_product"].toString();
 
-    device.lights = json["lights"].toInt();
-    device.sidetone = json["sidetone"].toInt();
-    device.voice_prompts = json["voice_prompts"].toInt();
-    device.inactive_time = json["inactive_time"].toInt();
-    device.equalizer_preset = json["equalizer_preset"].toInt();
+    device->lights = json["lights"].toInt();
+    device->sidetone = json["sidetone"].toInt();
+    device->voice_prompts = json["voice_prompts"].toInt();
+    device->inactive_time = json["inactive_time"].toInt();
+    device->equalizer_preset = json["equalizer_preset"].toInt();
 
     QJsonArray curveArray = json["equalizer_curve"].toArray();
     for (const auto &value : curveArray) {
-        device.equalizer_curve.append(value.toDouble());
+        device->equalizer_curve.append(value.toDouble());
     }
 
-    device.volume_limiter = json["volume_limiter"].toInt();
-    device.rotate_to_mute = json["rotate_to_mute"].toInt();
-    device.mic_mute_led_brightness = json["mic_mute_led_brightness"].toInt();
-    device.mic_volume = json["mic_volume"].toInt();
-    device.bt_when_powered_on = json["bt_when_powered_on"].toInt();
-    device.bt_call_volume = json["bt_call_volume"].toInt();
+    device->volume_limiter = json["volume_limiter"].toInt();
+    device->rotate_to_mute = json["rotate_to_mute"].toInt();
+    device->mic_mute_led_brightness = json["mic_mute_led_brightness"].toInt();
+    device->mic_volume = json["mic_volume"].toInt();
+    device->bt_when_powered_on = json["bt_when_powered_on"].toInt();
+    device->bt_call_volume = json["bt_call_volume"].toInt();
 
     return device;
 }
 
+void updateDeviceFromSource(QList<Device *> &devicesToUpdate, const Device *sourceDevice)
+{
+    bool found = false;
+    for (Device *toUpdateDevice : devicesToUpdate) {
+        if (*toUpdateDevice == sourceDevice) {
+            // Update the saved device with connected device's information
+            *toUpdateDevice = *sourceDevice;
+            found = true;
+        }
+    };
+    if (!found) {
+        Device *toAppend = new Device();
+        *toAppend = *sourceDevice;
+        devicesToUpdate.append(toAppend);
+    }
+}
+
 void updateDevicesFromSource(QList<Device *> &devicesToUpdate, const QList<Device *> &sourceDevices)
 {
-    for (Device *sourceDevice : sourceDevices) {
-        bool deviceFound = false;
-        for (Device *toUpdateDevice : devicesToUpdate) {
-            if (toUpdateDevice->id_vendor == sourceDevice->id_vendor
-                && toUpdateDevice->id_product == sourceDevice->id_product) {
+    for (Device *toUpdateDevice : devicesToUpdate) {
+        for (Device *sourceDevice : sourceDevices) {
+            if (*toUpdateDevice == sourceDevice) {
                 // Update the connected device with saved device's information
-                toUpdateDevice->lights = sourceDevice->lights;
-                toUpdateDevice->sidetone = sourceDevice->sidetone;
-                toUpdateDevice->voice_prompts = sourceDevice->voice_prompts;
-                toUpdateDevice->inactive_time = sourceDevice->inactive_time;
-
-                toUpdateDevice->equalizer_preset = sourceDevice->equalizer_preset;
-                toUpdateDevice->equalizer_curve = sourceDevice->equalizer_curve;
-                toUpdateDevice->volume_limiter = sourceDevice->volume_limiter;
-
-                toUpdateDevice->rotate_to_mute = sourceDevice->rotate_to_mute;
-                toUpdateDevice->mic_mute_led_brightness = sourceDevice->mic_mute_led_brightness;
-                toUpdateDevice->mic_volume = sourceDevice->mic_volume;
-
-                toUpdateDevice->bt_when_powered_on = sourceDevice->bt_when_powered_on;
-                toUpdateDevice->bt_call_volume = sourceDevice->bt_call_volume;
-
-                deviceFound = true;
-                break;
+                *toUpdateDevice = *sourceDevice;
             }
-        }
-
-        if (!deviceFound) {
-            // If the device wasn't found in saved devices, add it
-            devicesToUpdate.append(sourceDevice);
         }
     };
 }
@@ -224,6 +218,7 @@ void serializeDevices(const QList<Device *> &devices, const QString &filePath)
         file.write(doc.toJson());
         file.close();
         qDebug() << "Devices Serialized" << jsonArray;
+        qDebug();
     }
 }
 
@@ -237,11 +232,22 @@ QList<Device *> deserializeDevices(const QString &filePath)
         QJsonArray jsonArray = doc.array();
 
         for (const auto &value : jsonArray) {
-            Device *device = new Device(Device::fromJson(value.toObject()));
+            Device *device = Device::fromJson(value.toObject());
             devices.append(device);
         }
 
         file.close();
+        qDebug() << "Devices Deserialized" << jsonArray;
+        qDebug();
     }
     return devices;
+}
+
+void deleteDevices(
+    QList<Device *> deviceList)
+{
+    for (Device *device : deviceList) {
+        delete device;
+    }
+    deviceList.clear();
 }

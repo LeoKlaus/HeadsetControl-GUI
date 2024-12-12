@@ -41,6 +41,7 @@ Settings loadSettingsFromFile(const QString &filePath)
             s.styleName = json["styleName"].toString();
         }
         qDebug() << "Settings Loaded:\t" << json;
+        qDebug();
     }
 
     return s;
@@ -67,4 +68,5 @@ void saveSettingstoFile(const Settings &settings, const QString &filePath)
     file.write(doc.toJson());
     file.close();
     qDebug() << "Settings Saved:\t" << json;
+    qDebug();
 }

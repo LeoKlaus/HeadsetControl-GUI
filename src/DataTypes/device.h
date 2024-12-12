@@ -40,6 +40,9 @@ public:
     Device();
     Device(const QJsonObject &jsonObj, QString jsonData);
 
+    // Index
+    int index = -1;
+
     // Status
     QString status;
 
@@ -80,12 +83,15 @@ public:
     bool updateDevice(const QList<Device *> &new_device_list);
 
     QJsonObject toJson() const;
-    static Device fromJson(const QJsonObject &json);
+    static Device *fromJson(const QJsonObject &json);
 };
 
+void updateDeviceFromSource(QList<Device *> &devicesToUpdate, const Device *sourceDevice);
 void updateDevicesFromSource(QList<Device *> &devicesToUpdate, const QList<Device *> &sourceDevices);
 
 void serializeDevices(const QList<Device *> &devices, const QString &filePath);
 QList<Device *> deserializeDevices(const QString &filePath);
+
+void deleteDevices(QList<Device *> deviceList);
 
 #endif // DEVICE_H

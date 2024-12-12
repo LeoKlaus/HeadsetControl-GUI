@@ -44,7 +44,7 @@ private:
 
     Ui::MainWindow *ui;
     QSystemTrayIcon *trayIcon;
-    QString trayIconName;
+    QString trayIconName = "headphones";
     QMenu *trayMenu;
     QAction *ledOn;
     QAction *ledOff;
@@ -55,12 +55,10 @@ private:
     int n_connected = 0, n_saved = 0;
 
     HeadsetControlAPI API;
-    Device *selectedDevice = nullptr;
-    QList<Device *> connectedDevices;
+    Device *currentDevice = nullptr;
 
-    QList<QSlider *> slidersEq;
-
-    void deleteDevices(QList<Device *> deviceList);
+    QList<QSlider *> equalizerSliders;
+    bool equalizerLiveUpdate = false;
 
     void bindEvents();
 
@@ -78,15 +76,15 @@ private:
     //Window Position and Size Section
     void minimizeWindowSize();
     void moveToBottomRight();
+    void rescaleAndMoveWindow();
     void toggleWindow();
 
     //Utility
     void sendAppNotification(const QString &title, const QString &description, const QIcon &icon);
 
     //Devices Managing Section
-    void updateDevice();
-    void loadDevice(int deviceIndex = 0);
-    void loadDevices();
+    bool updateSelectedDevice();
+    void loadDevice();
     void loadGUIValues();
     QList<Device *> getSavedDevices();
 
@@ -95,10 +93,10 @@ private:
     void setChatmixStatus();
 
     //Equalizer Slidesrs Section
-    void createEqualizerSliders(QHBoxLayout *layout);
+    void createEqualizerSliders();
+    void clearEqualizerSliders();
     void setEqualizerSliders(double value);
     void setEqualizerSliders(QList<double> values);
-    void clearEqualizerSliders(QLayout *layout);
 
 private slots:
     void changeEvent(QEvent *e);
@@ -114,7 +112,7 @@ private slots:
 
     // Equalizer Section Events
     void equalizerPresetChanged();
-    void applyEqualizer();
+    void applyEqualizer(bool saveToFile = true);
 
     // Tool Bar Events
     void selectDevice();
