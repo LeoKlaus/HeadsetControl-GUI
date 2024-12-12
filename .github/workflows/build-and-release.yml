@@ -68,7 +68,7 @@ jobs:
           unzip headsetcontrol-linux-x86_64.zip -d build/release/
           curl -L https://github.com/probonopd/linuxdeployqt/releases/latest/download/linuxdeployqt-continuous-x86_64.AppImage -o linuxdeployqt-continuous-x86_64.AppImage
           chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-          linuxdeployqt-continuous-x86_64.AppImage build/release/HeadsetControl-GUI -appimage
+          ./linuxdeployqt-continuous-x86_64.AppImage build/release/HeadsetControl-GUI -appimage
 
       - name: zip binaries folder
         run: |
