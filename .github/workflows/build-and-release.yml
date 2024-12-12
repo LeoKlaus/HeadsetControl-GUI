@@ -22,6 +22,9 @@ jobs:
             os_name: windows
             architecture: x64
             shell: pwsh
+            dependencies: |
+              choco install zip
+              refreshenv
             build: |
               mkdir build
               cd build
@@ -31,6 +34,9 @@ jobs:
             os_name: linux
             architecture: x64
             shell: bash
+            dependencies: |
+              sudo apt-get update
+              sudo apt-get install -y zip
             build: |
               mkdir build
               cd build
@@ -45,6 +51,9 @@ jobs:
           add-tools-to-path: true
           cache: true
           host: ${{ matrix.os_name }}
+
+      - name: Install dependencies
+        run: ${{ matrix.dependencies }}
 
       - uses: TheMrMilchmann/setup-msvc-dev@v3
         if: matrix.os_name == 'windows'
