@@ -11,7 +11,7 @@ on:
       prerelease:
         description: "Set as prerelease"
         required: true
-        default: false
+        default: true
         type: boolean
   push:
     paths:
@@ -75,18 +75,17 @@ jobs:
       - name: Deploy Qt Windows
         if: matrix.os_name == 'windows'
         run: |
-          Get-ChildItem -Path build/release/ -Include *.cpp, *.h, *.obj, *.res, *.qrc, *.qm -Recurse | Remove-Item -Force
           Invoke-WebRequest -Uri "https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-windows-x86_64.zip" -OutFile headsetcontrol-windows.zip
           Expand-Archive -Path headsetcontrol-windows.zip -DestinationPath build/release/
+          mv build/release/headsetcontrol build/release/headsetcontrol.exe
           windeployqt6 --exclude-plugins qsvgicon,qsvg,qico,qjpeg,qgif,qnetworklistmanager,qtuiotouchplugin --no-opengl-sw --no-system-dxc-compiler --no-compiler-runtime --no-translations --no-system-d3d-compiler build/release/HeadsetControl-GUI.exe
           
       - name: Deploy Qt
         if: matrix.os_name == 'linux'
         run: |
-          find build/ -type f \( -name "*.cpp" -o -name "*.h" -o -name "*.obj" -o -name "*.res" -o -name "*.qrc" -o -name "*.qm" \) -exec rm -f {} +
           curl -L https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-linux-x86_64.zip -o headsetcontrol-linux-x86_64.zip
           mkdir -p build/release/
-          cp buid/HeadsetControl-GUI build/release/
+          cp build/HeadsetControl-GUI build/release/
           unzip headsetcontrol-linux-x86_64.zip -d build/release/
 
       - name: zip binaries folder
