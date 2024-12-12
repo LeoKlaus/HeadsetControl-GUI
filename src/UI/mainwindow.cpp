@@ -36,7 +36,6 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug();
 
     QDir().mkpath(PROGRAM_CONFIG_PATH);
-    createStartMenuShortcut();
     settings = loadSettingsFromFile(PROGRAM_SETTINGS_FILEPATH);
     defaultStyle = styleSheet();
 

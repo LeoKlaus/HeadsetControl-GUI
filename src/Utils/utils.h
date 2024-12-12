@@ -11,6 +11,4 @@ bool openFileExplorer(const QString &path);
 
 bool setOSRunOnStartup(bool enable);
 
-bool createStartMenuShortcut();
-
 #endif // UTILS_H
