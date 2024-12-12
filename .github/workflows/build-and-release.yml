@@ -6,12 +6,16 @@ on:
       version:
         description: "Release tag(e.g., 1.2.3) without starting 'v'"
         required: true
+        default: "continuous"
         type: string
       prerelease:
         description: "Set as prerelease"
         required: true
         default: false
         type: boolean
+  push:
+    paths:
+      - '.github/workflows/build-and-release.yml'
 
 jobs:
   build:
@@ -82,7 +86,7 @@ jobs:
           find build/ -type f \( -name "*.cpp" -o -name "*.h" -o -name "*.obj" -o -name "*.res" -o -name "*.qrc" -o -name "*.qm" \) -exec rm -f {} +
           curl -L https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-linux-x86_64.zip -o headsetcontrol-linux-x86_64.zip
           mkdir -p build/release/
-          cp HeadsetControl-GUI build/release/
+          cp buid/HeadsetControl-GUI build/release/
           unzip headsetcontrol-linux-x86_64.zip -d build/release/
 
       - name: zip binaries folder
