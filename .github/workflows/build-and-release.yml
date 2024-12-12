@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       prerelease:
-        description: "Is this a prerelease?"
+        description: "Set as prerelease"
         required: true
         default: false
         type: boolean
@@ -71,9 +71,9 @@ jobs:
       - name: Deploy Qt Windows
         if: matrix.os_name == 'windows'
         run: |
-          Get-ChildItem -Path build/ -Include *.cpp, *.h, *.obj, *.res, *.qrc, *.qm -Recurse | Remove-Item -Force
+          Get-ChildItem -Path build/release/ -Include *.cpp, *.h, *.obj, *.res, *.qrc, *.qm -Recurse | Remove-Item -Force
           Invoke-WebRequest -Uri "https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-windows-x86_64.zip" -OutFile headsetcontrol-windows.zip
-          Expand-Archive -Path headsetcontrol-windows.zip -DestinationPath build/
+          Expand-Archive -Path headsetcontrol-windows.zip -DestinationPath build/release/
           windeployqt6 --exclude-plugins qsvgicon,qsvg,qico,qjpeg,qgif,qnetworklistmanager,qtuiotouchplugin --no-opengl-sw --no-system-dxc-compiler --no-compiler-runtime --no-translations --no-system-d3d-compiler build/release/HeadsetControl-GUI.exe
           
       - name: Deploy Qt
@@ -81,11 +81,13 @@ jobs:
         run: |
           find build/ -type f \( -name "*.cpp" -o -name "*.h" -o -name "*.obj" -o -name "*.res" -o -name "*.qrc" -o -name "*.qm" \) -exec rm -f {} +
           curl -L https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-linux-x86_64.zip -o headsetcontrol-linux-x86_64.zip
-          unzip headsetcontrol-linux-x86_64.zip -d build/
+          mkdir -p build/release/
+          cp HeadsetControl-GUI build/release/
+          unzip headsetcontrol-linux-x86_64.zip -d build/release/
 
       - name: zip binaries folder
         run: |
-          zip -r HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.zip build/
+          zip -r HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.zip build/release/
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -120,7 +122,7 @@ jobs:
               @Sapd for [HeadsetControl](https://github.com/Sapd/HeadsetControl)
 
   winget-release:
-    if: false
+    if: ${{false && !inputs.prerelease}}
     needs: [create-release]
     runs-on: windows-latest
     steps:
