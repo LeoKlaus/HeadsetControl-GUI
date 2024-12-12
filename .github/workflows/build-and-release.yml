@@ -25,7 +25,7 @@ jobs:
             build: |
               mkdir build
               cd build
-              qmake ../
+              qmake ../HeadsetControl-GUI.pro CONFIG+=release
               nmake
           - os: ubuntu-latest
             os_name: linux
@@ -34,7 +34,7 @@ jobs:
             build: |
               mkdir build
               cd build
-              qmake ../HeadsetControl-GUI.pro
+              qmake ../HeadsetControl-GUI.pro CONFIG+=release
               make -j$(nproc)
     steps:
       - uses: actions/checkout@v4
@@ -66,12 +66,6 @@ jobs:
         run: |
           curl -L https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-linux-x86_64.zip -o headsetcontrol-linux-x86_64.zip
           unzip headsetcontrol-linux-x86_64.zip -d build/release/
-          curl -L https://github.com/probonopd/linuxdeployqt/releases/latest/download/linuxdeployqt-continuous-x86_64.AppImage -o linuxdeployqt-continuous-x86_64.AppImage
-          sudo add-apt-repository universe
-          sudo apt-get update
-          sudo apt install libfuse2t64
-          chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-          ./linuxdeployqt-continuous-x86_64.AppImage build/release/HeadsetControl-GUI -appimage
 
       - name: zip binaries folder
         run: |
