@@ -13,9 +13,6 @@ on:
         required: true
         default: true
         type: boolean
-  push:
-    paths:
-      - '.github/workflows/build-and-release.yml'
 
 jobs:
   build:
@@ -78,7 +75,6 @@ jobs:
           Get-ChildItem -Path build/ -Include *.cpp, *.h, *.obj, *.res, *.qrc, *.qm -Recurse | Remove-Item -Force
           Invoke-WebRequest -Uri "https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-windows-x86_64.zip" -OutFile headsetcontrol-windows.zip
           Expand-Archive -Path headsetcontrol-windows.zip -DestinationPath build/release/
-          mv build/release/headsetcontrol build/release/headsetcontrol.exe
           windeployqt6 --exclude-plugins qsvgicon,qsvg,qico,qjpeg,qgif,qnetworklistmanager,qtuiotouchplugin --no-opengl-sw --no-system-dxc-compiler --no-compiler-runtime --no-translations --no-system-d3d-compiler build/release/HeadsetControl-GUI.exe
           
       - name: Deploy Qt
@@ -126,7 +122,7 @@ jobs:
               @Sapd for [HeadsetControl](https://github.com/Sapd/HeadsetControl)
 
   winget-release:
-    if: ${{false && !inputs.prerelease}}
+    if: ${{ !(startsWith(github.ref, 'refs/tags/continuous') || inputs.prerelease) }}
     needs: [create-release]
     runs-on: windows-latest
     steps:
@@ -143,5 +139,5 @@ jobs:
           --version "${{ inputs.version }}" `
           --urls "$installerUrl" `
           --submit `
-          --token "${{ secrets.WINGET_DEPLOY_TOKEN }}"
+          --token "${{ secrets.WINGET_DEPLOY_TOKEN}}"
       shell: pwsh
