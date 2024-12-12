@@ -34,7 +34,7 @@ jobs:
             build: |
               mkdir build
               cd build
-              qmake ../HeadsetControl-GUI.pro CONFIG+=release
+              qmake ../HeadsetControl-GUI.pro
               make -j$(nproc)
     steps:
       - uses: actions/checkout@v4
@@ -57,16 +57,16 @@ jobs:
       - name: Deploy Qt Windows
         if: matrix.os_name == 'windows'
         run: |
-          Invoke-WebRequest -Uri "https://github.com/Sapd/HeadsetControl/releases/latest/download/headsetcontrol-windows-x86_64.zip" -OutFile headsetcontrol-windows.zip
+          Invoke-WebRequest -Uri "https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-windows-x86_64.zip" -OutFile headsetcontrol-windows.zip
           Expand-Archive -Path headsetcontrol-windows.zip -DestinationPath build/release/
           windeployqt6 --exclude-plugins qsvgicon,qsvg,qico,qjpeg,qgif,qnetworklistmanager,qtuiotouchplugin --no-opengl-sw --no-system-dxc-compiler --no-compiler-runtime --no-translations --no-system-d3d-compiler build/release/HeadsetControl-GUI.exe
           
       - name: Deploy Qt
         if: matrix.os_name == 'linux'
         run: |
-          curl -L -o "https://github.com/Sapd/HeadsetControl/releases/latest/download/headsetcontrol-linux-x86_64.zip"
+          curl -L https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-linux-x86_64.zip -o headsetcontrol-linux-x86_64.zip
           unzip headsetcontrol-linux-x86_64.zip -d build/release/
-          curl -L -o "https://github.com/probonopd/linuxdeployqt/releases/latest/download/linuxdeployqt-continuous-x86_64.AppImage"
+          curl -L https://github.com/probonopd/linuxdeployqt/releases/latest/download/linuxdeployqt-continuous-x86_64.AppImage -o linuxdeployqt-continuous-x86_64.AppImage
           linuxdeployqt-continuous-x86_64.AppImage build/release/HeadsetControl-GUI -appimage
 
       - name: zip binaries folder
