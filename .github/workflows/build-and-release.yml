@@ -46,7 +46,7 @@ jobs:
           cache: true
           host: ${{ matrix.os_name }}
 
-      - uses: ilammy/msvc-dev-cmd@v1.13.0
+      - uses: TheMrMilchmann/setup-msvc-dev@v3
         if: matrix.os_name == 'windows'
         with:
           arch: ${{ matrix.architecture }}
