@@ -28,10 +28,8 @@ class MainWindow : public QMainWindow
 
 public:
     const QString PROGRAM_APP_PATH = qApp->applicationDirPath();
-    const QString HEADSETCONTROL_FILE_PATH = PROGRAM_APP_PATH + QDir::separator() + "headsetcontrol"
-#ifdef Q_OS_WIN
-                                             + ".exe";
-#endif
+    const QString HEADSETCONTROL_FILE_PATH = PROGRAM_APP_PATH + QDir::separator()
+                                             + "headsetcontrol";
 
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

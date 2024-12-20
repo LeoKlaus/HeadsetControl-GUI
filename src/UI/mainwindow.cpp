@@ -534,7 +534,11 @@ bool MainWindow::updateSelectedDevice()
 //Update GUI Section
 void MainWindow::updateGUI()
 {
-    if (!fileExists(HEADSETCONTROL_FILE_PATH)) {
+    QString path = HEADSETCONTROL_FILE_PATH;
+#ifdef Q_OS_WIN
+    path += ".exe";
+#endif
+    if (!fileExists(path)) {
         resetGUI();
         ui->notSupportedFrame->setHidden(true);
         rescaleAndMoveWindow();
