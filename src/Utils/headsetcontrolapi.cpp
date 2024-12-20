@@ -57,6 +57,23 @@ Device *HeadsetControlAPI::getDevice()
     return device;
 }
 
+int HeadsetControlAPI::getDeviceIndex(
+    const QString &vendorID, const QString &productID)
+{
+    QList<Device *> connectedDevices = getConnectedDevices();
+    int i = 0;
+    foreach (Device *device, connectedDevices) {
+        if (device->id_vendor == vendorID && device->id_product == productID) {
+            deleteDevices(connectedDevices);
+            return i;
+        }
+        i++;
+    }
+    deleteDevices(connectedDevices);
+
+    return 0;
+}
+
 QList<Device *> HeadsetControlAPI::getConnectedDevices()
 {
     QStringList args = QStringList();

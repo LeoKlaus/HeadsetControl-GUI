@@ -33,6 +33,7 @@ public:
     void setSelectedDevice(const int &deviceIndex);
 
     Device *getDevice();
+    int getDeviceIndex(const QString &vendorID, const QString &productID);
     QList<Device *> getConnectedDevices();
 
 private:

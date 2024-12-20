@@ -40,6 +40,12 @@ Settings loadSettingsFromFile(const QString &filePath)
         if (json.contains("styleName")) {
             s.styleName = json["styleName"].toString();
         }
+        if (json.contains("lastSelectedVendorID")) {
+            s.lastSelectedVendorID = json["lastSelectedVendorID"].toString();
+        }
+        if (json.contains("lastSelectedProductID")) {
+            s.lastSelectedProductID = json["lastSelectedProductID"].toString();
+        }
         qDebug() << "Settings Loaded:\t" << json;
         qDebug();
     }
@@ -57,16 +63,20 @@ void saveSettingstoFile(const Settings &settings, const QString &filePath)
     json["batteryLowThreshold"] = settings.batteryLowThreshold;
     json["msecUpdateIntervalTime"] = settings.msecUpdateIntervalTime;
     json["styleName"] = settings.styleName;
+    json["lastSelectedVendorID"] = settings.lastSelectedVendorID;
+    json["lastSelectedProductID"] = settings.lastSelectedProductID;
 
     QJsonDocument doc(json);
     QFile file(filePath);
 
+    qDebug() << "Saving settings:";
+    qDebug() << "Destination:\t" << filePath;
     if (!file.open(QIODevice::WriteOnly)) {
-        qWarning("Couldn't open save file.");
+        qWarning("Error:\tCouldn't open save file.");
     }
-
     file.write(doc.toJson());
     file.close();
-    qDebug() << "Settings Saved:\t" << json;
+
+    //qDebug() << "Content:\t" << json;
     qDebug();
 }

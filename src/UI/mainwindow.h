@@ -5,6 +5,7 @@
 #include "headsetcontrolapi.h"
 #include "settings.h"
 
+#include <QDir>
 #include <QHBoxLayout>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -27,10 +28,9 @@ class MainWindow : public QMainWindow
 
 public:
     const QString PROGRAM_APP_PATH = qApp->applicationDirPath();
+    const QString HEADSETCONTROL_FILE_PATH = PROGRAM_APP_PATH + QDir::separator() + "headsetcontrol"
 #ifdef Q_OS_WIN
-    const QString HEADSETCONTROL_FILE_PATH = PROGRAM_APP_PATH + "/headsetcontrol.exe";
-#else
-    const QString HEADSETCONTROL_FILE_PATH = PROGRAM_APP_PATH + "/headsetcontrol";
+                                             + ".exe";
 #endif
 
     MainWindow(QWidget *parent = nullptr);
@@ -55,7 +55,7 @@ private:
     int n_connected = 0, n_saved = 0;
 
     HeadsetControlAPI API;
-    Device *currentDevice = nullptr;
+    Device *selectedDevice = nullptr;
 
     QList<QSlider *> equalizerSliders;
     bool equalizerLiveUpdate = false;

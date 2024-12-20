@@ -3,6 +3,7 @@
 
 #include <QApplication>
 #include <QCoreApplication>
+#include <QDir>
 #include <QStandardPaths>
 #include <QString>
 
@@ -10,11 +11,11 @@
 const QString PROGRAM_CONFIG_PATH = "./DEBUG-Config";
 #else
 const QString PROGRAM_CONFIG_PATH = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
-                                    + "/HeadsetControl-GUI";
+                                    + QDir::separator() + "HeadsetControl-GUI";
 #endif
-const QString PROGRAM_STYLES_PATH = PROGRAM_CONFIG_PATH + "/styles";
-const QString PROGRAM_SETTINGS_FILEPATH = PROGRAM_CONFIG_PATH + "/settings.json";
-const QString DEVICES_SETTINGS_FILEPATH = PROGRAM_CONFIG_PATH + "/devices.json";
+const QString PROGRAM_STYLES_PATH = PROGRAM_CONFIG_PATH + QDir::separator() + "styles";
+const QString PROGRAM_SETTINGS_FILEPATH = PROGRAM_CONFIG_PATH + QDir::separator() + "settings.json";
+const QString DEVICES_SETTINGS_FILEPATH = PROGRAM_CONFIG_PATH + QDir::separator() + "devices.json";
 
 class Settings
 {
@@ -31,6 +32,8 @@ public:
     int msecUpdateIntervalTime = 30000;
 
     QString styleName = "Default";
+
+    QString lastSelectedVendorID = "", lastSelectedProductID = "";
 };
 
 Settings loadSettingsFromFile(const QString &filePath);

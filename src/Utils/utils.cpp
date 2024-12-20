@@ -60,7 +60,7 @@ bool setOSRunOnStartup(bool enable)
 #ifdef Q_OS_WIN
     QString startupPath = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation)
                           + QDir::separator() + "Startup";
-    QString linkPath = startupPath + "\\" + appName + ".lnk";
+    QString linkPath = startupPath + QDir::separator() + appName + ".lnk";
     if (enable) {
         QFile::remove(linkPath);
         return QFile::link(appPath, linkPath);
