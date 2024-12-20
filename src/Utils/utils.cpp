@@ -30,7 +30,7 @@ QString getLatestGitHubReleaseVersion(const QString &owner, const QString &repo)
     } else {
         qDebug() << "Error:" << reply->errorString();
         reply->deleteLater();
-        return QString();
+        return QString("0.0.0");
     }
 }
 
