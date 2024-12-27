@@ -74,19 +74,23 @@ void SettingsWindow::saveStyle()
     dialog.setFileMode(QFileDialog::AnyFile);
     dialog.setNameFilter("QStyle (*.qss)");
 
-    QUrl fileUrl = dialog.getOpenFileUrl();
-    if (fileUrl.isValid()) {
-        QString source = fileUrl.path().removeFirst();
-        QString destination = PROGRAM_STYLES_PATH;
-        QDir().mkpath(destination);
-        destination += "/" + fileUrl.fileName();
-        QFile file(destination);
-        if (file.exists()) {
-            file.remove();
-        }
-        QFile::copy(source, destination);
+    if (dialog.exec())
+    {
+        QStringList fileUrls = dialog.selectedFiles();
+        QUrl fileUrl = QUrl(fileUrls[0]);
+        if (fileUrl.isValid()) {
+            QString source = fileUrl.path().removeFirst();
+            QString destination = PROGRAM_STYLES_PATH;
+            QDir().mkpath(destination);
+            destination += "/" + fileUrl.fileName();
+            QFile file(destination);
+            if (file.exists()) {
+                file.remove();
+            }
+            QFile::copy(source, destination);
 
-        loadStyles();
+            loadStyles();
+        }
     }
 }
 
