@@ -79,15 +79,17 @@ public:
     bool operator==(const Device &d) const;
     bool operator==(const Device *d) const;
 
-    void updateDevice(const Device *new_device);
-    bool updateDevice(const QList<Device *> &new_device_list);
+    void copyConfig(Device* device);
+    void updateConfig(const QList<Device *> &list);
+
+    void updateInfo(const Device *new_device);
+    bool updateInfo(const QList<Device *> &new_device_list);
 
     QJsonObject toJson() const;
     static Device *fromJson(const QJsonObject &json);
 };
 
 void updateDeviceFromSource(QList<Device *> &devicesToUpdate, const Device *sourceDevice);
-void updateDevicesFromSource(QList<Device *> &devicesToUpdate, const QList<Device *> &sourceDevices);
 
 void serializeDevices(const QList<Device *> &devices, const QString &filePath);
 QList<Device *> deserializeDevices(const QString &filePath);

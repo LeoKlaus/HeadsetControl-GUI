@@ -102,17 +102,39 @@ bool Device::operator==(const Device *d) const
     return this->id_vendor == d->id_vendor && this->id_product == d->id_product;
 }
 
-void Device::updateDevice(const Device *new_device)
+void Device::copyConfig(Device* device){
+    this->lights = device->lights;
+    this->sidetone = device->sidetone;
+    this->voice_prompts = device->voice_prompts;
+    this->inactive_time = device->inactive_time;
+    this->equalizer_preset = device->equalizer_preset;
+    this->equalizer_curve = device->equalizer_curve;
+    this->volume_limiter = device->volume_limiter;
+    this->rotate_to_mute = device->rotate_to_mute;
+    this->mic_mute_led_brightness = device->mic_mute_led_brightness;
+    this->mic_volume = device->mic_volume;
+    this->bt_when_powered_on = device->bt_when_powered_on;
+    this->bt_call_volume = device->bt_call_volume;
+}
+
+void Device::updateConfig(const QList<Device *> &list){
+    foreach (Device* device, list) {
+        if(*this == device)
+            this->copyConfig(device);
+    }
+}
+
+void Device::updateInfo(const Device *new_device)
 {
     this->battery = new_device->battery;
     this->chatmix = new_device->chatmix;
 }
 
-bool Device::updateDevice(const QList<Device *> &new_device_list)
+bool Device::updateInfo(const QList<Device *> &new_device_list)
 {
     foreach (Device *new_device, new_device_list) {
         if (*this == new_device) {
-            this->updateDevice(new_device);
+            this->updateInfo(new_device);
             return true;
         }
     }
@@ -191,18 +213,6 @@ void updateDeviceFromSource(QList<Device *> &devicesToUpdate, const Device *sour
         *toAppend = *sourceDevice;
         devicesToUpdate.append(toAppend);
     }
-}
-
-void updateDevicesFromSource(QList<Device *> &devicesToUpdate, const QList<Device *> &sourceDevices)
-{
-    for (Device *toUpdateDevice : devicesToUpdate) {
-        for (Device *sourceDevice : sourceDevices) {
-            if (*toUpdateDevice == sourceDevice) {
-                // Update the connected device with saved device's information
-                *toUpdateDevice = *sourceDevice;
-            }
-        }
-    };
 }
 
 void serializeDevices(const QList<Device *> &devices, const QString &filePath)

@@ -340,6 +340,10 @@ void MainWindow::loadDevice()
         ui->missingheadsetcontrolFrame->setHidden(true);
         rescaleAndMoveWindow();
         return;
+    } else {
+        QList<Device *> savedDevices = getSavedDevices();
+        selectedDevice->updateConfig(savedDevices);
+        deleteDevices(savedDevices);
     }
 
     QSet<QString> &capabilities = selectedDevice->capabilities;
@@ -520,7 +524,7 @@ QList<Device *> MainWindow::getSavedDevices()
 bool MainWindow::updateSelectedDevice()
 {
     QList<Device *> newDl = API.getConnectedDevices();
-    if (!selectedDevice->updateDevice(newDl)) {
+    if (!selectedDevice->updateInfo(newDl)) {
         selectedDevice = nullptr;
         return false;
     }
