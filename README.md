@@ -48,7 +48,7 @@ If you have a wireless headset with support for battery levels, you can also min
 That way, you will be able to see the battery status at a glance and get a reminder when the batteries of your headset run low (below 15%).
 Hovering over the tray icon will show you the current battery percentage. You can also right-click the tray icon to bring up a context menu with quick access to the light control. You can also open or completely close the GUI through the context menu.
 
-![338270796-ea327c0a-e39a-4035-aa99-bc6325724571](https://github.com/user-attachments/assets/319c5060-5f58-4d1f-81b4-d94d7859104b)
+![Screenshot 2024-06-10 183803](https://github.com/user-attachments/assets/1bcf625a-e18c-4df9-b3a4-973075e3c335)
 
 ### Performance
 While the concept of calling another app for every single interaction has some inherit overhead, HeadsetControl-GUI is very light on ressources.
