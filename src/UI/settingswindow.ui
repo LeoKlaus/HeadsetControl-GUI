@@ -196,7 +196,7 @@
        <widget class="QLabel" name="updatetimeLabel">
         <property name="text">
          <string>Update Info interval time (seconds):
-Default: 30,0 seconds
+Default: 30 seconds
 DON'T PUT TOO LOW VALUES</string>
         </property>
        </widget>
@@ -216,10 +216,13 @@ DON'T PUT TOO LOW VALUES</string>
          </size>
         </property>
         <property name="decimals">
-         <number>1</number>
+         <number>0</number>
+        </property>
+        <property name="minimum">
+         <double>1.000000000000000</double>
         </property>
         <property name="maximum">
-         <double>1000.000000000000000</double>
+         <double>99999.000000000000000</double>
         </property>
         <property name="value">
          <double>30.000000000000000</double>
