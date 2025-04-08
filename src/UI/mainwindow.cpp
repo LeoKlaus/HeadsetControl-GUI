@@ -37,8 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QDir().mkpath(PROGRAM_CONFIG_PATH);
     settings = loadSettingsFromFile(PROGRAM_SETTINGS_FILEPATH);
-    API.setSelectedDevice(
-        API.getDeviceIndex(settings.lastSelectedVendorID, settings.lastSelectedProductID));
+    API.setSelectedDevice(settings.lastSelectedVendorID, settings.lastSelectedProductID);
     defaultStyle = styleSheet();
 
     setupTrayIcon();
@@ -47,8 +46,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     updateIconsTheme();
     updateStyle();
-
-    resetGUI();
 
     updateGUI();
 
@@ -105,29 +102,29 @@ void MainWindow::bindEvents()
     });
 
     // Other Section
-    connect(ui->onlightButton, &QPushButton::clicked, &API, [=]() {
-        API.setLights(selectedDevice, true);
+    connect(ui->onlightButton, &QPushButton::clicked, this, [=]() {
+        API.setLights(true);
     });
-    connect(ui->offlightButton, &QPushButton::clicked, &API, [=]() {
-        API.setLights(selectedDevice, false);
+    connect(ui->offlightButton, &QPushButton::clicked, this, [=]() {
+        API.setLights(false);
     });
-    connect(ui->sidetoneSlider, &QSlider::sliderReleased, &API, [=]() {
-        API.setSidetone(selectedDevice, ui->sidetoneSlider->value());
+    connect(ui->sidetoneSlider, &QSlider::sliderReleased, this, [=]() {
+        API.setSidetone(ui->sidetoneSlider->value());
     });
-    connect(ui->voiceOnButton, &QPushButton::clicked, &API, [=]() {
-        API.setVoicePrompts(selectedDevice, true);
+    connect(ui->voiceOnButton, &QPushButton::clicked, this, [=]() {
+        API.setVoicePrompts(true);
     });
-    connect(ui->voiceOffButton, &QPushButton::clicked, &API, [=]() {
-        API.setVoicePrompts(selectedDevice, true);
+    connect(ui->voiceOffButton, &QPushButton::clicked, this, [=]() {
+        API.setVoicePrompts(true);
     });
-    connect(ui->notification0Button, &QPushButton::clicked, &API, [=]() {
-        API.playNotificationSound(selectedDevice, 0);
+    connect(ui->notification0Button, &QPushButton::clicked, this, [=]() {
+        API.playNotificationSound(0);
     });
-    connect(ui->notification1Button, &QPushButton::clicked, &API, [=]() {
-        API.playNotificationSound(selectedDevice, 1);
+    connect(ui->notification1Button, &QPushButton::clicked, this, [=]() {
+        API.playNotificationSound(1);
     });
-    connect(ui->inactivitySlider, &QSlider::sliderReleased, &API, [=]() {
-        API.setInactiveTime(selectedDevice, ui->inactivitySlider->value());
+    connect(ui->inactivitySlider, &QSlider::sliderReleased, this, [=]() {
+        API.setInactiveTime(ui->inactivitySlider->value());
     });
 
     // Equalizer Section
@@ -139,42 +136,42 @@ void MainWindow::bindEvents()
         equalizerLiveUpdate = (state == Qt::Checked);
     });
     connect(ui->applyEqualizer, &QPushButton::clicked, this, [=]() { applyEqualizer(); });
-    connect(ui->volumelimiterOffButton, &QPushButton::clicked, &API, [=]() {
-        API.setVolumeLimiter(selectedDevice, false);
+    connect(ui->volumelimiterOffButton, &QPushButton::clicked, this, [=]() {
+        API.setVolumeLimiter(false);
     });
-    connect(ui->volumelimiterOnButton, &QPushButton::clicked, &API, [=]() {
-        API.setVolumeLimiter(selectedDevice, true);
+    connect(ui->volumelimiterOnButton, &QPushButton::clicked, this, [=]() {
+        API.setVolumeLimiter(true);
     });
 
     // Microphone Section
-    connect(ui->muteledbrightnessSlider, &QSlider::sliderReleased, &API, [=]() {
-        API.setMuteLedBrightness(selectedDevice, ui->muteledbrightnessSlider->value());
+    connect(ui->muteledbrightnessSlider, &QSlider::sliderReleased, this, [=]() {
+        API.setMuteLedBrightness(ui->muteledbrightnessSlider->value());
     });
-    connect(ui->micvolumeSlider, &QSlider::sliderReleased, &API, [=]() {
-        API.setMicrophoneVolume(selectedDevice, ui->micvolumeSlider->value());
+    connect(ui->micvolumeSlider, &QSlider::sliderReleased, this, [=]() {
+        API.setMicrophoneVolume(ui->micvolumeSlider->value());
     });
-    connect(ui->rotateOn, &QPushButton::clicked, &API, [=]() {
-        API.setRotateToMute(selectedDevice, true);
+    connect(ui->rotateOn, &QPushButton::clicked, this, [=]() {
+        API.setRotateToMute(true);
     });
-    connect(ui->rotateOff, &QPushButton::clicked, &API, [=]() {
-        API.setRotateToMute(selectedDevice, false);
+    connect(ui->rotateOff, &QPushButton::clicked, this, [=]() {
+        API.setRotateToMute(false);
     });
 
     // Bluetooth Section
-    connect(ui->btwhenonOffButton, &QPushButton::clicked, &API, [=]() {
-        API.setBluetoothWhenPoweredOn(selectedDevice, false);
+    connect(ui->btwhenonOffButton, &QPushButton::clicked, this, [=]() {
+        API.setBluetoothWhenPoweredOn(false);
     });
-    connect(ui->btwhenonOnButton, &QPushButton::clicked, &API, [=]() {
-        API.setBluetoothWhenPoweredOn(selectedDevice, true);
+    connect(ui->btwhenonOnButton, &QPushButton::clicked, this, [=]() {
+        API.setBluetoothWhenPoweredOn(true);
     });
-    connect(ui->btbothRadioButton, &QRadioButton::clicked, &API, [=]() {
-        API.setBluetoothCallVolume(selectedDevice, 0);
+    connect(ui->btbothRadioButton, &QRadioButton::clicked, this, [=]() {
+        API.setBluetoothCallVolume(0);
     });
-    connect(ui->btpcdbRadioButton, &QRadioButton::clicked, &API, [=]() {
-        API.setBluetoothCallVolume(selectedDevice, 1);
+    connect(ui->btpcdbRadioButton, &QRadioButton::clicked, this, [=]() {
+        API.setBluetoothCallVolume(1);
     });
-    connect(ui->btonlyRadioButton, &QRadioButton::clicked, &API, [=]() {
-        API.setBluetoothCallVolume(selectedDevice, 2);
+    connect(ui->btonlyRadioButton, &QRadioButton::clicked, this, [=]() {
+        API.setBluetoothCallVolume(2);
     });
 }
 
@@ -192,10 +189,10 @@ void MainWindow::setupTrayIcon()
 
     trayMenu->addAction(tr("Hide/Show"), this, &MainWindow::toggleWindow);
     ledOn = trayMenu->addAction(tr("Turn Lights On"), &API, [=]() {
-        API.setLights(selectedDevice, true);
+        API.setLights(true);
     });
     ledOff = trayMenu->addAction(tr("Turn Lights Off"), &API, [=]() {
-        API.setLights(selectedDevice, false);
+        API.setLights(false);
     });
     trayMenu->addAction(tr("Exit"), this, &QApplication::quit);
 
@@ -334,9 +331,9 @@ void MainWindow::loadDevice()
 {
     resetGUI();
 
-    selectedDevice = API.getDevice();
+    selectedDevice = API.getSelectedDevice();
     if (selectedDevice == nullptr) {
-        API.setSelectedDevice(0);
+        API.setSelectedDevice("0", "0");
         ui->missingheadsetcontrolFrame->setHidden(true);
         rescaleAndMoveWindow();
         return;
@@ -352,7 +349,6 @@ void MainWindow::loadDevice()
     ui->notSupportedFrame->setHidden(true);
 
     qDebug() << "Selected Device";
-    qDebug() << "Index:\t" << QString::number(API.getSelectedDevice());
     qDebug() << "Device:\t" << selectedDevice->device;
     qDebug() << "Caps:\t" << selectedDevice->capabilities;
 
@@ -523,15 +519,15 @@ QList<Device *> MainWindow::getSavedDevices()
 
 bool MainWindow::updateSelectedDevice()
 {
-    QList<Device *> newDl = API.getConnectedDevices();
-    if (!selectedDevice->updateInfo(newDl)) {
-        selectedDevice = nullptr;
+    API.updateSelectedDevice();
+    if (API.getSelectedDevice() == nullptr) {
+        API.setSelectedDevice("0","0");
+        selectedDevice = API.getSelectedDevice();
         return false;
     }
 
     setBatteryStatus();
     setChatmixStatus();
-    deleteDevices(newDl);
     return true;
 }
 
@@ -586,7 +582,7 @@ void MainWindow::setBatteryStatus()
                                 tr("The battery has been charged to 100%"),
                                 QIcon("battery-level-full"));
             if (settings.audioNotification) {
-                API.playNotificationSound(selectedDevice, 1);
+                API.playNotificationSound(1);
             }
             notified = true;
         }
@@ -606,7 +602,7 @@ void MainWindow::setBatteryStatus()
                                     tr("The battery of your headset is running low"),
                                     QIcon("battery-low"));
                 if (settings.audioNotification) {
-                    API.playNotificationSound(selectedDevice, 0);
+                    API.playNotificationSound(0);
                 }
                 notified = true;
             }
@@ -643,7 +639,7 @@ void MainWindow::equalizerPresetChanged()
 {
     int index = ui->equalizerPresetcomboBox->currentIndex();
     setEqualizerSliders(selectedDevice->presets_list.value(index).values);
-    API.setEqualizerPreset(selectedDevice, index);
+    API.setEqualizerPreset(index);
 }
 
 void MainWindow::applyEqualizer(
@@ -654,7 +650,7 @@ void MainWindow::applyEqualizer(
     for (QSlider *slider : equalizerSliders) {
         values.append(slider->value() * selectedDevice->equalizer.band_step);
     }
-    API.setEqualizer(selectedDevice, values, saveToFile);
+    API.setEqualizer(values, saveToFile);
 }
 
 //Equalizer Slidesrs Section
@@ -730,14 +726,16 @@ void MainWindow::selectDevice()
     if (loadDevWindow->exec() == QDialog::Accepted) {
         int index = loadDevWindow->getDeviceIndex();
         if (index >= 0 && index < connectedDevices.length()) {
-            API.setSelectedDevice(index);
+            Device* d=connectedDevices[index];
+            API.setSelectedDevice(d->id_vendor, d->id_product);
             loadDevice();
             settings.lastSelectedVendorID = selectedDevice->id_vendor;
             settings.lastSelectedProductID = selectedDevice->id_product;
             saveSettingstoFile(settings, PROGRAM_SETTINGS_FILEPATH);
         }
     }
-    delete (loadDevWindow);
+    deleteDevices(connectedDevices);
+    delete(loadDevWindow);
     timerGUI->start();
 }
 

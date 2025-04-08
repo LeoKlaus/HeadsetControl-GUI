@@ -8,19 +8,35 @@ HeadsetControlAPI::HeadsetControlAPI(QString headsetcontrolFilePath)
 {
     this->headsetcontrolFilePath = headsetcontrolFilePath;
     parseOutput(sendCommand(QStringList()));
+    selectedVendorId="0";
+    selectedProductId="0";
 }
 
-int HeadsetControlAPI::getSelectedDevice()
+Device* HeadsetControlAPI::getSelectedDevice()
 {
     return selectedDevice;
 }
 
-void HeadsetControlAPI::setSelectedDevice(const int &deviceIndex)
+void HeadsetControlAPI::setSelectedDevice(const QString& vendorId, const QString& productId)
 {
-    if (deviceIndex >= 0)
-        selectedDevice = deviceIndex;
+    if(vendorId == "")
+        selectedVendorId = "0";
     else
-        selectedDevice = 0;
+        selectedVendorId=vendorId;
+    if(productId == "")
+        selectedProductId = "0";
+    else
+        selectedProductId=productId;
+    selectedDevice = getDevice();
+}
+
+void HeadsetControlAPI::updateSelectedDevice(){
+    Device* newD = getDevice();
+    if (newD == nullptr){
+        selectedDevice = nullptr;
+    } else {
+        selectedDevice->updateInfo(newD);
+    }
 }
 
 QString HeadsetControlAPI::getName()
@@ -45,38 +61,35 @@ QString HeadsetControlAPI::getHidApiVersion()
 
 Device *HeadsetControlAPI::getDevice()
 {
-    QList<Device *> connectedList = getConnectedDevices();
-    Device *connectedDevice = connectedList.value(selectedDevice);
+    QList<Device *> connectedList = getConnectedDevices(selectedVendorId, selectedProductId);
+    Device *connectedDevice = nullptr;
+    if(selectedVendorId == "0" && selectedProductId == "0"){
+        if (connectedList.size() > 0){
+            connectedDevice = connectedList.at(0);
+        }
+    } else {
+        foreach(Device *d, connectedList){
+            if(d->id_vendor == selectedVendorId && d->id_product == selectedProductId){
+                connectedDevice = d;
+            }
+        }
+    }
     Device *device = nullptr;
     if (connectedDevice != nullptr) {
         device = new Device();
         *device = *connectedDevice;
+        selectedVendorId = device->id_vendor;
+        selectedProductId = device->id_product;
     }
     deleteDevices(connectedList);
 
     return device;
 }
 
-int HeadsetControlAPI::getDeviceIndex(
-    const QString &vendorID, const QString &productID)
-{
-    QList<Device *> connectedDevices = getConnectedDevices();
-    int i = 0;
-    foreach (Device *device, connectedDevices) {
-        if (device->id_vendor == vendorID && device->id_product == productID) {
-            deleteDevices(connectedDevices);
-            return i;
-        }
-        i++;
-    }
-    deleteDevices(connectedDevices);
-
-    return 0;
-}
-
-QList<Device *> HeadsetControlAPI::getConnectedDevices()
+QList<Device *> HeadsetControlAPI::getConnectedDevices(const QString& vendorId, const QString& productId)
 {
     QStringList args = QStringList();
+    args << QString("--device") << QString(vendorId+":"+productId);
     QString output = sendCommand(args);
     QJsonObject jsonInfo = parseOutput(output);
 
@@ -85,10 +98,10 @@ QList<Device *> HeadsetControlAPI::getConnectedDevices()
 
     QList<Device *> devices;
     QJsonArray jsonDevices = jsonInfo["devices"].toArray();
-    for (int i = 0; i < device_number; ++i) {
-        Device *device = new Device(jsonDevices[i].toObject(), output);
+    for (auto jsonDevice: jsonDevices) {
+        Device *device = new Device(jsonDevice.toObject(), output);
         devices.append(device);
-        qDebug() << "[" + QString::number(i) + "] " + device->device;
+        qDebug() << device->device << "[" << device->id_vendor << ":" << device->id_vendor << "] ";
     }
     qDebug();
 
@@ -101,8 +114,7 @@ QString HeadsetControlAPI::sendCommand(const QStringList &args_list)
     QProcess *proc = new QProcess();
     QStringList args = QStringList();
     args << QString("--output") << QString("JSON");
-    args << QString("--device") << QString::number(selectedDevice);
-    //args << QString("--test-device"); //Uncomment this to enable all "modules"
+    //args << QString("--test-device"); //Uncomment this to enable test device
     args << args_list;
 
     proc->start(headsetcontrolFilePath, args);
@@ -110,7 +122,7 @@ QString HeadsetControlAPI::sendCommand(const QStringList &args_list)
     QString output = proc->readAllStandardOutput();
     qDebug() << "Command:\t" << headsetcontrolFilePath;
     qDebug() << "Args:\t" << args;
-    qDebug() << "Error:\t" << proc->exitStatus();
+    qDebug() << "ExitStatus:\t" << proc->exitStatus();
     //qDebug() << "Output:" << output;
     qDebug();
 
@@ -135,7 +147,9 @@ QJsonObject HeadsetControlAPI::parseOutput(
 
 Action HeadsetControlAPI::sendAction(const QStringList &args_list)
 {
-    QString output = sendCommand(args_list);
+    QStringList args;
+    args << QString("--device") << QString(selectedVendorId+":"+selectedProductId) << args_list;
+    QString output = sendCommand(args);
     QJsonObject jsonInfo = parseOutput(output);
     QJsonArray actions = jsonInfo["actions"].toArray();
     Action action;
@@ -161,74 +175,75 @@ Action HeadsetControlAPI::sendAction(const QStringList &args_list)
     return action;
 }
 
+
 void HeadsetControlAPI::setSidetone(
-    Device *device, int level, bool emitSignal)
+    int level, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--sidetone") << QString::number(level);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->sidetone = level;
+        selectedDevice->sidetone = level;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::setLights(
-    Device *device, bool enabled, bool emitSignal)
+    bool enabled, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--light") << QString::number(enabled);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->lights = enabled;
+        selectedDevice->lights = enabled;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::setVoicePrompts(
-    Device *device, bool enabled, bool emitSignal)
+    bool enabled, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--voice-prompt") << QString::number(enabled);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->voice_prompts = enabled;
+        selectedDevice->voice_prompts = enabled;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::setInactiveTime(
-    Device *device, int time, bool emitSignal)
+    int time, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--inactive-time") << QString::number(time);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->inactive_time = time;
+        selectedDevice->inactive_time = time;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::playNotificationSound(
-    Device *device, int id, bool emitSignal)
+    int id, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--notificate") << QString::number(id);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->notification_sound = id;
+        selectedDevice->notification_sound = id;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::setVolumeLimiter(
-    Device *device, bool enabled, bool emitSignal)
+    bool enabled, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--volume-limiter") << QString::number(enabled);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->volume_limiter = enabled;
+        selectedDevice->volume_limiter = enabled;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::setEqualizer(
-    Device *device, QList<double> equalizerValues, bool emitSignal)
+    QList<double> equalizerValues, bool emitSignal)
 {
     QString equalizer = "";
     for (double value : equalizerValues) {
@@ -238,75 +253,75 @@ void HeadsetControlAPI::setEqualizer(
     QStringList args = QStringList() << QString("--equalizer") << equalizer;
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->equalizer_curve = equalizerValues;
-        device->equalizer_preset = -1;
+        selectedDevice->equalizer_curve = equalizerValues;
+        selectedDevice->equalizer_preset = -1;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::setEqualizerPreset(
-    Device *device, int number, bool emitSignal)
+    int number, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--equalizer-preset") << QString::number(number);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->equalizer_preset = number;
+        selectedDevice->equalizer_preset = number;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::setRotateToMute(
-    Device *device, bool enabled, bool emitSignal)
+    bool enabled, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--rotate-to-mute") << QString::number(enabled);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->rotate_to_mute = enabled;
+        selectedDevice->rotate_to_mute = enabled;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::setMuteLedBrightness(
-    Device *device, int brightness, bool emitSignal)
+    int brightness, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--microphone-mute-led-brightness")
-                                     << QString::number(brightness);
+    << QString::number(brightness);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->mic_mute_led_brightness = brightness;
+        selectedDevice->mic_mute_led_brightness = brightness;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::setMicrophoneVolume(
-    Device *device, int volume, bool emitSignal)
+    int volume, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--microphone-volume") << QString::number(volume);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->mic_volume = volume;
+        selectedDevice->mic_volume = volume;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::setBluetoothWhenPoweredOn(
-    Device *device, bool enabled, bool emitSignal)
+    bool enabled, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--bt-when-powered-on") << QString::number(enabled);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->bt_when_powered_on = enabled;
+        selectedDevice->bt_when_powered_on = enabled;
         emit actionSuccesful();
     }
 }
 
 void HeadsetControlAPI::setBluetoothCallVolume(
-    Device *device, int option, bool emitSignal)
+    int option, bool emitSignal)
 {
     QStringList args = QStringList() << QString("--bt-call-volume") << QString::number(option);
     Action a = sendAction(args);
     if (emitSignal && a.success) {
-        device->bt_call_volume = option;
+        selectedDevice->bt_call_volume = option;
         emit actionSuccesful();
     }
 }

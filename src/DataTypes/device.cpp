@@ -130,17 +130,6 @@ void Device::updateInfo(const Device *new_device)
     this->chatmix = new_device->chatmix;
 }
 
-bool Device::updateInfo(const QList<Device *> &new_device_list)
-{
-    foreach (Device *new_device, new_device_list) {
-        if (*this == new_device) {
-            this->updateInfo(new_device);
-            return true;
-        }
-    }
-    return false;
-}
-
 QJsonObject Device::toJson() const
 {
     QJsonObject json;
@@ -170,32 +159,32 @@ QJsonObject Device::toJson() const
 Device *Device::fromJson(
     const QJsonObject &json)
 {
-    Device *device = new Device();
-    device->device = json["device"].toString();
-    device->vendor = json["vendor"].toString();
-    device->product = json["product"].toString();
-    device->id_vendor = json["id_vendor"].toString();
-    device->id_product = json["id_product"].toString();
+    Device *newDev = new Device();
+    newDev->device = json["device"].toString();
+    newDev->vendor = json["vendor"].toString();
+    newDev->product = json["product"].toString();
+    newDev->id_vendor = json["id_vendor"].toString();
+    newDev->id_product = json["id_product"].toString();
 
-    device->lights = json["lights"].toInt();
-    device->sidetone = json["sidetone"].toInt();
-    device->voice_prompts = json["voice_prompts"].toInt();
-    device->inactive_time = json["inactive_time"].toInt();
-    device->equalizer_preset = json["equalizer_preset"].toInt();
+    newDev->lights = json["lights"].toInt();
+    newDev->sidetone = json["sidetone"].toInt();
+    newDev->voice_prompts = json["voice_prompts"].toInt();
+    newDev->inactive_time = json["inactive_time"].toInt();
+    newDev->equalizer_preset = json["equalizer_preset"].toInt();
 
     QJsonArray curveArray = json["equalizer_curve"].toArray();
     for (const auto &value : curveArray) {
-        device->equalizer_curve.append(value.toDouble());
+        newDev->equalizer_curve.append(value.toDouble());
     }
 
-    device->volume_limiter = json["volume_limiter"].toInt();
-    device->rotate_to_mute = json["rotate_to_mute"].toInt();
-    device->mic_mute_led_brightness = json["mic_mute_led_brightness"].toInt();
-    device->mic_volume = json["mic_volume"].toInt();
-    device->bt_when_powered_on = json["bt_when_powered_on"].toInt();
-    device->bt_call_volume = json["bt_call_volume"].toInt();
+    newDev->volume_limiter = json["volume_limiter"].toInt();
+    newDev->rotate_to_mute = json["rotate_to_mute"].toInt();
+    newDev->mic_mute_led_brightness = json["mic_mute_led_brightness"].toInt();
+    newDev->mic_volume = json["mic_volume"].toInt();
+    newDev->bt_when_powered_on = json["bt_when_powered_on"].toInt();
+    newDev->bt_call_volume = json["bt_call_volume"].toInt();
 
-    return device;
+    return newDev;
 }
 
 void updateDeviceFromSource(QList<Device *> &devicesToUpdate, const Device *sourceDevice)

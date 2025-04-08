@@ -40,9 +40,6 @@ public:
     Device();
     Device(const QJsonObject &jsonObj, QString jsonData);
 
-    // Index
-    int index = -1;
-
     // Status
     QString status;
 
@@ -83,7 +80,6 @@ public:
     void updateConfig(const QList<Device *> &list);
 
     void updateInfo(const Device *new_device);
-    bool updateInfo(const QList<Device *> &new_device_list);
 
     QJsonObject toJson() const;
     static Device *fromJson(const QJsonObject &json);
