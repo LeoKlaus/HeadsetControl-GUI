@@ -125,6 +125,7 @@ jobs:
     if: ${{ !(startsWith(github.ref, 'refs/tags/continuous') || inputs.prerelease) }}
     needs: [create-release]
     runs-on: windows-latest
+    continue-on-error: true
     steps:
     - name: Submit package to Windows Package Manager Community Repository
       run: |
