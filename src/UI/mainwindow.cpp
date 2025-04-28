@@ -576,15 +576,19 @@ void MainWindow::setBatteryStatus()
     } else if (status == "BATTERY_CHARGING") {
         ui->batteryPercentage->setText(level + tr("% - Charging"));
         trayIcon->setToolTip(tr("HeadsetControl \r\nBattery: Charging - ") + level + "%");
-        changeTrayIconTo("battery-charging");
-        if (settings.notificationBatteryFull && !notified && batteryLevel == 100) {
-            sendAppNotification(tr("Battery Charged!"),
-                                tr("The battery has been charged to 100%"),
-                                QIcon("battery-level-full"));
-            if (settings.audioNotification) {
-                API.playNotificationSound(1);
+        if (batteryLevel < 100){
+            changeTrayIconTo("battery-charging");
+        } else {
+            if (settings.notificationBatteryFull && !notified) {
+                sendAppNotification(tr("Battery Charged!"),
+                                    tr("The battery has been charged to 100%"),
+                                    QIcon("battery-level-full"));
+                if (settings.audioNotification) {
+                    API.playNotificationSound(1);
+                }
+                notified = true;
             }
-            notified = true;
+            changeTrayIconTo("battery-fully-charged");
         }
     } else if (status == "BATTERY_AVAILABLE") {
         ui->batteryPercentage->setText(level + tr("% - Descharging"));
