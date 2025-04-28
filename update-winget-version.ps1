@@ -53,9 +53,8 @@ if ($version -ne $latestVersion) {
     exit 1
 }
 
-# Get User Home Path
-$userPath = $env:USERPROFILE
-$manifestPath = "$userPath\manifests\l\LeoKlaus\HeadsetControl-GUI\$version"
+# Set Manifest Path
+$manifestPath = ".\manifests\l\LeoKlaus\HeadsetControl-GUI\$version"
 
 # Get Latest Manifest
 wingetcreate update --urls $downloadUrl --version $version LeoKlaus.HeadsetControl-GUI

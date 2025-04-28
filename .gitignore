@@ -36,6 +36,7 @@
 
 # Folders
 build/*
+manifests/*
 
 # User files
 HeadsetControl-GUI.pro.user
