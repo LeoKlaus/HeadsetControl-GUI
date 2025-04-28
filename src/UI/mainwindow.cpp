@@ -769,7 +769,7 @@ void MainWindow::checkForUpdates(bool firstStart)
     QVersionNumber remote_gui = QVersionNumber::fromString(v2);
     QString s1 = tr("up-to date v") + hcVersion;
     QString s2 = tr("up-to date v") + guiVersion;
-    if (!(v1 == "") && remote_hc > local_hc) {
+    if (!(v1 == "") && remote_hc > local_hc && hcVersion != "continuous-modified") {
         s1 = tr("Newer version")
              + " -> <a "
                "href=\"https://github.com/Sapd/HeadsetControl/releases/latest\">"
