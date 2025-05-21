@@ -27,7 +27,7 @@ jobs:
         shell: ${{ matrix.shell }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-22.04]
         include:
           - os: windows-latest
             os_name: windows
@@ -41,13 +41,13 @@ jobs:
               cd build
               qmake ../HeadsetControl-GUI.pro CONFIG+=release
               nmake
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             os_name: linux
             architecture: x64
             shell: bash
             dependencies: |
               sudo apt-get update
-              sudo apt-get install -y zip
+              sudo apt-get install -y zip libfuse2
             build: |
               mkdir build
               cd build
@@ -86,9 +86,35 @@ jobs:
         if: matrix.os_name == 'linux'
         run: |
           curl -L https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-linux-x86_64.zip -o headsetcontrol-linux-x86_64.zip
-          mkdir -p build/release/
-          cp build/HeadsetControl-GUI build/release/
-          unzip headsetcontrol-linux-x86_64.zip -d build/release/
+          unzip -o headsetcontrol-linux-x86_64.zip -d build/release/
+          
+      - name: Deploy Appimage
+        if: matrix.os_name == 'linux'
+        run: |
+          wget https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-linux-x86_64.zip
+          wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+
+          chmod +x linuxdeployqt-continuous-x86_64.AppImage
+
+          mkdir -p AppDir/usr/bin
+          mkdir -p AppDir/usr/share/applications
+
+          cp build/HeadsetControl-GUI AppDir/usr/bin/
+          cp build/release/headsetcontrol AppDir/usr/bin/
+          cp HeadsetControl-GUI.png AppDir/
+
+          echo "[Desktop Entry]
+          Type=Application
+          Name=HeadsetControl-GUI
+          Comment=HeadsetControl-GUI
+          Exec=HeadsetControl-GUI
+          Icon=HeadsetControl-GUI
+          Categories=Utility;" > AppDir/usr/share/applications/HeadsetControl-GUI.desktop
+
+          ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/HeadsetControl-GUI.desktop -appimage -extra-plugins=platformthemes
+
+          appimage_file=$(ls HeadsetControl-GUI-*-x86_64.AppImage | head -n 1)
+          mv "$appimage_file" "HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.AppImage"
 
       - name: zip binaries folder
         run: |
@@ -100,6 +126,13 @@ jobs:
         with:
           name: HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}
           path: HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.zip
+
+      - name: Upload AppImage
+        if: matrix.os_name == 'linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.AppImage
+          path: HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.AppImage
 
   create-release:
     needs: [build]
@@ -117,6 +150,7 @@ jobs:
             automatic_release_tag: ${{ inputs.version }}
             prerelease: ${{ startsWith(github.ref, 'refs/tags/continuous') || inputs.prerelease }}
             title: Release ${{ inputs.version }}
+            generate_notes: true
             files: |
               HeadsetControl-GUI_*
             body: |
