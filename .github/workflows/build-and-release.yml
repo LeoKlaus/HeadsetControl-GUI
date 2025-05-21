@@ -13,6 +13,11 @@ on:
         required: true
         default: true
         type: boolean
+      publish:
+        description: "Publish release"
+        required: true
+        default: true
+        type: boolean
   push:
     branches: [main]
     paths:
@@ -58,7 +63,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: "6.7.2"
+          version: "6.9.0"
           add-tools-to-path: true
           cache: true
           host: ${{ matrix.os_name }}
@@ -135,6 +140,7 @@ jobs:
           path: HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.AppImage
 
   create-release:
+    if: ${{ inputs.publish }}
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -161,7 +167,7 @@ jobs:
               @Sapd for [HeadsetControl](https://github.com/Sapd/HeadsetControl)
 
   winget-release:
-    if: ${{ !(startsWith(github.ref, 'refs/tags/continuous') || inputs.prerelease) }}
+    if: ${{ inputs.publish && !(startsWith(github.ref, 'refs/tags/continuous') || inputs.prerelease) }}
     needs: [create-release]
     runs-on: windows-latest
     continue-on-error: true
