@@ -12,7 +12,6 @@
 #include <QFileDialog>
 #include <QScreen>
 #include <QStyleHints>
-#include <QtConcurrent/QtConcurrent>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -20,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     , trayIcon(new QSystemTrayIcon(this))
     , trayMenu(new QMenu(this))
     , timerGUI(new QTimer(this))
-    , API(HeadsetControlAPI(HEADSETCONTROL_FILE_PATH))
+    , API(HeadsetControlAPI(HEADSETCONTROL_DIRECTORY))
 {
     qDebug() << "Headsetcontrol";
     qDebug() << "Name:" << API.getName();
@@ -98,7 +97,7 @@ void MainWindow::bindEvents()
 
     //Error frames
     connect(ui->openfolderPushButton, &QPushButton::clicked, this, [=]() {
-        openFileExplorer(PROGRAM_APP_PATH);
+        openFileExplorer(PROGRAM_APP_DIRECTORY);
     });
 
     // Other Section
@@ -184,7 +183,7 @@ void MainWindow::changeTrayIconTo(QString iconName)
 
 void MainWindow::setupTrayIcon()
 {
-    trayIcon->setIcon(QIcon(":/icons/light/png/headphones.png"));
+    changeTrayIconTo("headphones");
     trayIcon->setToolTip("HeadsetControl");
 
     trayMenu->addAction(tr("Hide/Show"), this, &MainWindow::toggleWindow);
@@ -282,6 +281,8 @@ void MainWindow::rescaleAndMoveWindow()
 
 void MainWindow::resetGUI()
 {
+    trayIcon->setIcon(QIcon(":/icons/light/png/headphones.png"));
+    trayIcon->setToolTip("HeadsetControl");
     ledOn->setEnabled(false);
     ledOff->setEnabled(false);
 
@@ -534,12 +535,9 @@ bool MainWindow::updateSelectedDevice()
 //Update GUI Section
 void MainWindow::updateGUI()
 {
-    QString path = HEADSETCONTROL_FILE_PATH;
-#ifdef Q_OS_WIN
-    path += ".exe";
-#endif
-    if (!fileExists(path)) {
+    if (!API.areApiAvailable()) {
         resetGUI();
+        rescaleAndMoveWindow();
         ui->notSupportedFrame->setHidden(true);
         rescaleAndMoveWindow();
         selectedDevice = nullptr;
@@ -651,7 +649,7 @@ void MainWindow::applyEqualizer(
 {
     ui->equalizerPresetcomboBox->setCurrentIndex(-1);
     QList<double> values;
-    for (QSlider *slider : equalizerSliders) {
+    for (QSlider *slider : std::as_const(equalizerSliders)) {
         values.append(slider->value() * selectedDevice->equalizer.band_step);
     }
     API.setEqualizer(values, saveToFile);
@@ -702,7 +700,7 @@ void MainWindow::clearEqualizerSliders()
 void MainWindow::setEqualizerSliders(
     double value)
 {
-    for (QSlider *slider : equalizerSliders) {
+    for (QSlider *slider : std::as_const(equalizerSliders)) {
         slider->setValue(value / selectedDevice->equalizer.band_step);
     }
 }
@@ -711,7 +709,7 @@ void MainWindow::setEqualizerSliders(QList<double> values)
 {
     int i = 0;
     if (values.length() == selectedDevice->equalizer.bands_number) {
-        for (QSlider *slider : equalizerSliders) {
+        for (QSlider *slider : std::as_const(equalizerSliders)) {
             slider->setValue((int) (values[i++] / selectedDevice->equalizer.band_step));
         }
     } else {

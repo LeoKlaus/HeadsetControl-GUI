@@ -1,12 +1,23 @@
 #include "headsetcontrolapi.h"
+#include "utils.h"
 
+#include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QProcess>
+#include <QStandardPaths>
 
-HeadsetControlAPI::HeadsetControlAPI(QString headsetcontrolFilePath)
+HeadsetControlAPI::HeadsetControlAPI(const QString& headsetcontrolDirectory)
 {
-    this->headsetcontrolFilePath = headsetcontrolFilePath;
+    if (headsetcontrolDirectory == ""){
+        this->headsetcontrolFilePath = "headsetcontrol";
+#ifdef Q_OS_WIN
+        this->headsetcontrolFilePath += ".exe";
+#endif
+    } else {
+        this->headsetcontrolFilePath = headsetcontrolDirectory;
+    }
+
     parseOutput(sendCommand(QStringList()));
     selectedVendorId="0";
     selectedProductId="0";
@@ -15,6 +26,17 @@ HeadsetControlAPI::HeadsetControlAPI(QString headsetcontrolFilePath)
 Device* HeadsetControlAPI::getSelectedDevice()
 {
     return selectedDevice;
+}
+
+bool HeadsetControlAPI::areApiAvailable(){
+    QString executableName = this->headsetcontrolFilePath;
+    QFileInfo fileInfo(QDir::currentPath(),executableName);
+    if (fileInfo.exists())
+        return true;
+    else {
+        QString path = QStandardPaths::findExecutable(executableName);
+        return !path.isEmpty();
+    }
 }
 
 void HeadsetControlAPI::setSelectedDevice(const QString& vendorId, const QString& productId)
@@ -117,12 +139,19 @@ QString HeadsetControlAPI::sendCommand(const QStringList &args_list)
     //args << QString("--test-device"); //Uncomment this to enable test device
     args << args_list;
 
-    proc->start(headsetcontrolFilePath, args);
+    proc->setProgram(headsetcontrolFilePath);
+    proc->setArguments(args);
+
+    proc->start();
     proc->waitForFinished();
     QString output = proc->readAllStandardOutput();
     qDebug() << "Command:\t" << headsetcontrolFilePath;
     qDebug() << "Args:\t" << args;
     qDebug() << "ExitStatus:\t" << proc->exitStatus();
+    qDebug() << "Error:\t" << proc->error();
+    qDebug() << "ErrorMessage:\t" << proc->errorString();
+    qDebug() << "ExitCode:\t" << proc->exitCode();
+
     //qDebug() << "Output:" << output;
     qDebug();
 

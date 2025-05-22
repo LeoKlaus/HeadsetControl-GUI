@@ -21,7 +21,9 @@ class HeadsetControlAPI : public QObject
 {
     Q_OBJECT
 public:
-    HeadsetControlAPI(QString headsetcontrolFilePath);
+    HeadsetControlAPI(const QString& headsetcontrolDirectory = "");
+
+    bool areApiAvailable();
 
     QString getName();
     QString getVersion();

@@ -5,7 +5,6 @@
 #include "headsetcontrolapi.h"
 #include "settings.h"
 
-#include <QDir>
 #include <QHBoxLayout>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -27,9 +26,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    const QString PROGRAM_APP_PATH = qApp->applicationDirPath();
-    const QString HEADSETCONTROL_FILE_PATH = PROGRAM_APP_PATH + QDir::separator()
-                                             + "headsetcontrol";
+    const QString PROGRAM_APP_DIRECTORY = qApp->applicationDirPath();
+    QString HEADSETCONTROL_DIRECTORY = "";
 
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
