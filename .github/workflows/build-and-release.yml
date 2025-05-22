@@ -115,7 +115,7 @@ jobs:
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             automatic_release_tag: ${{ inputs.version }}
-            prerelease: ${{ startsWith(github.ref, 'refs/tags/continuous') || inputs.prerelease }}
+            prerelease: ${{ inputs.prerelease }}
             title: Release ${{ inputs.version }}
             files: |
               HeadsetControl-GUI_*
