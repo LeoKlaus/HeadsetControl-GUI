@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>488</width>
-    <height>823</height>
+    <height>843</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -71,7 +71,7 @@
           <enum>Qt::LayoutDirection::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Missing headsetcontrol!&lt;br/&gt;Download &lt;a href=&quot;https://github.com/Sapd/HeadsetControl/releases/latest&quot;&gt;headsetcontrol&lt;/a&gt; in the program folder.</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Missing headsetcontrol!&lt;br/&gt;Download &lt;a href=&quot;https://github.com/Sapd/HeadsetControl/releases/latest&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;headsetcontrol&lt;/span&gt;&lt;/a&gt; in the program folder on in a $PATH directory.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="textFormat">
           <enum>Qt::TextFormat::AutoText</enum>
