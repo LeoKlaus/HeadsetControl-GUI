@@ -88,7 +88,7 @@ jobs:
       - name: Deploy Qt
         if: matrix.os_name == 'linux'
         run: |
-          curl -L ${{ inputs.prerelease && matrix.headsetcontrol_continuous || matrix.headsetcontrol }} -o headsetcontrol-linux-x86_64.zip
+          curl -L ${{ matrix.headsetcontrol_continuous }} -o headsetcontrol-linux-x86_64.zip
           mkdir -p build/release/
           cp build/HeadsetControl-GUI build/release/
           unzip headsetcontrol-linux-x86_64.zip -d build/release/
