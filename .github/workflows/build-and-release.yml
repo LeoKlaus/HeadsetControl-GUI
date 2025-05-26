@@ -62,7 +62,6 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: "6.7.2"
           add-tools-to-path: true
           cache: true
           host: ${{ matrix.os_name }}
