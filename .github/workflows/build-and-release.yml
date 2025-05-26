@@ -33,6 +33,8 @@ jobs:
             os_name: windows
             architecture: x64
             shell: pwsh
+            headsetcontrol: "https://github.com/Sapd/HeadsetControl/releases/latest/download/headsetcontrol-windows-x86_64.zip"
+            headsetcontrol_continuous: "https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-windows-x86_64.zip"
             dependencies: |
               choco install zip
               Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
@@ -45,6 +47,8 @@ jobs:
             os_name: linux
             architecture: x64
             shell: bash
+            headsetcontrol: "https://github.com/Sapd/HeadsetControl/releases/latest/download/headsetcontrol-linux-x86_64.zip"
+            headsetcontrol_continuous: "https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-linux-x86_64.zip"
             dependencies: |
               sudo apt-get update
               sudo apt-get install -y zip
@@ -78,14 +82,14 @@ jobs:
         if: matrix.os_name == 'windows'
         run: |
           Get-ChildItem -Path build/ -Include *.cpp, *.h, *.obj, *.res, *.qrc, *.qm -Recurse | Remove-Item -Force
-          Invoke-WebRequest -Uri "https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-windows-x86_64.zip" -OutFile headsetcontrol-windows.zip
+          Invoke-WebRequest -Uri ${{ inputs.prerelease && matrix.headsetcontrol_continuous || matrix.headsetcontrol }} -OutFile headsetcontrol-windows.zip
           Expand-Archive -Path headsetcontrol-windows.zip -DestinationPath build/release/
           windeployqt6 --exclude-plugins qsvgicon,qsvg,qico,qjpeg,qgif,qnetworklistmanager,qtuiotouchplugin --no-opengl-sw --no-system-dxc-compiler --no-compiler-runtime --no-translations --no-system-d3d-compiler build/release/HeadsetControl-GUI.exe
           
       - name: Deploy Qt
         if: matrix.os_name == 'linux'
         run: |
-          curl -L https://github.com/Sapd/HeadsetControl/releases/download/continuous/headsetcontrol-linux-x86_64.zip -o headsetcontrol-linux-x86_64.zip
+          curl -L ${{ inputs.prerelease && matrix.headsetcontrol_continuous || matrix.headsetcontrol }} -o headsetcontrol-linux-x86_64.zip
           mkdir -p build/release/
           cp build/HeadsetControl-GUI build/release/
           unzip headsetcontrol-linux-x86_64.zip -d build/release/
@@ -145,5 +149,5 @@ jobs:
           --version "${{ inputs.version }}" `
           --urls "$installerUrl" `
           --submit `
-          --token "${{ secrets.WINGET_DEPLOY_TOKEN}}"
+          --token "${{ secrets.WINGET_DEPLOY_TOKEN }}"
       shell: pwsh
