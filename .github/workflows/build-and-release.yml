@@ -116,7 +116,7 @@ jobs:
           Icon=HeadsetControl-GUI
           Categories=Utility;" > AppDir/usr/share/applications/HeadsetControl-GUI.desktop
 
-          ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/HeadsetControl-GUI.desktop -appimage -extra-plugins=platformthemes
+          ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/HeadsetControl-GUI.desktop -appimage -extra-plugins=platformthemes,wayland
 
           appimage_file=$(ls HeadsetControl-GUI-*-x86_64.AppImage | head -n 1)
           mv "$appimage_file" "HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.AppImage"
