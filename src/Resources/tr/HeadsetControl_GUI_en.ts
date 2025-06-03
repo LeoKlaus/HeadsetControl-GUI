@@ -356,7 +356,7 @@ Headset Off</source>
     </message>
     <message>
         <location filename="../../UI/mainwindow.cpp" line="592"/>
-        <source>% - Descharging</source>
+        <source>% - Discharging</source>
         <translation></translation>
     </message>
     <message>
