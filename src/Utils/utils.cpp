@@ -63,7 +63,24 @@ bool setOSRunOnStartup(bool enable)
     QString linkPath = startupPath + QDir::separator() + appName + ".lnk";
     if (enable) {
         QFile::remove(linkPath);
-        return QFile::link(appPath, linkPath);
+        // Use Windows Script Host to create a shortcut with arguments
+        QString script =
+            "Set oWS = WScript.CreateObject(\"WScript.Shell\")\n"
+            "sLinkFile = \"" + linkPath.replace("/", "\\") + "\"\n"
+            "Set oLink = oWS.CreateShortcut(sLinkFile)\n"
+            "oLink.TargetPath = \"" + appPath.replace("/", "\\") + "\"\n"
+            "oLink.Arguments = \"--tray\"\n"
+            "oLink.Save\n";
+        QString vbsPath = QDir::temp().filePath("create_shortcut.vbs");
+        QFile vbsFile(vbsPath);
+        if (vbsFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            vbsFile.write(script.toUtf8());
+            vbsFile.close();
+            QProcess::execute("wscript", QStringList() << vbsPath);
+            vbsFile.remove();
+            return QFile::exists(linkPath);
+        }
+        return false;
     }
     QFile::remove(linkPath);
     return false;
@@ -81,7 +98,7 @@ bool setOSRunOnStartup(bool enable)
             out << "[Desktop Entry]\n";
             out << "Path=" + appDir + "\n";
             out << "Type=Application\n";
-            out << "Exec=" << appPath << "\n";
+            out << "Exec=" << appPath << " --tray\n";
             out << "Name=" << appName << "\n";
             out << "Comment=Auto-starts " << appName << " on boot\n";
             desktopFile.close();

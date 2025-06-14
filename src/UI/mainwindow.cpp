@@ -52,10 +52,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(timerGUI, &QTimer::timeout, this, &::MainWindow::updateGUI);
     timerGUI->start(settings.msecUpdateIntervalTime);
-
-    //Small trick to make work theme style change (Won't work unless you show window once)
-    show();
-    hide();
 }
 
 MainWindow::~MainWindow()
