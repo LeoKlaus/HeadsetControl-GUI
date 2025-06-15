@@ -40,3 +40,5 @@ manifests/*
 
 # User files
 HeadsetControl-GUI.pro.user
+
+.vscode

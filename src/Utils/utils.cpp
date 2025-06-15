@@ -88,7 +88,7 @@ bool setOSRunOnStartup(bool enable)
 #elif defined(Q_OS_LINUX)
     QString appDir = QCoreApplication::applicationDirPath();
     QString autostartPath = QDir::homePath() + "/.config/autostart/";
-    QString desktopFilePath = autostartPath + appName + ".desktop";
+    QString desktopFilePath = autostartPath + appName + "-autostart.desktop";
 
     if (enable) {
         QFile::remove(desktopFilePath);
@@ -97,9 +97,12 @@ bool setOSRunOnStartup(bool enable)
             QTextStream out(&desktopFile);
             out << "[Desktop Entry]\n";
             out << "Path=" + appDir + "\n";
+            out << "Path=" + appDir + "\n";
             out << "Type=Application\n";
+            out << "NoDisplay=true\n";
             out << "Exec=" << appPath << " --tray\n";
             out << "Name=" << appName << "\n";
+            out << "Icon=" << appName << "\n";
             out << "Comment=Auto-starts " << appName << " on boot\n";
             desktopFile.close();
             return true;
