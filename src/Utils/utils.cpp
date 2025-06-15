@@ -97,7 +97,6 @@ bool setOSRunOnStartup(bool enable)
             QTextStream out(&desktopFile);
             out << "[Desktop Entry]\n";
             out << "Path=" + appDir + "\n";
-            out << "Path=" + appDir + "\n";
             out << "Type=Application\n";
             out << "NoDisplay=true\n";
             out << "Exec=" << appPath << " --tray\n";
