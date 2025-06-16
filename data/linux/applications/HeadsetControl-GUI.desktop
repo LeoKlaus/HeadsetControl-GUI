@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=HeadsetControl-GUI
+Exec=HeadsetControl-GUI
+Icon=HeadsetControl-GUI
+Type=Application
+Categories=Application;System;Settings;XFCE;X-XFCE-SettingsDialog;X-XFCE-SystemSettings;
