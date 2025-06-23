@@ -69,6 +69,7 @@ bool setOSRunOnStartup(bool enable)
             "sLinkFile = \"" + linkPath.replace("/", "\\") + "\"\n"
             "Set oLink = oWS.CreateShortcut(sLinkFile)\n"
             "oLink.TargetPath = \"" + appPath.replace("/", "\\") + "\"\n"
+            "oLink.WorkingDirectory = \"" + QDir::toNativeSeparators(QCoreApplication::applicationDirPath()) + "\"\n"
             "oLink.Arguments = \"--tray\"\n"
             "oLink.Save\n";
         QString vbsPath = QDir::temp().filePath("create_shortcut.vbs");
