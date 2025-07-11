@@ -189,6 +189,11 @@ void MainWindow::setupTrayIcon()
     ledOff = trayMenu->addAction(tr("Turn Lights Off"), &API, [=]() {
         API.setLights(false);
     });
+    trayMenu->addAction(tr("Toggle Sidetone"), &API, [=]() {
+        API.setSidetone(API.getSelectedDevice()->sidetone == 0 ? 128 : 0, true);
+        ui->sidetoneSlider->setSliderPosition(API.getSelectedDevice()->sidetone);
+    });
+
     trayMenu->addAction(tr("Exit"), this, &QApplication::quit);
 
     trayIcon->setContextMenu(trayMenu);
