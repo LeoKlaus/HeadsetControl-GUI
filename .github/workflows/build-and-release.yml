@@ -13,11 +13,11 @@ on:
         required: true
         default: true
         type: boolean
-  push:
-    branches: [main]
-    paths:
-      - 'src/**'
-      - 'HeadsetControl-GUI.pro'
+#  push:
+#    branches: [main]
+#    paths:
+#      - 'src/**'
+#      - 'HeadsetControl-GUI.pro'
 
 jobs:
   build:
