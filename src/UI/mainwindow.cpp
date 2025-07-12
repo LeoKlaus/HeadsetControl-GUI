@@ -110,7 +110,7 @@ void MainWindow::bindEvents()
         API.setVoicePrompts(true);
     });
     connect(ui->voiceOffButton, &QPushButton::clicked, this, [=]() {
-        API.setVoicePrompts(true);
+        API.setVoicePrompts(false);
     });
     connect(ui->notification0Button, &QPushButton::clicked, this, [=]() {
         API.playNotificationSound(0);
