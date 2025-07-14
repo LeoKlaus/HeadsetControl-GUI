@@ -250,6 +250,10 @@ void MainWindow::showEvent(QShowEvent *event)
 {
     QMainWindow::showEvent(event);
     rescaleAndMoveWindow();
+    if (firstShow) {
+        checkForUpdates(firstShow);
+        firstShow = false;
+    }
 }
 
 //Window Position and Size Section
@@ -257,10 +261,6 @@ void MainWindow::toggleWindow()
 {
     if (isHidden()) {
         show();
-        if (firstShow) {
-            checkForUpdates(firstShow);
-            firstShow = false;
-        }
     } else {
         hide();
     }
