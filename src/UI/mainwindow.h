@@ -74,6 +74,7 @@ private:
     void moveToBottomRight();
     void rescaleAndMoveWindow();
     void toggleWindow();
+    void showEvent(QShowEvent *event);
 
     //Utility
     void sendAppNotification(const QString &title, const QString &description, const QIcon &icon);

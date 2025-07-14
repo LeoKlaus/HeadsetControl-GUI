@@ -246,12 +246,17 @@ void MainWindow::updateStyle()
     rescaleAndMoveWindow();
 }
 
+void MainWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+    rescaleAndMoveWindow();
+}
+
 //Window Position and Size Section
 void MainWindow::toggleWindow()
 {
     if (isHidden()) {
         show();
-        rescaleAndMoveWindow();
         if (firstShow) {
             checkForUpdates(firstShow);
             firstShow = false;
@@ -263,7 +268,7 @@ void MainWindow::toggleWindow()
 
 void MainWindow::minimizeWindowSize()
 {
-    resize(sizeHint());
+    adjustSize();
 }
 
 void MainWindow::moveToBottomRight()
@@ -538,7 +543,6 @@ void MainWindow::updateGUI()
 {
     if (!API.areApiAvailable()) {
         resetGUI();
-        rescaleAndMoveWindow();
         ui->notSupportedFrame->setHidden(true);
         rescaleAndMoveWindow();
         selectedDevice = nullptr;
