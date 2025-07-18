@@ -105,7 +105,7 @@ void MainWindow::bindEvents()
     });
     connect(ui->sidetoneSlider, &QSlider::sliderReleased, this, [=]() {
         int sliderValue = ui->sidetoneSlider->value();
-        if (sliderValue != 0) API.getSelectedDevice()->previous_sidetone = sliderValue;
+        if (sliderValue != 0) selectedDevice->previous_sidetone = sliderValue;
         API.setSidetone(sliderValue);
     });
     connect(ui->voiceOnButton, &QPushButton::clicked, this, [=]() {
@@ -192,15 +192,15 @@ void MainWindow::setupTrayIcon()
         API.setLights(false);
     });
     trayMenu->addAction(tr("Toggle Sidetone"), &API, [=]() {
-        int previousSidetone = API.getSelectedDevice()->previous_sidetone;
-        int currentSidetone = API.getSelectedDevice()->sidetone;
+        int previousSidetone = selectedDevice->previous_sidetone;
+        int currentSidetone = selectedDevice->sidetone;
 
-        API.getSelectedDevice()->previous_sidetone = currentSidetone;
+        selectedDevice->previous_sidetone = currentSidetone;
 
         if (currentSidetone > 0) API.setSidetone(0, true);
         else if (previousSidetone <= 0 && currentSidetone == 0) {
             API.setSidetone(128, true);
-            API.getSelectedDevice()->previous_sidetone = 128;
+            selectedDevice->previous_sidetone = 128;
         }
         else API.setSidetone(previousSidetone, true);
 
