@@ -105,6 +105,7 @@ bool Device::operator==(const Device *d) const
 void Device::copyConfig(Device* device){
     this->lights = device->lights;
     this->sidetone = device->sidetone;
+    this->previous_sidetone = device->previous_sidetone;
     this->voice_prompts = device->voice_prompts;
     this->inactive_time = device->inactive_time;
     this->equalizer_preset = device->equalizer_preset;
@@ -141,6 +142,7 @@ QJsonObject Device::toJson() const
 
     json["lights"] = lights;
     json["sidetone"] = sidetone;
+    json["previous_sidetone"] = previous_sidetone;
     json["voice_prompts"] = voice_prompts;
     json["inactive_time"] = inactive_time;
     json["equalizer_preset"] = equalizer_preset;
@@ -168,6 +170,7 @@ Device *Device::fromJson(
 
     newDev->lights = json["lights"].toInt();
     newDev->sidetone = json["sidetone"].toInt();
+    newDev->previous_sidetone = json["previous_sidetone"].toInt();
     newDev->voice_prompts = json["voice_prompts"].toInt();
     newDev->inactive_time = json["inactive_time"].toInt();
     newDev->equalizer_preset = json["equalizer_preset"].toInt();

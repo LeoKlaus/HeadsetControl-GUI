@@ -53,7 +53,7 @@ public:
 
     // Info to get from json and display
     Battery battery;
-    int chatmix = 65;
+    int chatmix = 64;
     QList<EqualizerPreset> presets_list;
     Equalizer equalizer;
     bool notification_sound = false;
@@ -61,6 +61,7 @@ public:
     // Info to set with gui and to save
     int lights = -1;
     int sidetone = -1;
+    int previous_sidetone = -1;
     int voice_prompts = -1;
     int inactive_time = -1;
     int equalizer_preset = -1;
