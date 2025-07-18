@@ -199,8 +199,8 @@ void MainWindow::setupTrayIcon()
 
         if (currentSidetone > 0) API.setSidetone(0, true);
         else if (previousSidetone <= 0 && currentSidetone == 0) {
-            API.setSidetone(100, true);
-            API.getSelectedDevice()->previous_sidetone = 100;
+            API.setSidetone(128, true);
+            API.getSelectedDevice()->previous_sidetone = 128;
         }
         else API.setSidetone(previousSidetone, true);
 
