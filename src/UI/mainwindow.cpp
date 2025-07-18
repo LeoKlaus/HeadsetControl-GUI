@@ -104,7 +104,9 @@ void MainWindow::bindEvents()
         API.setLights(false);
     });
     connect(ui->sidetoneSlider, &QSlider::sliderReleased, this, [=]() {
-        API.setSidetone(ui->sidetoneSlider->value());
+        int sliderValue = ui->sidetoneSlider->value();
+        if (sliderValue != 0) selectedDevice->previous_sidetone = sliderValue;
+        API.setSidetone(sliderValue);
     });
     connect(ui->voiceOnButton, &QPushButton::clicked, this, [=]() {
         API.setVoicePrompts(true);
@@ -190,7 +192,18 @@ void MainWindow::setupTrayIcon()
         API.setLights(false);
     });
     trayMenu->addAction(tr("Toggle Sidetone"), &API, [=]() {
-        API.setSidetone(API.getSelectedDevice()->sidetone == 0 ? 128 : 0, true);
+        int previousSidetone = selectedDevice->previous_sidetone;
+        int currentSidetone = selectedDevice->sidetone;
+
+        selectedDevice->previous_sidetone = currentSidetone;
+
+        if (currentSidetone > 0) API.setSidetone(0, true);
+        else if (previousSidetone <= 0 && currentSidetone == 0) {
+            API.setSidetone(128, true);
+            selectedDevice->previous_sidetone = 128;
+        }
+        else API.setSidetone(previousSidetone, true);
+
         ui->sidetoneSlider->setSliderPosition(API.getSelectedDevice()->sidetone);
     });
 
@@ -632,10 +645,11 @@ void MainWindow::setChatmixStatus()
 
     int chatmix = selectedDevice->chatmix;
     QString chatmixValue = QString::number(chatmix);
-    if (chatmix < 65)
+    if (chatmix < 64)
         chatmixStatus = tr("Game");
-    else if (chatmix > 65)
+    else if (chatmix > 64)
         chatmixStatus = tr("Chat");
+    else chatmixStatus = tr("Neutral");
 
     ui->chatmixvalueLabel->setText(chatmixValue);
     ui->chatmixstatusLabel->setText(chatmixStatus);
