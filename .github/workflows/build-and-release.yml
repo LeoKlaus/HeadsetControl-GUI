@@ -1,5 +1,8 @@
 name: Build and Release
 
+permissions:
+  contents: write
+
 on:
   workflow_dispatch:
     inputs:
@@ -10,6 +13,11 @@ on:
         type: string
       prerelease:
         description: "Set as prerelease"
+        required: true
+        default: true
+        type: boolean
+      publish:
+        description: "Publish release"
         required: true
         default: true
         type: boolean
@@ -105,6 +113,7 @@ jobs:
           path: HeadsetControl-GUI_${{ matrix.os_name }}_${{ matrix.architecture }}.zip
 
   create-release:
+    if: ${{ inputs.publish }}
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -130,23 +139,14 @@ jobs:
               @Sapd for [HeadsetControl](https://github.com/Sapd/HeadsetControl)
 
   winget-release:
-    if: ${{ !(startsWith(github.ref, 'refs/tags/continuous') || inputs.prerelease) }}
+    if: ${{ inputs.publish && !(startsWith(github.ref, 'refs/tags/continuous') || inputs.prerelease) }}
     needs: [create-release]
-    runs-on: windows-latest
-    continue-on-error: true
+    runs-on: ubuntu-latest
     steps:
     - name: Submit package to Windows Package Manager Community Repository
-      run: |
-        # Download latest wingetcreate
-        Invoke-WebRequest https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
-        
-        $packageId = "LeoKlaus.HeadsetControl-GUI"
-        $installerUrl = "https://github.com/LeoKlaus/HeadsetControl-GUI/releases/download/${{ inputs.version }}/HeadsetControl-GUI_windows_x64.zip"
-
-        # Submit package update
-        .\wingetcreate.exe update "$packageId" `
-          --version "${{ inputs.version }}" `
-          --urls "$installerUrl" `
-          --submit `
-          --token "${{ secrets.WINGET_DEPLOY_TOKEN }}"
-      shell: pwsh
+      uses: michidk/winget-updater@v1
+      with:
+        komac-token: ${{ secrets.WINGET_DEPLOY_TOKEN }}
+        identifier: "LeoKlaus.HeadsetControl-GUI"
+        repo: "HeadsetControl-GUI.HeadsetControl-GUI"
+        url: "https://github.com/HeadsetControl-GUI/HeadsetControl-GUI/releases/download/{VERSION}/HeadsetControl-GUI_windows_x64.zip"
