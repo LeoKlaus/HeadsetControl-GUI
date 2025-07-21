@@ -141,7 +141,7 @@ jobs:
         Invoke-WebRequest https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
         
         $packageId = "LeoKlaus.HeadsetControl-GUI"
-        $installerUrl = "https://github.com/LeoKlaus/HeadsetControl-GUI/releases/download/${{ inputs.version }}/HeadsetControl_${{ inputs.version }}_windows_x64.zip"
+        $installerUrl = "https://github.com/LeoKlaus/HeadsetControl-GUI/releases/download/${{ inputs.version }}/HeadsetControl-GUI_windows_x64.zip"
 
         # Submit package update
         .\wingetcreate.exe update "$packageId" `
