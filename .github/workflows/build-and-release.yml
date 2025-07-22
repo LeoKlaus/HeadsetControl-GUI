@@ -168,21 +168,12 @@ jobs:
   winget-release:
     if: ${{ inputs.publish && !(startsWith(github.ref, 'refs/tags/continuous') || inputs.prerelease) }}
     needs: [create-release]
-    runs-on: windows-latest
-    continue-on-error: true
+    runs-on: ubuntu-latest
     steps:
     - name: Submit package to Windows Package Manager Community Repository
-      run: |
-        # Download latest wingetcreate
-        Invoke-WebRequest https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
-        
-        $packageId = "LeoKlaus.HeadsetControl-GUI"
-        $installerUrl = "https://github.com/LeoKlaus/HeadsetControl-GUI/releases/download/${{ inputs.version }}/HeadsetControl_${{ inputs.version }}_windows_x64.zip"
-
-        # Submit package update
-        .\wingetcreate.exe update "$packageId" `
-          --version "${{ inputs.version }}" `
-          --urls "$installerUrl" `
-          --submit `
-          --token "${{ secrets.WINGET_DEPLOY_TOKEN}}"
-      shell: pwsh
+      uses: michidk/winget-updater@v1
+      with:
+        komac-token: ${{ secrets.WINGET_DEPLOY_TOKEN }}
+        identifier: "LeoKlaus.HeadsetControl-GUI"
+        repo: "LeoKlaus.HeadsetControl-GUI"
+        url: "https://github.com/LeoKlaus/HeadsetControl-GUI/releases/download/${{ inputs.version }}/HeadsetControl_${{ inputs.version }}_windows_x64.zip"
