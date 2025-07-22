@@ -148,5 +148,5 @@ jobs:
       with:
         komac-token: ${{ secrets.WINGET_DEPLOY_TOKEN }}
         identifier: "LeoKlaus.HeadsetControl-GUI"
-        repo: "HeadsetControl-GUI.HeadsetControl-GUI"
-        url: "https://github.com/HeadsetControl-GUI/HeadsetControl-GUI/releases/download/{VERSION}/HeadsetControl-GUI_windows_x64.zip"
+        repo: "LeoKlaus/HeadsetControl-GUI"
+        url: "https://github.com/LeoKlaus/HeadsetControl-GUI/releases/download/{VERSION}/HeadsetControl-GUI_windows_x64.zip"
